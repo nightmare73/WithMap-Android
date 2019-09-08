@@ -1,9 +1,9 @@
-package com.ebookfrenzy.withmap
+package com.ebookfrenzy.withmap.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.ebookfrenzy.withmap.R
 import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.CameraUpdateFactory.zoomTo
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment

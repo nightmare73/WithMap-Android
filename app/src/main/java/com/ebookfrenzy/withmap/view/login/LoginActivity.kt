@@ -1,4 +1,4 @@
-package com.ebookfrenzy.withmap.view
+package com.ebookfrenzy.withmap.view.login
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
