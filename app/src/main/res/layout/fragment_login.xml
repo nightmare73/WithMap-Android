@@ -32,6 +32,7 @@
         <EditText
             android:id="@+id/et_email"
             style="@style/nanum_medium_login_edittext"
+            android:backgroundTint="@color/et_underline_gray"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -53,6 +54,7 @@
         <EditText
             android:id="@+id/et_password"
             style="@style/nanum_medium_login_edittext"
+            android:backgroundTint="@color/et_underline_gray"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -92,6 +94,7 @@
             android:id="@+id/imageView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_sign_up"
             app:layout_constraintEnd_toEndOf="@+id/btn_login"
             app:layout_constraintTop_toTopOf="@+id/tv_sign_up"
             app:srcCompat="@drawable/ic_chevron_right" />
