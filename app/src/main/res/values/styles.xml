@@ -8,4 +8,38 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="nanum_semibold_login_textview">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:fontFamily">@font/nanum_barun_gothic_bold</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+    <style name="nanum_medium_login_textview">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:fontFamily">@font/nanum_barun_gothic</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+    <style name="nanum_semibold_login_edittext">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:fontFamily">@font/nanum_barun_gothic_bold</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textCursorDrawable">@drawable/drawable_cursor</item>
+        <item name="android:colorAccent">@color/black</item>
+        <item name="android:colorControlNormal">@color/et_gray</item>
+    </style>
+    <style name="nanum_medium_login_edittext">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:fontFamily">@font/nanum_barun_gothic</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textCursorDrawable">@drawable/drawable_cursor</item>
+        <item name="android:colorAccent">@color/black</item>
+        <item name="android:colorControlNormal">@color/et_gray</item>
+    </style>
+
+
 </resources>
