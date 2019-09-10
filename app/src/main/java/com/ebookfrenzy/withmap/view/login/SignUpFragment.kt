@@ -53,7 +53,8 @@ class SignUpFragment : Fragment() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if(s!!.isNotEmpty()) {
-                    btn_email_repeat.setBackgroundResource(R.drawable.bg_button_repeat_focus)
+                    btn_email_repeat
+                        .setBackgroundResource(R.drawable.bg_button_repeat_focus)
                     if(isValidEmail(s)){
                         tv_frag_sign_up_email_form.visibility = View.GONE
                     }else

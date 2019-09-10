@@ -13,7 +13,7 @@ class LoginActivity : AppCompatActivity() {
 
         val fm = supportFragmentManager
         val fragmentTransaction = fm.beginTransaction()
-        fragmentTransaction.add(R.id.fragment_login_activity, SignUpFragment())
+        fragmentTransaction.add(R.id.fragment_login_activity, SignUpInfoFragment())
         fragmentTransaction.commit()
     }
 }

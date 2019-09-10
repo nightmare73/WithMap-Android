@@ -1,14 +1,173 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".view.login.SignUpInfoFragment">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <data>
+        <variable
+            name="fragment"
+            type="com.ebookfrenzy.withmap.view.login.SignUpInfoFragment"/>
+    </data>
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="match_parent">
 
-</FrameLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context=".view.login.SignUpInfoFragment">
+
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:src="@drawable/ham_left"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textView"
+                    style="@style/nanum_semibold_login_textview"
+                    android:layout_marginTop="12dp"
+                    android:text="회원가입"
+                    android:textSize="14sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textView5"
+                    style="@style/nanum_semibold_login_textview"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="56dp"
+                    android:text="태어난 연도를 입력해주세요"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+                <NumberPicker
+                    android:id="@+id/np_sign_up_info_frag"
+                    android:layout_width="97dp"
+                    android:layout_height="71dp"
+                    android:layout_marginStart="112dp"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView5"
+                    />
+
+                <TextView
+                    android:id="@+id/textView6"
+                    style="@style/nanum_semibold_login_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="년"
+                    android:textSize="20sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/np_sign_up_info_frag"
+                    app:layout_constraintStart_toEndOf="@+id/np_sign_up_info_frag"
+                    app:layout_constraintTop_toTopOf="@+id/np_sign_up_info_frag" />
+
+                <TextView
+                    android:id="@+id/textView7"
+                    style="@style/nanum_semibold_login_textview"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="40dp"
+                    android:text="해당 사항을 선택해주세요"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/np_sign_up_info_frag" />
+
+                <ImageView
+                    android:id="@+id/imageView4"
+
+                    android:layout_width="151dp"
+                    android:layout_height="151dp"
+                    android:layout_marginTop="190dp"
+                    android:src="@drawable/join_wheelchair"
+                    android:onClick="@{() -> fragment.onClickInfo(3)}"
+                    app:layout_constraintStart_toStartOf="@+id/imageView1"
+                    app:layout_constraintTop_toBottomOf="@+id/textView7"
+                    android:scaleType="center"/>
+
+                <ImageView
+                    android:id="@+id/imageView1"
+                    android:layout_width="151dp"
+                    android:layout_height="151dp"
+                    android:layout_marginTop="40dp"
+                    android:src="@drawable/join_male"
+                    android:clickable="true"
+                    app:layout_constraintStart_toStartOf="@+id/textView7"
+                    app:layout_constraintTop_toBottomOf="@+id/textView7"
+                    android:scaleType="center"/>
+
+                <ImageView
+                    android:id="@+id/imageView2"
+                    android:layout_width="151dp"
+                    android:layout_height="151dp"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginEnd="32dp"
+                    android:src="@drawable/join_female"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView7"
+                    android:scaleType="centerInside"/>
+
+                <ImageView
+
+                    android:id="@+id/imageView3"
+                    android:layout_width="151dp"
+                    android:layout_height="151dp"
+                    android:layout_marginTop="190dp"
+                    android:src="@drawable/join_walk"
+                    app:layout_constraintEnd_toEndOf="@+id/imageView2"
+                    app:layout_constraintTop_toBottomOf="@+id/textView7"
+                    android:scaleType="center"/>
+
+                <TextView
+                    android:id="@+id/textView4"
+                    style="@style/nanum_semibold_login_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="392dp"
+                    android:text="회원가입 진행 시 이용약관에 동의하는 것으로 간주합니다."
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView7" />
+
+                <TextView
+                    android:id="@+id/textView9"
+                    style="@style/nanum_semibold_login_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="이용약관 자세히보기 >"
+                    android:textColor="@color/blue"
+                    app:layout_constraintEnd_toEndOf="@+id/textView4"
+                    app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <Button
+                android:id="@+id/button"
+                android:onClick="@{() -> fragment.onClickInfo(1)}"
+                style="@style/nanum_semibold_bottom_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_button"
+                android:text="완료"
+                app:layout_constraintTop_toBottomOf="parent"
+                tools:layout_editor_absoluteX="172dp" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</layout>
