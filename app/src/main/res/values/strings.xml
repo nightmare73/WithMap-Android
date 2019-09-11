@@ -8,4 +8,6 @@
     <string name="next">다음</string>
     <string name="close">닫기</string>
     <string name="start">시작하기</string>
+    <string name="it_helped">도움 되었어요</string>
+    <string name="report">신고</string>
 </resources>
