@@ -14,4 +14,5 @@
 
     <color name="pink">#F587B0</color>
     <color name="green">#2ef471</color>
+    <color name="divider">#f0f0f0</color>
 </resources>

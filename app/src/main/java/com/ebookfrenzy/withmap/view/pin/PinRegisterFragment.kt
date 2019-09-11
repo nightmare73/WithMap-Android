@@ -37,7 +37,8 @@ import kotlinx.android.synthetic.main.fragment_pin_register.*
 class PinRegisterFragment(val f: Int) : Fragment() {
 
     val improveType = 2
-    var isNew : Boolean = true
+    var isNew: Boolean = true
+    var title: String = ""
 
     private val REQUEST_CODE_SELECT_IMAGE = 1111
     private val MY_READ_STORAGE_REQUEST_CODE = 7777
@@ -56,13 +57,14 @@ class PinRegisterFragment(val f: Int) : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
 
-        isNew = isNewOrImproved(f)
+        isNewOrImproved(f)
         binding = FragmentPinRegisterBinding.inflate(LayoutInflater.from(this.context))
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
 
         binding.run {
             lifecycleOwner = this@PinRegisterFragment
@@ -78,10 +80,17 @@ class PinRegisterFragment(val f: Int) : Fragment() {
         Log.d(TAG, binding.etTitle.text.toString())
 
     }
-    fun isNewOrImproved(i : Int) : Boolean{
-        when(i) {
-            1 -> return true
-            else -> return false
+
+    fun isNewOrImproved(i: Int) {
+        when (i) {
+            1 -> {
+                isNew = true
+                title = "핀 등록"
+            }
+            else -> {
+                isNew =  false
+                title = "개선되었습니다"
+            }
         }
     }
 
