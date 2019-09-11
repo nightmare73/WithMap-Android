@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import
+            type="android.view.View"/>
 
         <variable
             name="vm"
@@ -12,6 +14,7 @@
         <variable
             name="fragment"
             type="com.ebookfrenzy.withmap.view.pin.PinRegisterFragment" />
+
     </data>
 
     <androidx.core.widget.NestedScrollView
@@ -66,6 +69,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/textView8" />
 
             <RelativeLayout
+                android:id="@+id/relativeLayout3"
                 android:layout_width="246dp"
                 android:layout_height="0.5dp"
                 android:layout_marginTop="4dp"
@@ -75,6 +79,27 @@
 
             </RelativeLayout>
 
+            <RelativeLayout
+                android:id="@+id/rl_improve_type_bg"
+                android:layout_width="328dp"
+                android:layout_height="136dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_improved_frag_type"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/relativeLayout3"
+                android:visibility="@{fragment.isNew ? View.GONE: View.VISIBLE }">
+
+                <TextView
+                    style="@style/nanum_medium_login_textview"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginRight="8dp"
+                    android:text="수정불가영역 : 디폴트로 입력되어있음"
+                    android:textColor="@color/green"
+                    android:textSize="10sp" />
+            </RelativeLayout>
             <TextView
                 android:id="@+id/textView11"
                 style="@style/nanum_semibold_login_textview"
@@ -301,6 +326,7 @@
             <EditText
                 android:id="@+id/tv_content"
                 style="@style/nanum_medium_login_textview"
+                android:background="@drawable/bg_register_pin_text"
                 android:layout_width="match_parent"
                 android:layout_height="217dp"
                 android:layout_marginHorizontal="16dp"
@@ -366,7 +392,7 @@
                 tools:layout_editor_absoluteX="157dp" />
 
             <TextView
-                android:id="@+id/textView15"
+                android:id="@+id/tv_register_pick_warn"
                 style="@style/nanum_medium_login_textview"
                 android:layout_marginStart="2dp"
                 android:text="1개의 유형을 선택해주세요"
@@ -374,7 +400,8 @@
                 android:textSize="10sp"
                 app:layout_constraintBottom_toBottomOf="@+id/textView11"
                 app:layout_constraintStart_toEndOf="@+id/textView11"
-                app:layout_constraintTop_toTopOf="@+id/textView11" />
+                app:layout_constraintTop_toTopOf="@+id/textView11"
+                android:visibility="@{fragment.isNew ? View.VISIBLE : View.GONE}"/>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

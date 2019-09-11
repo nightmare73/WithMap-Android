@@ -24,7 +24,6 @@ import androidx.loader.content.CursorLoader
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.ebookfrenzy.withmap.BR
-
 import com.ebookfrenzy.withmap.R
 import com.ebookfrenzy.withmap.databinding.FragmentPinRegisterBinding
 import com.ebookfrenzy.withmap.databinding.ItemPinRegisterPhotoBinding
@@ -35,7 +34,10 @@ import kotlinx.android.synthetic.main.fragment_pin_register.*
 /**
  * A simple [Fragment] subclass.
  */
-class PinRegisterFragment : Fragment() {
+class PinRegisterFragment(val f: Int) : Fragment() {
+
+    val improveType = 2
+    var isNew : Boolean = true
 
     private val REQUEST_CODE_SELECT_IMAGE = 1111
     private val MY_READ_STORAGE_REQUEST_CODE = 7777
@@ -48,14 +50,14 @@ class PinRegisterFragment : Fragment() {
     val viewModel = PinRegisterViewModel()
     private lateinit var binding: FragmentPinRegisterBinding
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
 
-        binding = FragmentPinRegisterBinding.inflate(LayoutInflater.from(context))
+        isNew = isNewOrImproved(f)
+        binding = FragmentPinRegisterBinding.inflate(LayoutInflater.from(this.context))
         return binding.root
     }
 
@@ -65,7 +67,6 @@ class PinRegisterFragment : Fragment() {
         binding.run {
             lifecycleOwner = this@PinRegisterFragment
             fragment = this@PinRegisterFragment
-
             rvPhoto.run {
                 adapter = pinRegisterPhotoAdapter
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -73,8 +74,51 @@ class PinRegisterFragment : Fragment() {
         }
 
         initDataBinding()
+        improvedTypePick(improveType)
         Log.d(TAG, binding.etTitle.text.toString())
 
+    }
+    fun isNewOrImproved(i : Int) : Boolean{
+        when(i) {
+            1 -> return true
+            else -> return false
+        }
+    }
+
+    //BindingAdapter
+    fun improvedTypePick(i: Int) {
+        if (f == 2) {
+            when (i) {
+                1 -> {
+                    binding.ivObstacle.setImageResource(R.drawable.pin_hurdle_on)
+                    binding.tvObstacle.setTextColor(resources.getColor(R.color.orange))
+                }
+                2 -> {
+                    binding.ivDump.setImageResource(R.drawable.pin_dump_on)
+                    binding.tvDump.setTextColor(resources.getColor(R.color.orange))
+
+                }
+                3 -> {
+                    binding.ivUnpaved.setImageResource(R.drawable.group_9)
+                    binding.tvUnpaved.setTextColor(resources.getColor(R.color.orange))
+                }
+                4 -> {
+                    binding.ivNarrow.setImageResource(R.drawable.group_10)
+                    binding.tvNarrow.setTextColor(resources.getColor(R.color.orange))
+
+                }
+                5 -> {
+                    binding.ivToilet.setImageResource(R.drawable.pin_toilet_on)
+                    binding.tvToilet.setTextColor(resources.getColor(R.color.blue))
+
+                }
+                6 -> {
+                    binding.ivRestaurant.setImageResource(R.drawable.pin_restaurant_on)
+                    binding.tvRestaurant.setTextColor(resources.getColor(R.color.blue))
+
+                }
+            }
+        }
     }
 
     fun typeAllOff() {
@@ -92,41 +136,45 @@ class PinRegisterFragment : Fragment() {
         binding.tvNarrow.setTextColor(resources.getColor(R.color.et_text_gray))
         binding.tvToilet.setTextColor(resources.getColor(R.color.et_text_gray))
         binding.tvRestaurant.setTextColor(resources.getColor(R.color.et_text_gray))
+
     }
 
     fun pickType(i: Int) {
         typeAllOff()
-        when (i) {
-            1 -> {
-                binding.ivObstacle.setImageResource(R.drawable.pin_hurdle_on)
-                binding.tvObstacle.setTextColor(resources.getColor(R.color.orange))
-            }
-            2 -> {
-                binding.ivDump.setImageResource(R.drawable.pin_dump_on)
-                binding.tvDump.setTextColor(resources.getColor(R.color.orange))
+        if (f == 1) {
+            when (i) {
+                1 -> {
+                    binding.ivObstacle.setImageResource(R.drawable.pin_hurdle_on)
+                    binding.tvObstacle.setTextColor(resources.getColor(R.color.orange))
+                }
+                2 -> {
+                    binding.ivDump.setImageResource(R.drawable.pin_dump_on)
+                    binding.tvDump.setTextColor(resources.getColor(R.color.orange))
 
-            }
-            3 -> {
-                binding.ivUnpaved.setImageResource(R.drawable.group_9)
-                binding.tvUnpaved.setTextColor(resources.getColor(R.color.orange))
-            }
-            4 -> {
-                binding.ivNarrow.setImageResource(R.drawable.group_10)
-                binding.tvNarrow.setTextColor(resources.getColor(R.color.orange))
+                }
+                3 -> {
+                    binding.ivUnpaved.setImageResource(R.drawable.group_9)
+                    binding.tvUnpaved.setTextColor(resources.getColor(R.color.orange))
+                }
+                4 -> {
+                    binding.ivNarrow.setImageResource(R.drawable.group_10)
+                    binding.tvNarrow.setTextColor(resources.getColor(R.color.orange))
 
-            }
-            5 -> {
-                binding.ivToilet.setImageResource(R.drawable.pin_toilet_on)
-                binding.tvToilet.setTextColor(resources.getColor(R.color.blue))
+                }
+                5 -> {
+                    binding.ivToilet.setImageResource(R.drawable.pin_toilet_on)
+                    binding.tvToilet.setTextColor(resources.getColor(R.color.blue))
 
-            }
-            6 -> {
-                binding.ivRestaurant.setImageResource(R.drawable.pin_restaurant_on)
-                binding.tvRestaurant.setTextColor(resources.getColor(R.color.blue))
+                }
+                6 -> {
+                    binding.ivRestaurant.setImageResource(R.drawable.pin_restaurant_on)
+                    binding.tvRestaurant.setTextColor(resources.getColor(R.color.blue))
 
+                }
             }
         }
     }
+
 
     fun requestReadExternalStoragePermission() {
         if (ContextCompat.checkSelfPermission(

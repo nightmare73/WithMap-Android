@@ -1,6 +1,7 @@
 package com.ebookfrenzy.withmap
 
 import android.net.Uri
+import android.view.View
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.googry.googrybaserecyclerview.BaseRecyclerView

@@ -9,4 +9,6 @@ class PinRegisterViewModel : ViewModel() {
 
    val albumImageListLiveData = MutableLiveData<MutableList<Uri>>()
 
+
+
 }

@@ -13,7 +13,7 @@ class PinActivity : AppCompatActivity() {
 
         val fm = supportFragmentManager
         val fragmentTransaction = fm.beginTransaction()
-        fragmentTransaction.add(R.id.fl_pin_act, PinRegisterFragment())
+        fragmentTransaction.add(R.id.fl_pin_act, PinRegisterFragment(2))
         fragmentTransaction.commit()
     }
 }
