@@ -171,12 +171,13 @@ class PinRegisterFragment : Fragment() {
             type = android.provider.MediaStore.Images.Media.CONTENT_TYPE
             data = android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
         }
-        activity!!.startActivityForResult(intent, REQUEST_CODE_SELECT_IMAGE)
+        startActivityForResult(intent, REQUEST_CODE_SELECT_IMAGE)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
+        Log.d(TAG, "onActivityResult")
         if (requestCode == REQUEST_CODE_SELECT_IMAGE) {
             if (resultCode == Activity.RESULT_OK) {
                 if (data != null) {
@@ -184,9 +185,10 @@ class PinRegisterFragment : Fragment() {
                     imageURI = getRealPathFromURI(selectedImageUri)
 
                     imageUris.add(selectedImageUri)
+                    Log.d(TAG, "imageUris size : ${imageUris.size}")
                     //한 라이브데이타에 넣어주기
                     viewModel.albumImageListLiveData.postValue(imageUris)
-
+                    Log.d(TAG, "imageUri : ${viewModel.albumImageListLiveData.value}")
 
                 }
             }
@@ -197,6 +199,7 @@ class PinRegisterFragment : Fragment() {
         viewModel.albumImageListLiveData.observe(this, Observer {
             it.forEach {
                 pinRegisterPhotoAdapter.addUri(it)
+                Log.d(TAG, "added uri : ${it}")
             }
             pinRegisterPhotoAdapter.notifyDataSetChanged()
         })
