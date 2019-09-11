@@ -19,7 +19,9 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.loader.content.CursorLoader
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.ebookfrenzy.withmap.BR
 
@@ -40,9 +42,9 @@ class PinRegisterFragment : Fragment() {
     private val TAG = "PinRegisterFragment"
 
     var imageURI: String? = null
-
     var imageUris = mutableListOf<Uri>()
 
+    private val pinRegisterPhotoAdapter = PinRegisterPhotoAdapter()
     val viewModel = PinRegisterViewModel()
     private lateinit var binding: FragmentPinRegisterBinding
 
@@ -64,11 +66,13 @@ class PinRegisterFragment : Fragment() {
             lifecycleOwner = this@PinRegisterFragment
             fragment = this@PinRegisterFragment
 
-//            rvPhoto.adapter = object : BaseRecyclerView.Adapter<Uri, FragmentPinRegisterBinding>(
-//                layoutResId = R.layout.item_pin_register_photo
-//            ) {}
+            rvPhoto.run {
+                adapter = pinRegisterPhotoAdapter
+                layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            }
         }
 
+        initDataBinding()
         Log.d(TAG, binding.etTitle.text.toString())
 
     }
@@ -187,6 +191,15 @@ class PinRegisterFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun initDataBinding() {
+        viewModel.albumImageListLiveData.observe(this, Observer {
+            it.forEach {
+                pinRegisterPhotoAdapter.addUri(it)
+            }
+            pinRegisterPhotoAdapter.notifyDataSetChanged()
+        })
     }
 
     fun getRealPathFromURI(content: Uri): String {
