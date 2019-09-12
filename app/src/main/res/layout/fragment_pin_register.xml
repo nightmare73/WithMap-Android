@@ -39,7 +39,7 @@
             <TextView
                 android:id="@+id/tv_pin_register_frag_title"
                 style="@style/nanum_semibold_login_textview"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="16dp"
                 android:text="@{fragment.title}"
                 android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"

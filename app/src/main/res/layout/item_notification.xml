@@ -7,7 +7,7 @@
     <data>
         <variable
             name="notification"
-            type="com.ebookfrenzy.withmap.data.Notification"/>
+            type="com.ebookfrenzy.withmap.data.NotificationData"/>
 
         <variable
             name="vm"
@@ -27,7 +27,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/group" />
+            app:srcCompat="@drawable/group"
+            typeImage="@{notification.type}"/>
 
         <TextView
             android:id="@+id/tv_title"
@@ -35,7 +36,8 @@
             android:textSize="14sp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="12dp"
-            android:text="7월 개선위치 안내"
+            tools:text="7월 개선위치 안내"
+            android:text="@{notification.title}"
             app:layout_constraintStart_toEndOf="@+id/imageView15"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -44,7 +46,8 @@
             style="@style/nanum_medium_login_textview"
             android:textSize="11sp"
             android:textColor="#9d9d9d"
-            android:text="TextView"
+            tools:text="TextView"
+            android:text="@{notification.date}"
             app:layout_constraintStart_toStartOf="@+id/tv_title"
             app:layout_constraintTop_toBottomOf="@+id/tv_title" />
 
@@ -56,6 +59,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/group" />
+            app:srcCompat="@drawable/list_arrow_right" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -4,6 +4,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+        <variable
+            name="vm"
+            type="com.ebookfrenzy.withmap.viewmodel.NotificationViewModel"/>
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -22,7 +28,7 @@
         <TextView
             android:id="@+id/tv_pin_register_frag_title"
             style="@style/nanum_semibold_login_textview"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="16dp"
             android:text="알림"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -42,7 +48,10 @@
             android:id="@+id/rv_notification"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/view2" />
+            app:layout_constraintTop_toBottomOf="@id/view2"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:orientation="vertical"
+            replaceAll="@{vm.notificationLiveData}"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>
