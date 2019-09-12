@@ -88,7 +88,7 @@ class PinRegisterFragment(val f: Int) : Fragment() {
                 title = "핀 등록"
             }
             else -> {
-                isNew =  false
+                isNew = false
                 title = "개선되었습니다"
             }
         }

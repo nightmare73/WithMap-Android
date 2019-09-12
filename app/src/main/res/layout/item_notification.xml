@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="notification"
+            type="com.ebookfrenzy.withmap.data.Notification"/>
+
+        <variable
+            name="vm"
+            type="com.ebookfrenzy.withmap.viewmodel.NotificationViewModel"/>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent" android:layout_height="56dp"
+        android:id="@+id/cl_item">
+
+        <ImageView
+            android:id="@+id/imageView15"
+            android:layout_width="38dp"
+            android:layout_height="17dp"
+            android:layout_marginStart="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/group" />
+
+        <TextView
+            android:id="@+id/tv_title"
+            style="@style/nanum_semibold_login_textview"
+            android:textSize="14sp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="12dp"
+            android:text="7월 개선위치 안내"
+            app:layout_constraintStart_toEndOf="@+id/imageView15"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_date"
+            style="@style/nanum_medium_login_textview"
+            android:textSize="11sp"
+            android:textColor="#9d9d9d"
+            android:text="TextView"
+            app:layout_constraintStart_toStartOf="@+id/tv_title"
+            app:layout_constraintTop_toBottomOf="@+id/tv_title" />
+
+        <ImageView
+            android:id="@+id/imageView16"
+            android:layout_width="8dp"
+            android:layout_height="11dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/group" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
