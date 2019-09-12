@@ -19,9 +19,9 @@ fun RecyclerView.replaceAll(list: List<Any>?) {
 @BindingAdapter("typeImage")
 fun ImageView.typeImage(i : Int) {
     when(i) {
-        1 -> this.setImageResource(R.drawable.pin_restaurant_on)
-        2 -> this.setImageResource(R.drawable.pin_toilet_on)
-        3 -> this.setImageResource(R.drawable.group_9)
+        1 -> this.setImageResource(R.drawable.group)
+        2 -> this.setImageResource(R.drawable.group_2)
+        3 -> this.setImageResource(R.drawable.group_3)
     }
 }
 

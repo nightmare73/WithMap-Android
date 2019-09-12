@@ -8,6 +8,14 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="nanum_regular_login_textview">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:fontFamily">@font/nanum_barun_gothic_light</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
     <style name="nanum_semibold_login_textview">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>

@@ -1,14 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".view.hamburg.AccountFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        tools:context=".view.hamburg.AccountFragment">
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/ham_left"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-</FrameLayout>
+        <TextView
+            android:id="@+id/tv_pin_register_frag_title"
+            style="@style/nanum_medium_login_textview"
+            android:layout_marginTop="16dp"
+            android:text="계정관리"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@+id/tv_pin_register_frag_title"
+            tools:layout_editor_absoluteX="0dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginHorizontal="40dp"
+                android:layout_marginTop="24dp"
+                app:layout_constraintTop_toBottomOf="@+id/tv_pin_register_frag_title">
+
+                <TextView
+                    style="@style/nanum_regular_login_textview"
+                    android:layout_centerVertical="true"
+                    android:text="닉네임 변경"
+                    android:textSize="14sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="#f0f0f0" />
+
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginHorizontal="40dp"
+                android:layout_marginTop="24dp"
+                app:layout_constraintTop_toBottomOf="@+id/tv_pin_register_frag_title">
+
+                <TextView
+                    style="@style/nanum_regular_login_textview"
+                    android:layout_centerVertical="true"
+                    android:text="비밀번호 재설정"
+                    android:textSize="14sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="#f0f0f0" />
+
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginHorizontal="40dp"
+                android:layout_marginTop="24dp"
+                app:layout_constraintTop_toBottomOf="@+id/tv_pin_register_frag_title">
+
+                <TextView
+                    style="@style/nanum_regular_login_textview"
+                    android:layout_centerVertical="true"
+                    android:text="로그아웃"
+                    android:textSize="14sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="#f0f0f0" />
+
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginHorizontal="40dp"
+                android:layout_marginTop="24dp"
+                app:layout_constraintTop_toBottomOf="@+id/tv_pin_register_frag_title">
+
+                <TextView
+                    style="@style/nanum_regular_login_textview"
+                    android:layout_centerVertical="true"
+                    android:text="회원 탈퇴"
+                    android:textSize="14sp" />
+
+            </RelativeLayout>
+        </LinearLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
