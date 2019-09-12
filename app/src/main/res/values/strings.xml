@@ -17,4 +17,5 @@
     <string name="trade_explain_1">교환할 기여도를 5000단위로 입력해주세요</string>
     <string name="trade_explain_2">보유한 기여도는&#x20;</string>
     <string name="trade_explain_3">점 입니다.</string>
+    <string name="search_bar">장소, 주소 검색</string>
 </resources>
