@@ -25,3 +25,15 @@ fun ImageView.typeImage(i : Int) {
     }
 }
 
+@BindingAdapter("typeImage_my_register")
+fun ImageView.typeImageMyRegister(i : Int) {
+    when(i) {
+        1 -> this.setImageResource(R.drawable.pin_hurdle_on)
+        2 -> this.setImageResource(R.drawable.pin_dump_on)
+        3 -> this.setImageResource(R.drawable.group_9)
+        4 -> this.setImageResource(R.drawable.group_10)
+        5 -> this.setImageResource(R.drawable.pin_toilet_on)
+        6 -> this.setImageResource(R.drawable.pin_restaurant_on)
+    }
+}
+

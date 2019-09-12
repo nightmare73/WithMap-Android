@@ -3,6 +3,7 @@ package com.ebookfrenzy.withmap.base
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.ebookfrenzy.withmap.R
+import com.ebookfrenzy.withmap.view.hamburg.MyRegisterPinFragment
 import com.ebookfrenzy.withmap.view.hamburg.NotificationFragment
 
 class PracActivity : AppCompatActivity() {
@@ -13,7 +14,7 @@ class PracActivity : AppCompatActivity() {
 
         val fm = supportFragmentManager
         val ft = fm.beginTransaction()
-        ft.add(R.id.fl_prac_act, NotificationFragment())
+        ft.add(R.id.fl_prac_act, MyRegisterPinFragment())
         ft.commit()
     }
 }
