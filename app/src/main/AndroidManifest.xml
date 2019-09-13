@@ -3,6 +3,8 @@
     package="com.ebookfrenzy.withmap">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <application
         android:allowBackup="true"
@@ -10,7 +12,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
         <activity android:name=".TestHostActivity">
 
         </activity>
@@ -26,6 +29,10 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBqOamLIlyeY-RfnI27k95FSHsXehHt3Fc" />
+
+        <meta-data
+            android:name="com.kakao.sdk.AppKey"
+            android:value="238345100979e74d743629c451b3d561"/>
 
         <activity android:name=".view.login.LoginActivity" />
         <activity android:name=".view.MainActivity" />
