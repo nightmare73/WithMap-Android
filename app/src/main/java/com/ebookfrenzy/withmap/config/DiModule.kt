@@ -21,7 +21,8 @@ private val httpClient = module {
             .addInterceptor {
                 val request = it.request()
                     .newBuilder()
-                    .addHeader("Authorization", "KakaoAK REST_API_KEY").build()
+                    .addHeader("Authorization", "KakaoAK aecd6253cfe21f9862b4815c74a48857")
+                    .build()
                 return@addInterceptor it.proceed(request)
             }
             .build()
@@ -36,6 +37,7 @@ val kakaoApiModule = module {
     single<KakaoService> {
         Retrofit.Builder()
             .baseUrl(KakaoService.baseUrl)
+            .client(get())
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
             .build()
@@ -49,4 +51,4 @@ val viewModelModule = module {
     }
 }
 
-val diModules = listOf(apiModule, kakaoApiModule, viewModelModule)
+val diModules = listOf(apiModule, kakaoApiModule, viewModelModule, httpClient)

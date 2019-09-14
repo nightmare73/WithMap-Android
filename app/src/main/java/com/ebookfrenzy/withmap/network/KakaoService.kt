@@ -17,7 +17,7 @@ interface KakaoService {
     fun getKakaoKeywordAdressRequest(
         @Query("query") query: String,
         @Query("page") page: Int = 1,
-        @Query("size") size: Int = 20
+        @Query("size") size: Int = 15
     ): Call<KakaoKeywordAddressResponse>
 
     companion object{
