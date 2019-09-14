@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <application
+        android:name=".config.WithMapApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -15,24 +16,20 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity android:name=".TestHostActivity">
-
-        </activity>
-        <activity android:name=".base.PracActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".base.PracActivity">
+
+        </activity>
         <activity android:name=".view.pin.PinActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBqOamLIlyeY-RfnI27k95FSHsXehHt3Fc" />
-
-        <meta-data
-            android:name="com.kakao.sdk.AppKey"
-            android:value="238345100979e74d743629c451b3d561"/>
 
         <activity android:name=".view.login.LoginActivity" />
         <activity android:name=".view.MainActivity" />

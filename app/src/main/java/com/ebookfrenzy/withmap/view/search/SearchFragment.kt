@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import com.ebookfrenzy.withmap.R
 import com.ebookfrenzy.withmap.databinding.FragmentSearchBinding
+import com.ebookfrenzy.withmap.viewmodel.SearchViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  * Created By Yun Hyeok
@@ -15,6 +17,8 @@ import com.ebookfrenzy.withmap.databinding.FragmentSearchBinding
  */
 
 class SearchFragment : Fragment() {
+
+    val viewModel : SearchViewModel by viewModel()
 
     lateinit var binding: FragmentSearchBinding
 
