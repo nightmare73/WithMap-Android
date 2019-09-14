@@ -12,11 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".base.PracActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
         </activity>
         <activity android:name=".view.pin.PinActivity"></activity>
 
@@ -25,7 +21,13 @@
             android:value="AIzaSyBqOamLIlyeY-RfnI27k95FSHsXehHt3Fc" />
 
         <activity android:name=".view.login.LoginActivity"></activity>
-        <activity android:name=".view.MainActivity" />
+        <activity android:name=".view.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
