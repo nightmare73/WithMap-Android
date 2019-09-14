@@ -11,9 +11,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.lifecycle.ViewModelProviders
 import com.ebookfrenzy.withmap.R
 import com.ebookfrenzy.withmap.data.MarkerItem
+import com.ebookfrenzy.withmap.data.getMarkerItems
 import com.ebookfrenzy.withmap.databinding.ActivityMainBinding
+import com.ebookfrenzy.withmap.viewmodel.MainViewModel
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
@@ -29,12 +32,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     private lateinit var markerRootView : View
     private lateinit var ivMarker : ImageView
     private var selectedMarker: Marker? = null
+    private lateinit var vm : MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         markerRootView = LayoutInflater.from(this).inflate(R.layout.marker_layout, null)
         ivMarker = markerRootView.findViewById(R.id.iv_marker)
+        vm = ViewModelProviders.of(this@MainActivity)[MainViewModel::class.java]
 
         binding = ActivityMainBinding.inflate(LayoutInflater.from(this))
         setContentView(binding.root)
@@ -60,14 +65,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
     //샘플로 만든 마커들, +추가해놓기
     fun getSampleMarkerItems() {
 
-        val sampleList = mutableListOf<MarkerItem>(
-            MarkerItem(37.538523, 126.96568),
-            MarkerItem(37.527523, 126.96568),
-            MarkerItem(37.549523, 126.96568),
-            MarkerItem(37.538523, 126.95768)
-        )
+        val sampleList = vm.markerItemLiveData.value
 
-        for (markerItem in sampleList) {
+        for (markerItem in sampleList!!.iterator()) {
             addMarker(markerItem, false)
         }
     }
