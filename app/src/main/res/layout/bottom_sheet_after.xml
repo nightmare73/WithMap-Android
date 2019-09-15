@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="344dp"
+    android:background="@drawable/bg_bottom_sheet_orange"
+    android:elevation="8dp">
+
+
+    <ImageView
+        android:id="@+id/imageView17"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/bottom_arrow" />
+
+    <ImageView
+        android:id="@+id/iv_before_photo"
+        android:layout_width="160dp"
+        android:layout_height="104dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView17"
+        app:srcCompat="@drawable/bg_improved_frag_type" />
+
+    <TextView
+        android:id="@+id/tv_title_before"
+        style="@style/nanum_semibold_login_textview"
+        android:textColor="@color/et_pin_after_text_gray"
+        android:textSize="16sp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/iv_before_photo"
+        app:layout_constraintTop_toBottomOf="@+id/imageView17"
+        tools:text="울퉁불퉁 비포장길" />
+
+    <TextView
+        android:id="@+id/tv_date_before"
+        style="@style/nanum_medium_login_textview"
+        android:layout_marginTop="4dp"
+        tools:text="2019.08.02"
+        app:layout_constraintEnd_toEndOf="@+id/tv_title_before"
+        app:layout_constraintStart_toStartOf="@+id/tv_title_before"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title_before"
+        android:textColor="@color/et_pin_text_gray"/>
+
+    <ImageView
+        android:id="@+id/iv_after_photo"
+        android:layout_width="160dp"
+        android:layout_height="104dp"
+        android:layout_marginTop="32dp"
+        app:layout_constraintEnd_toEndOf="@+id/iv_before_photo"
+        app:layout_constraintStart_toStartOf="@+id/iv_before_photo"
+        app:layout_constraintTop_toBottomOf="@+id/iv_before_photo"
+        app:srcCompat="@drawable/bg_improved_frag_type" />
+
+    <ImageView
+        android:id="@+id/imageView22"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toEndOf="@+id/tv_date_before"
+        app:layout_constraintStart_toStartOf="@+id/tv_date_before"
+        app:layout_constraintTop_toBottomOf="@+id/tv_date_before"
+        app:srcCompat="@drawable/triangle" />
+
+    <TextView
+        android:id="@+id/tv_title_after"
+        style="@style/nanum_semibold_login_textview"
+        android:textSize="16sp"
+        android:layout_marginTop="32dp"
+        tools:text="매끈매끈 포장길"
+        app:layout_constraintEnd_toEndOf="@+id/imageView22"
+        app:layout_constraintStart_toStartOf="@+id/imageView22"
+        app:layout_constraintTop_toBottomOf="@+id/imageView22" />
+
+    <TextView
+        android:id="@+id/tv_date_after"
+        style="@style/nanum_medium_login_textview"
+        android:textColor="@color/et_pin_text_gray"
+        android:layout_marginTop="4dp"
+        tools:text="2020.02.13"
+        app:layout_constraintEnd_toEndOf="@+id/tv_title_after"
+        app:layout_constraintStart_toStartOf="@+id/tv_title_after"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title_after" />
+
+    <TextView
+        android:id="@+id/textView13"
+        style="@style/nanum_semibold_login_textview"
+        android:textSize="16sp"
+        android:textColor="@color/blue"
+        android:layout_marginBottom="24dp"
+        android:text="여러분들의 참여로 개선된 곳입니다"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

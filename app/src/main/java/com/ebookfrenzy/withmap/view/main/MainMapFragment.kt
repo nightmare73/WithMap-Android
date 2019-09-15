@@ -24,6 +24,10 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import kotlinx.android.synthetic.main.bottom_sheet_after.view.*
+import kotlinx.android.synthetic.main.bottom_sheet_before.*
+import kotlinx.android.synthetic.main.bottom_sheet_before.view.*
 
 /**
  * A simple [Fragment] subclass.
@@ -31,14 +35,16 @@ import com.google.android.gms.maps.model.MarkerOptions
 class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
     GoogleMap.OnMapClickListener {
 
-    private lateinit var mapFragment : SupportMapFragment
+    private lateinit var persistentBottomSheetBehavior: BottomSheetBehavior<*>
+
+    private lateinit var mapFragment: SupportMapFragment
 
     private lateinit var mMap: GoogleMap
     private lateinit var binding: FragmentMainMapBinding
-    private lateinit var markerRootView : View
-    private lateinit var ivMarker : ImageView
+    private lateinit var markerRootView: View
+    private lateinit var ivMarker: ImageView
     private var selectedMarker: Marker? = null
-    private lateinit var vm : MainViewModel
+    private lateinit var vm: MainViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -67,6 +73,27 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
         childFragmentManager.beginTransaction().replace(R.id.fl_main_map_frag, mapFragment).commit()
     }
 
+    private fun initPersistentBottonSheetBehavior(marker : MarkerItem) {
+        persistentBottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet_before)
+
+        persistentBottomSheetBehavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+
+            }
+
+            override fun onStateChanged(view: View, newState: Int) {
+                if(!marker.improved) {
+                    when (newState) {
+                        BottomSheetBehavior.STATE_EXPANDED -> {
+                            view.tv_title_sheet_before.text = marker.title
+                            view.tv_date_sheet_before.text = marker.date
+                        }
+                    }
+                }
+            }
+        })
+    }
+
     override fun onMapReady(googleMap: GoogleMap?) {
         mMap = googleMap!!
 
@@ -92,7 +119,7 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
         val position = LatLng(markerItem.lat, markerItem.lon)
 
         if (isSelectedMarker) {
-            when(markerItem.type) {
+            when (markerItem.type) {
                 1 -> ivMarker.setBackgroundResource(R.drawable.pin_hurdle_touch)
                 2 -> ivMarker.setBackgroundResource(R.drawable.pin_dump_touch)
                 3 -> ivMarker.setBackgroundResource(R.drawable.pin_unpaved_touch)
@@ -101,7 +128,7 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
                 6 -> ivMarker.setBackgroundResource(R.drawable.pin_restaurant_touch)
             }
         } else {
-            when(markerItem.type) {
+            when (markerItem.type) {
                 1 -> ivMarker.setBackgroundResource(R.drawable.pin_hurdle_on)
                 2 -> ivMarker.setBackgroundResource(R.drawable.pin_dump_on)
                 3 -> ivMarker.setBackgroundResource(R.drawable.group_9)
@@ -168,11 +195,17 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
     }
 
     private fun changeSelectedMarker(marker: Marker?) {
+
+        //BottomSheet 등장
+
+
+
+        //직전에 선택된 핀이 있는 경우
         if (selectedMarker != null) {
             addMarker(selectedMarker!!, false)
             selectedMarker!!.remove()
         }
-
+        //직전에 다른 핀이 선택되지 않은 상황
         if (marker != null) {
             selectedMarker = addMarker(marker, true)
             marker.remove()
@@ -183,12 +216,10 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
     private fun addMarker(marker: Marker, isSelectedMarker: Boolean): Marker {
         val lat: Double = marker.position.latitude
         val lon = marker.position.longitude
-        val extraMarkerData : MarkerItem = marker.tag as MarkerItem
+        val extraMarkerData: MarkerItem = marker.tag as MarkerItem
 
-        val temp: MarkerItem = MarkerItem(lat, lon, extraMarkerData.type, extraMarkerData.title)
+        val temp: MarkerItem = MarkerItem(lat, lon, extraMarkerData.type, extraMarkerData.title, extraMarkerData.date, extraMarkerData.location, extraMarkerData.improved)
 
         return addMarker(temp, isSelectedMarker)
     }
-
-
 }

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="224dp"
+    android:elevation="8dp"
+    android:id="@+id/bottom_sheet_before">
+
+
+    <ImageView
+        android:id="@+id/imageView17"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/bottom_arrow" />
+
+    <ImageView
+        android:id="@+id/imageView18"
+        android:layout_width="160dp"
+        android:layout_height="104dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView17"
+        app:srcCompat="@drawable/bg_improved_frag_type" />
+
+    <TextView
+        android:id="@+id/tv_title_sheet_before"
+        style="@style/nanum_semibold_login_textview"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imageView18"
+        app:layout_constraintTop_toBottomOf="@+id/imageView17"
+        tools:text="울퉁불퉁 비포장길"
+        />
+
+    <TextView
+        android:id="@+id/tv_date_sheet_before"
+        style="@style/nanum_medium_login_textview"
+        android:layout_marginTop="8dp"
+        android:text="TextView"
+        app:layout_constraintEnd_toEndOf="@+id/tv_title_sheet_before"
+        app:layout_constraintStart_toStartOf="@+id/tv_title_sheet_before"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title_sheet_before"
+        android:textColor="@color/et_pin_text_gray"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="@+id/tv_date_sheet_before"
+        app:layout_constraintStart_toStartOf="@+id/tv_date_sheet_before"
+        app:layout_constraintTop_toBottomOf="@+id/tv_date_sheet_before">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/home_detail_pin"
+            android:layout_gravity="center"/>
+
+        <TextView
+            style="@style/nanum_medium_login_textview"
+            tools:layout_editor_absoluteX="202dp"
+            tools:layout_editor_absoluteY="104dp"
+            tools:text="마포 김밥천국 옆 골목길"
+            android:layout_marginLeft="4dp"
+            android:textColor="@color/et_pin_text_gray"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginBottom="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_editor_absoluteX="0dp"
+        android:paddingHorizontal="12dp"
+        android:gravity="center">
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_button"
+            android:layout_weight="1"
+            android:text="개선되었어요"
+            style="@style/nanum_semibold_bottom_button"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_button"
+            android:layout_marginLeft="12dp"
+            android:layout_weight="1"
+            android:text="자세히 볼게요"
+            style="@style/nanum_semibold_bottom_button"/>
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
