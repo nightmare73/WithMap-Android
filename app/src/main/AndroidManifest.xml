@@ -21,7 +21,7 @@
             android:value="AIzaSyBqOamLIlyeY-RfnI27k95FSHsXehHt3Fc" />
 
         <activity android:name=".view.login.LoginActivity"></activity>
-        <activity android:name=".view.MainActivity">
+        <activity android:name=".view.main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 

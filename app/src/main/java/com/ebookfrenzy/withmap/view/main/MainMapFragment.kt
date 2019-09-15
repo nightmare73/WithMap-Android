@@ -1,55 +1,70 @@
-package com.ebookfrenzy.withmap.view
+package com.ebookfrenzy.withmap.view.main
+
 
 import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.DisplayMetrics
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.lifecycle.ViewModelProviders
+
 import com.ebookfrenzy.withmap.R
 import com.ebookfrenzy.withmap.data.MarkerItem
-import com.ebookfrenzy.withmap.data.getMarkerItems
 import com.ebookfrenzy.withmap.databinding.ActivityMainBinding
+import com.ebookfrenzy.withmap.databinding.FragmentMainMapBinding
 import com.ebookfrenzy.withmap.viewmodel.MainViewModel
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
-import kotlinx.android.synthetic.main.marker_layout.*
 
-class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
+/**
+ * A simple [Fragment] subclass.
+ */
+class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
     GoogleMap.OnMapClickListener {
 
+    private lateinit var mapFragment : SupportMapFragment
+
     private lateinit var mMap: GoogleMap
-    private lateinit var binding: ActivityMainBinding
+    private lateinit var binding: FragmentMainMapBinding
     private lateinit var markerRootView : View
     private lateinit var ivMarker : ImageView
     private var selectedMarker: Marker? = null
     private lateinit var vm : MainViewModel
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
 
-        markerRootView = LayoutInflater.from(this).inflate(R.layout.marker_layout, null)
+        markerRootView = LayoutInflater.from(this.context).inflate(R.layout.marker_layout, null)
         ivMarker = markerRootView.findViewById(R.id.iv_marker)
-        vm = ViewModelProviders.of(this@MainActivity)[MainViewModel::class.java]
+        vm = ViewModelProviders.of(this)[MainViewModel::class.java]
 
-        binding = ActivityMainBinding.inflate(LayoutInflater.from(this))
-        setContentView(binding.root)
+        binding = FragmentMainMapBinding.inflate(LayoutInflater.from(this.context))
         binding.run {
-            lifecycleOwner = this@MainActivity
+            lifecycleOwner = this@MainMapFragment
         }
 
-        val mapFragment = supportFragmentManager
-            .findFragmentById(R.id.frag_main_act) as SupportMapFragment
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        mapFragment = SupportMapFragment.newInstance()
         mapFragment.getMapAsync(this)
+
+        childFragmentManager.beginTransaction().replace(R.id.fl_main_map_frag, mapFragment).commit()
     }
 
     override fun onMapReady(googleMap: GoogleMap?) {
@@ -77,9 +92,23 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         val position = LatLng(markerItem.lat, markerItem.lon)
 
         if (isSelectedMarker) {
-            ivMarker.setBackgroundResource(R.drawable.pin_hurdle_touch)
+            when(markerItem.type) {
+                1 -> ivMarker.setBackgroundResource(R.drawable.pin_hurdle_touch)
+                2 -> ivMarker.setBackgroundResource(R.drawable.pin_dump_touch)
+                3 -> ivMarker.setBackgroundResource(R.drawable.pin_unpaved_touch)
+                4 -> ivMarker.setBackgroundResource(R.drawable.pin_narrow_touch)
+                5 -> ivMarker.setBackgroundResource(R.drawable.pin_toilet_touch)
+                6 -> ivMarker.setBackgroundResource(R.drawable.pin_restaurant_touch)
+            }
         } else {
-            ivMarker.setBackgroundResource(R.drawable.pin_hurdle_on)
+            when(markerItem.type) {
+                1 -> ivMarker.setBackgroundResource(R.drawable.pin_hurdle_on)
+                2 -> ivMarker.setBackgroundResource(R.drawable.pin_dump_on)
+                3 -> ivMarker.setBackgroundResource(R.drawable.group_9)
+                4 -> ivMarker.setBackgroundResource(R.drawable.group_10)
+                5 -> ivMarker.setBackgroundResource(R.drawable.pin_toilet_on)
+                6 -> ivMarker.setBackgroundResource(R.drawable.pin_restaurant_on)
+            }
         }
 
         val markerOptions = MarkerOptions()
@@ -87,14 +116,17 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         markerOptions.icon(
             BitmapDescriptorFactory.fromBitmap(
                 createDrawableFromView(
-                    this,
+                    this.context!!,
                     markerRootView
                 )
             )
         )
+        val marker = mMap.addMarker(markerOptions)
+        marker.tag = markerItem
 
-        return mMap.addMarker(markerOptions)
+        return marker
     }
+
 
     //View를 Bitmap으로 변환
     private fun createDrawableFromView(context: Context, view: View): Bitmap {
@@ -120,7 +152,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
 
         return bitmap
     }
-
 
     //마커가 클릭되면 현재 클릭된 마커를 지도의 가운데로 이동시킨다
     override fun onMarkerClick(marker: Marker): Boolean {
@@ -148,10 +179,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, GoogleMap.OnMarker
         }
     }
 
+
     private fun addMarker(marker: Marker, isSelectedMarker: Boolean): Marker {
         val lat: Double = marker.position.latitude
         val lon = marker.position.longitude
-        val temp: MarkerItem = MarkerItem(lat, lon)
+        val extraMarkerData : MarkerItem = marker.tag as MarkerItem
+
+        val temp: MarkerItem = MarkerItem(lat, lon, extraMarkerData.type, extraMarkerData.title)
 
         return addMarker(temp, isSelectedMarker)
     }
