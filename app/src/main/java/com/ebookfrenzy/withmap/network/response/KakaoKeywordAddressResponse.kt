@@ -5,7 +5,7 @@ package com.ebookfrenzy.withmap.network.response
  * on 9월 12, 2019
  */
 
-data class DaumKeywordAddressResponse(
+data class KakaoKeywordAddressResponse(
     var meta: KeywordAddressMeta,
     var documents: ArrayList<KeywordAddressDocument>
 )
