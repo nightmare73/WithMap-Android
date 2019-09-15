@@ -3,7 +3,6 @@ package com.ebookfrenzy.withmap.config
 import com.ebookfrenzy.withmap.network.KakaoService
 import com.ebookfrenzy.withmap.viewmodel.SearchViewModel
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import retrofit2.Retrofit

@@ -16,14 +16,14 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity android:name=".TestHostActivity">
+
+        </activity>
+        <activity android:name=".base.PracActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity android:name=".base.PracActivity">
-
         </activity>
         <activity android:name=".view.pin.PinActivity" />
 
