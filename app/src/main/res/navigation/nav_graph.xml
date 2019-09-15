@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/nav_graph"
-    app:startDestination="@id/searchFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/splashFragment">
 
     <fragment
         android:id="@+id/searchFragment"
@@ -10,9 +12,27 @@
         <action
             android:id="@+id/action_searchFragment_to_pinDetailFragment"
             app:destination="@id/pinDetailFragment" />
+        <action
+            android:id="@+id/action_searchFragment_to_tutorialFragment2"
+            app:destination="@id/tutorialFragment" />
     </fragment>
     <fragment
         android:id="@+id/pinDetailFragment"
         android:name="com.ebookfrenzy.withmap.view.pin.detail.PinDetailFragment"
         android:label="PinDetailFragment" />
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="com.ebookfrenzy.withmap.view.intro.SplashFragment"
+        android:label="SplashFragment" >
+        <action
+            android:id="@+id/action_splashFragment_to_searchFragment2"
+            app:destination="@id/searchFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/splashFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/tutorialFragment"
+        android:name="com.ebookfrenzy.withmap.view.intro.TutorialFragment"
+        android:label="TutorialFragment" />
 </navigation>
