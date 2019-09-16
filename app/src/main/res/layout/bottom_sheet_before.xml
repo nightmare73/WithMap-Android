@@ -5,7 +5,12 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="224dp"
     android:elevation="8dp"
-    android:id="@+id/bottom_sheet_before">
+    android:background="@color/white"
+    android:id="@+id/bottom_sheet_before"
+
+    app:layout_behavior="@string/bottom_sheet_behavior"
+    app:behavior_hideable="true"
+    app:behavior_peekHeight="0dp">
 
 
     <ImageView
@@ -66,6 +71,7 @@
             android:layout_gravity="center"/>
 
         <TextView
+            android:id="@+id/tv_location_sheet_before"
             style="@style/nanum_medium_login_textview"
             tools:layout_editor_absoluteX="202dp"
             tools:layout_editor_absoluteY="104dp"
@@ -90,7 +96,8 @@
             android:background="@drawable/bg_button"
             android:layout_weight="1"
             android:text="개선되었어요"
-            style="@style/nanum_semibold_bottom_button"/>
+            style="@style/nanum_semibold_bottom_button"
+            android:textSize="14sp"/>
         <Button
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -98,7 +105,8 @@
             android:layout_marginLeft="12dp"
             android:layout_weight="1"
             android:text="자세히 볼게요"
-            style="@style/nanum_semibold_bottom_button"/>
+            style="@style/nanum_semibold_bottom_button"
+            android:textSize="14sp"/>
     </LinearLayout>
 
 

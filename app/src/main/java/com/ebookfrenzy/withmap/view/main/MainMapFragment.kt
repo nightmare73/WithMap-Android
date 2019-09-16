@@ -28,6 +28,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.android.synthetic.main.bottom_sheet_after.view.*
 import kotlinx.android.synthetic.main.bottom_sheet_before.*
 import kotlinx.android.synthetic.main.bottom_sheet_before.view.*
+import kotlinx.android.synthetic.main.fragment_pin_register.view.*
 
 /**
  * A simple [Fragment] subclass.
@@ -73,25 +74,35 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
         childFragmentManager.beginTransaction().replace(R.id.fl_main_map_frag, mapFragment).commit()
     }
 
-    private fun initPersistentBottonSheetBehavior(marker : MarkerItem) {
-        persistentBottomSheetBehavior = BottomSheetBehavior.from(bottom_sheet_before)
+    private fun initPersistentBottonSheetBehavior(markerItem: MarkerItem) {
 
-        persistentBottomSheetBehavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+        val bottomSheetLayout : View = bottom_sheet_before
+        persistentBottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout)
 
-            }
+        if(persistentBottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
+            bottomSheetLayout.tv_title_sheet_before.text = markerItem.title
+            bottomSheetLayout.tv_date_sheet_before.text = markerItem.date
+            bottomSheetLayout.tv_location_sheet_before.text = markerItem.location
+        }else {
+            persistentBottomSheetBehavior.setBottomSheetCallback(object :
+                BottomSheetBehavior.BottomSheetCallback() {
+                override fun onSlide(bottomSheet: View, slideOffset: Float) {
 
-            override fun onStateChanged(view: View, newState: Int) {
-                if(!marker.improved) {
+                }
+
+                override fun onStateChanged(view: View, newState: Int) {
                     when (newState) {
                         BottomSheetBehavior.STATE_EXPANDED -> {
-                            view.tv_title_sheet_before.text = marker.title
-                            view.tv_date_sheet_before.text = marker.date
+                            view.tv_title_sheet_before.text = markerItem.title
+                            view.tv_date_sheet_before.text = markerItem.date
+                            view.tv_location_sheet_before.text = markerItem.location
                         }
                     }
                 }
-            }
-        })
+            })
+
+            persistentBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        }
     }
 
     override fun onMapReady(googleMap: GoogleMap?) {
@@ -199,7 +210,6 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
         //BottomSheet 등장
 
 
-
         //직전에 선택된 핀이 있는 경우
         if (selectedMarker != null) {
             addMarker(selectedMarker!!, false)
@@ -218,7 +228,16 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
         val lon = marker.position.longitude
         val extraMarkerData: MarkerItem = marker.tag as MarkerItem
 
-        val temp: MarkerItem = MarkerItem(lat, lon, extraMarkerData.type, extraMarkerData.title, extraMarkerData.date, extraMarkerData.location, extraMarkerData.improved)
+        val temp: MarkerItem = MarkerItem(
+            lat,
+            lon,
+            extraMarkerData.type,
+            extraMarkerData.title,
+            extraMarkerData.date,
+            extraMarkerData.location,
+            extraMarkerData.improved
+        )
+        initPersistentBottonSheetBehavior(marker.tag as MarkerItem)
 
         return addMarker(temp, isSelectedMarker)
     }
