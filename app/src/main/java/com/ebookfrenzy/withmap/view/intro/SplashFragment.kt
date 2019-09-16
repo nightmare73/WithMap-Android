@@ -2,6 +2,7 @@ package com.ebookfrenzy.withmap.view.intro
 
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,17 +30,21 @@ class SplashFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    override fun onResume() {
+        super.onResume()
 
         thread = Thread {
-            Navigation.findNavController(view)
+            Navigation.findNavController(view!!)
                 .navigate(R.id.action_splashFragment_to_searchFragment2)
         }
         handler.postDelayed(thread, 1000)
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+    override fun onPause() {
+        super.onPause()
         handler.removeCallbacks(thread)
     }
-    // 켜지는동안 백그라운드 들어가면 안넘어가는 버그를 해결하기 위해 넣엇으나 해결이 안됨 ;;
+
 }
