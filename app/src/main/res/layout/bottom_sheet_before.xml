@@ -5,7 +5,7 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="224dp"
     android:elevation="8dp"
-    android:background="@color/white"
+    android:background="@drawable/bg_bottom_sheet_orange"
     android:id="@+id/bottom_sheet_before"
 
     app:layout_behavior="@string/bottom_sheet_behavior"
@@ -49,7 +49,7 @@
         android:id="@+id/tv_date_sheet_before"
         style="@style/nanum_medium_login_textview"
         android:layout_marginTop="8dp"
-        android:text="TextView"
+        tools:text="TextView"
         app:layout_constraintEnd_toEndOf="@+id/tv_title_sheet_before"
         app:layout_constraintStart_toStartOf="@+id/tv_title_sheet_before"
         app:layout_constraintTop_toBottomOf="@+id/tv_title_sheet_before"
