@@ -2,7 +2,6 @@ package com.ebookfrenzy.withmap.view.intro
 
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,10 +25,6 @@ class SplashFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         return LayoutInflater.from(context).inflate(R.layout.fragment_splash, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
     }
 
     override fun onResume() {
