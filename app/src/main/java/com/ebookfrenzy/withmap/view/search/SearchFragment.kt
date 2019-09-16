@@ -61,6 +61,8 @@ class SearchFragment : Fragment() {
                 Log.d("Malibin Debug","${response.raw()}")
             }
         })
+
+        Navigation.findNavController(view).navigate(R.id.action_searchFragment_to_tutorialActivity)
     }
 
     fun onBackClicked(view: View) {

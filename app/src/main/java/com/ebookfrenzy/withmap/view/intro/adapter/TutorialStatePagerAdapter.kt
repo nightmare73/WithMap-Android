@@ -13,7 +13,7 @@ import com.ebookfrenzy.withmap.view.intro.TutorialPageFragment
 
 class TutorialStatePagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
 
-    val tutorialPages = listOf(
+    private val tutorialPages = listOf(
         TutorialPageFragment.newInstance(R.layout.fragment_tutorial_1),
         TutorialPageFragment.newInstance(R.layout.fragment_tutorial_2)
     )

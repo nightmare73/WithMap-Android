@@ -3,8 +3,8 @@
     package="com.ebookfrenzy.withmap">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:name=".config.WithMapApplication"
@@ -15,22 +15,25 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBqOamLIlyeY-RfnI27k95FSHsXehHt3Fc" />
+
         <activity android:name=".TestHostActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".base.PracActivity">
 
         </activity>
         <activity android:name=".view.pin.PinActivity" />
-
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBqOamLIlyeY-RfnI27k95FSHsXehHt3Fc" />
-
+        <activity
+            android:name=".view.intro.TutorialActivity"
+            android:theme="@style/Theme.AppCompat.Transparent.NoActionBar" />
         <activity android:name=".view.login.LoginActivity"></activity>
         <activity android:name=".view.MainActivity">
 

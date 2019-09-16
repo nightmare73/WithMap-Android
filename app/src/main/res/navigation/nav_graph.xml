@@ -13,8 +13,8 @@
             android:id="@+id/action_searchFragment_to_pinDetailFragment"
             app:destination="@id/pinDetailFragment" />
         <action
-            android:id="@+id/action_searchFragment_to_tutorialFragment2"
-            app:destination="@id/tutorialFragment" />
+            android:id="@+id/action_searchFragment_to_tutorialActivity"
+            app:destination="@id/tutorialActivity" />
     </fragment>
     <fragment
         android:id="@+id/pinDetailFragment"
@@ -31,8 +31,8 @@
             app:popUpTo="@+id/splashFragment"
             app:popUpToInclusive="true" />
     </fragment>
-    <fragment
-        android:id="@+id/tutorialFragment"
-        android:name="com.ebookfrenzy.withmap.view.intro.TutorialFragment"
-        android:label="TutorialFragment" />
+    <activity
+        android:id="@+id/tutorialActivity"
+        android:name="com.ebookfrenzy.withmap.view.intro.TutorialActivity"
+        android:label="TutorialActivity" />
 </navigation>

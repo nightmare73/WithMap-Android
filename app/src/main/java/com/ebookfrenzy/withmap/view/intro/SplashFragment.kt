@@ -16,6 +16,9 @@ import com.ebookfrenzy.withmap.R
 
 class SplashFragment : Fragment() {
 
+    private val handler = Handler()
+    private lateinit var thread: Thread
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -27,10 +30,16 @@ class SplashFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Handler().postDelayed(Thread {
+        thread = Thread {
             Navigation.findNavController(view)
                 .navigate(R.id.action_splashFragment_to_searchFragment2)
-        }, 1000)
-
+        }
+        handler.postDelayed(thread, 1000)
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        handler.removeCallbacks(thread)
+    }
+    // 켜지는동안 백그라운드 들어가면 안넘어가는 버그를 해결하기 위해 넣엇으나 해결이 안됨 ;;
 }
