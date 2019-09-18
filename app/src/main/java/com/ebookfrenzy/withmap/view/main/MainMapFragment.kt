@@ -42,7 +42,6 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
 
     private lateinit var mLoc: LatLng
 
-    private lateinit var bottomSheetLayout: View
     private lateinit var bottomSheetLayoutImproved: View
     private var persistentBottomSheetBehavior: BottomSheetBehavior<*>? = null
 
@@ -70,6 +69,7 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
         binding.run {
             lifecycleOwner = this@MainMapFragment
         }
+
 
         return binding.root
     }
@@ -199,7 +199,7 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
     }
 
     private fun changeSelectedMarker(marker: Marker?) {
-        Log.d(TAG, "${marker!!.tag}")
+        Log.d(TAG, "new selected : ${marker!!.tag}")
 //
 //        //직전에 선택된 핀이 있는 경우 -> 같은 마커를 '새로' 만들어서 지도에 추가
 //        if (selectedMarker != null) {
@@ -207,40 +207,49 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
 //            selectedMarker!!.remove()//그 마커를 제거
 //        }
         //선택된 마커를 selectedMarker로 '새로'지정해서 지도에 추가
-        vm.selectedMarkerLiveData.value = marker.tag as MarkerItem
+        vm.selectedMarkerLiveData.value = marker
         vm.selectedMarkerLiveData.observe(this, Observer {
-            Log.d(TAG, "selectedmarkerLivedata : $it")
+            initPersistentBottonSheetBehavior(it.tag as MarkerItem)
         })
     }
 
 
     //BottomSheet발생시키는 함수
     private fun initPersistentBottonSheetBehavior(markerItem: MarkerItem) {
+
+        var bottomSheetLayout: View? = null
+
         var h: Int = 1
         var off: Float = 0f
+        Log.d(TAG, "-----initPersistentBottomSheetBehavior()-----selectedMarkerItem : $markerItem")
 
         if (persistentBottomSheetBehavior != null) {
             Log.d(TAG, "persistentBottomSheetBehavior is not null")
-            persistentBottomSheetBehavior!!.state = BottomSheetBehavior.STATE_HIDDEN
+            persistentBottomSheetBehavior!!.state = BottomSheetBehavior.STATE_COLLAPSED
         }
 
         if (!markerItem.improved) {
+
+            Log.d(TAG, "!markerItem.improved")
             bottomSheetLayout = bottom_sheet_before
             persistentBottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout)
 
             persistentBottomSheetBehavior!!.setBottomSheetCallback(object :
                 BottomSheetBehavior.BottomSheetCallback() {
                 override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                    Log.d(TAG, "bottomsheet onSlide")
                     h = bottomSheet.height
                     off = h * slideOffset
                     when (persistentBottomSheetBehavior!!.state) {
                         BottomSheetBehavior.STATE_DRAGGING -> {
+                            Log.d(TAG, "onSlide bottomSheet Dragging")
                             setMapPaddingBottom(off)
                             //reposition marker at the center
                             mMap.moveCamera(CameraUpdateFactory.newLatLng(mLoc))
                         }
 
                         BottomSheetBehavior.STATE_SETTLING -> {
+                            Log.d(TAG, "onSlide bottomSheet settling")
                             setMapPaddingBottom(off)
                             //reposition marker at the center
                             mMap.moveCamera(CameraUpdateFactory.newLatLng(mLoc))
@@ -251,10 +260,12 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
                 override fun onStateChanged(view: View, newState: Int) {
                     when (newState) {
                         BottomSheetBehavior.STATE_EXPANDED -> {
+                            Log.d(TAG, "bottomSheet expanded")
                             view.tv_title_sheet_before.text = markerItem.title
                             view.tv_date_sheet_before.text = markerItem.date
                             view.tv_location_sheet_before.text = markerItem.location
                         }
+
                     }
                 }
             })

@@ -12,13 +12,17 @@ class MainViewModel : ViewModel() {
 
     val markerItemLiveData = MutableLiveData<List<MarkerItem>>()
 
-    val selectedMarkerLiveData = MutableLiveData<MarkerItem>()
+    val selectedMarkerLiveData = MutableLiveData<Marker>()
+
+    val notification
 
     init {
         markerItemLiveData.postValue(getMarkerItems())
         printSelectedMarkerLiveData()
     }
     fun printSelectedMarkerLiveData() {
-        Log.d(TAG, selectedMarkerLiveData.value.toString())
+        if(selectedMarkerLiveData.value != null) {
+            Log.d(TAG, "selectedMarkerLiveData : ${selectedMarkerLiveData.value!!.tag}")
+        }
     }
 }

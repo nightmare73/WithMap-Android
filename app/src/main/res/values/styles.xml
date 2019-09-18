@@ -50,6 +50,16 @@
         <item name="android:cursorVisible">true</item>
         <item name="android:textColorHint">@color/et_text_gray</item>
     </style>
+    <style name="nanum_light_edittext">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:fontFamily">@font/nanum_barun_gothic_light</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textCursorDrawable">@drawable/drawable_cursor</item>
+        <item name="android:colorAccent">@color/blue</item>
+        <item name="android:cursorVisible">true</item>
+        <item name="android:textColorHint">#cfcece</item>
+    </style>
 
     <style name="nanum_semibold_bottom_button" parent="nanum_semibold_login_textview">
         <item name="android:textColor">@color/white</item>
