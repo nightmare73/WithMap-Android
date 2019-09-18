@@ -32,7 +32,7 @@ class SplashFragment : Fragment() {
 
         thread = Thread {
             Navigation.findNavController(view!!)
-                .navigate(R.id.action_splashFragment_to_searchFragment2)
+                .navigate(R.id.action_splashFragment_to_mainMapFragment)
         }
         handler.postDelayed(thread, 1000)
     }

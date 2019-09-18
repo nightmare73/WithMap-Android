@@ -62,14 +62,14 @@ class SearchFragment : Fragment() {
             }
         })
 
-        if(viewModel.isFirst){
-
-            Navigation.findNavController(view).navigate(R.id.action_searchFragment_to_tutorialActivity)
-        }
+//        if(viewModel.isFirst){
+//
+//            Navigation.findNavController(view).navigate(R.id.action_searchFragment_to_tutorialActivity)
+//        }
     }
 
     fun onBackClicked(view: View) {
-        Navigation.findNavController(view)
-            .navigate(R.id.action_searchFragment_to_pinDetailFragment)
+//        Navigation.findNavController(view)
+//            .navigate(R.id.action_searchFragment_to_pinDetailFragment)
     }
 }

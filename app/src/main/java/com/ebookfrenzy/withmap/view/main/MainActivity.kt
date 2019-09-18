@@ -45,10 +45,10 @@ class MainActivity : AppCompatActivity() {
             lifecycleOwner = this@MainActivity
         }
 
-        val fm = supportFragmentManager
-        val ft = fm.beginTransaction()
-        ft.add(R.id.fl_main_act, MainMapFragment())
-        ft.commit()
+////        val fm = supportFragmentManager
+////        val ft = fm.beginTransaction()
+////        ft.add(R.id.fl_main_act, MainMapFragment())
+////        ft.commit()
 //
 //        val mapFragment = supportFragmentManager
 //            .findFragmentById(R.id.frag_main_act) as SupportMapFragment

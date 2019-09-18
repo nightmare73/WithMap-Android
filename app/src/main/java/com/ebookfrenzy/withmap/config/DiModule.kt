@@ -47,11 +47,7 @@ val kakaoApiModule = module {
     }
 }
 
-//val sharedPreferenceModule = module {
-//    single { SharedPreferenceSource(androidContext()) }
-//}
-
-val localRepository = module {
+val localRepositoryModule = module {
     single { SharedPreferenceSource(androidContext()) }
     single { LocalRepository(get()) }
 }
@@ -66,6 +62,5 @@ val diModules =
         kakaoApiModule,
         viewModelModule,
         httpClient,
-        //sharedPreferenceModule,
-        localRepository
+        localRepositoryModule
     )
