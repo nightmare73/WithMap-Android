@@ -46,23 +46,26 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        tempKakaoService.getKakaoKeywordAdressRequest("서울역 위워크").enqueue(object :
-//            Callback<KakaoKeywordAddressResponse> {
-//            override fun onFailure(call: Call<KakaoKeywordAddressResponse>, t: Throwable) {
-//                Log.d("Malibin Debug","실패")
-//            }
-//
-//            override fun onResponse(
-//                call: Call<KakaoKeywordAddressResponse>,
-//                response: Response<KakaoKeywordAddressResponse>
-//            ) {
-//                Log.d("Malibin Debug","성공")
-//                Log.d("Malibin Debug","${response.body()}")
-//                Log.d("Malibin Debug","${response.raw()}")
-//            }
-//        })
-//
-//        Navigation.findNavController(view).navigate(R.id.action_searchFragment_to_tutorialActivity)
+        tempKakaoService.getKakaoKeywordAdressRequest("서울역 위워크").enqueue(object :
+            Callback<KakaoKeywordAddressResponse> {
+            override fun onFailure(call: Call<KakaoKeywordAddressResponse>, t: Throwable) {
+                Log.d("Malibin Debug","실패")
+            }
+
+            override fun onResponse(
+                call: Call<KakaoKeywordAddressResponse>,
+                response: Response<KakaoKeywordAddressResponse>
+            ) {
+                Log.d("Malibin Debug","성공")
+                Log.d("Malibin Debug","${response.body()}")
+                Log.d("Malibin Debug","${response.raw()}")
+            }
+        })
+
+        if(viewModel.isFirst){
+
+            Navigation.findNavController(view).navigate(R.id.action_searchFragment_to_tutorialActivity)
+        }
     }
 
     fun onBackClicked(view: View) {

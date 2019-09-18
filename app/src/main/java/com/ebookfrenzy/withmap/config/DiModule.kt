@@ -1,8 +1,11 @@
 package com.ebookfrenzy.withmap.config
 
 import com.ebookfrenzy.withmap.network.KakaoService
+import com.ebookfrenzy.withmap.respository.LocalRepository
+import com.ebookfrenzy.withmap.respository.SharedPreferenceSource
 import com.ebookfrenzy.withmap.viewmodel.SearchViewModel
 import okhttp3.OkHttpClient
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import retrofit2.Retrofit
@@ -44,10 +47,25 @@ val kakaoApiModule = module {
     }
 }
 
-val viewModelModule = module {
-    viewModel {
-        SearchViewModel()
-    }
+//val sharedPreferenceModule = module {
+//    single { SharedPreferenceSource(androidContext()) }
+//}
+
+val localRepository = module {
+    single { SharedPreferenceSource(androidContext()) }
+    single { LocalRepository(get()) }
 }
 
-val diModules = listOf(apiModule, kakaoApiModule, viewModelModule, httpClient)
+val viewModelModule = module {
+    viewModel { SearchViewModel(get()) }
+}
+
+val diModules =
+    listOf(
+        apiModule,
+        kakaoApiModule,
+        viewModelModule,
+        httpClient,
+        //sharedPreferenceModule,
+        localRepository
+    )
