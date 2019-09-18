@@ -63,7 +63,6 @@ class SearchFragment : Fragment() {
         })
 
 //        if(viewModel.isFirst){
-//
 //            Navigation.findNavController(view).navigate(R.id.action_searchFragment_to_tutorialActivity)
 //        }
     }

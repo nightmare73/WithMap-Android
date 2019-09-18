@@ -20,9 +20,6 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBqOamLIlyeY-RfnI27k95FSHsXehHt3Fc" />
 
-        <activity android:name=".TestHostActivity">
-
-        </activity>
         <activity android:name=".base.PracActivity">
 
         </activity>
