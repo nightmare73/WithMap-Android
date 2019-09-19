@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -23,6 +24,7 @@ import com.ebookfrenzy.withmap.databinding.ActivityMainBinding
 import com.ebookfrenzy.withmap.databinding.BottomSheetAfterBinding
 import com.ebookfrenzy.withmap.databinding.FragmentMainMapBinding
 import com.ebookfrenzy.withmap.viewmodel.MainViewModel
+import com.ebookfrenzy.withmap.viewmodel.NotificationViewModel
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
@@ -66,13 +68,28 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
         vm = ViewModelProviders.of(this)[MainViewModel::class.java]
 
         binding = FragmentMainMapBinding.inflate(LayoutInflater.from(this.context))
-        binding.run {
-            lifecycleOwner = this@MainMapFragment
-        }
 
 
         return binding.root
     }
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.run {
+            lifecycleOwner = this@MainMapFragment
+            vmNoti = ViewModelProviders.of(this@MainMapFragment)[NotificationViewModel::class.java]
+        }
+
+        mapFragment = SupportMapFragment.newInstance()
+        mapFragment.getMapAsync(this)
+
+        childFragmentManager.beginTransaction().replace(R.id.fl_main_map_frag, mapFragment).commit()
+
+        Log.d(TAG, vm.selectedMarkerLiveData.value.toString())
+    }
+
 
     //View를 Bitmap으로 변환
     private fun createDrawableFromView(context: Context, view: View): Bitmap {
@@ -99,16 +116,6 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
         return bitmap
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        mapFragment = SupportMapFragment.newInstance()
-        mapFragment.getMapAsync(this)
-
-        childFragmentManager.beginTransaction().replace(R.id.fl_main_map_frag, mapFragment).commit()
-
-        Log.d(TAG, vm.selectedMarkerLiveData.value.toString())
-    }
 
     //샘플로 만든 마커들, +추가해놓기
     fun getSampleMarkerItems() {

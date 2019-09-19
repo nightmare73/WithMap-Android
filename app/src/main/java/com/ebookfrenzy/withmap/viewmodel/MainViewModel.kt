@@ -14,8 +14,6 @@ class MainViewModel : ViewModel() {
 
     val selectedMarkerLiveData = MutableLiveData<Marker>()
 
-    val notification
-
     init {
         markerItemLiveData.postValue(getMarkerItems())
         printSelectedMarkerLiveData()

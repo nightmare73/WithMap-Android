@@ -1,6 +1,8 @@
 package com.ebookfrenzy.withmap.viewmodel
 
+import android.view.View
 import android.widget.Button
+import android.widget.RelativeLayout
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -20,14 +22,12 @@ class NotificationViewModel : ViewModel() {
         notificationLiveData.postValue(getNotification())
         myRegisterPinLiveData.postValue(getMyRegisterPin())
     }
-
-    @BindingAdapter("setImage")
-    fun Button.setImage(size : Int) {
-        if(size>0) {
-            this.setBackgroundResource(R.drawable.home_burger_notice)
-
+}
+@BindingAdapter("setImage")
+fun setImage(view : View, data : MutableLiveData<MutableList<NotificationData>>) {
+    if(data.value != null){
+        if(data.value!!.size>0) {
+            view.setBackgroundResource(R.drawable.home_burger_notice)
         }
     }
-
-
 }
