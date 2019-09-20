@@ -9,7 +9,14 @@
         android:id="@+id/pinDetailFragment"
         android:name="com.ebookfrenzy.withmap.view.pin.detail.PinDetailFragment"
         android:label="PinDetailFragment"
-        tools:layout="@layout/fragment_pin_detail" />
+        tools:layout="@layout/fragment_pin_detail">
+
+        <argument
+            android:name="message"
+            android:defaultValue="실패"
+            app:argType="string" />
+    </fragment>
+
     <fragment
         android:id="@+id/splashFragment"
         android:name="com.ebookfrenzy.withmap.view.intro.SplashFragment"
@@ -22,11 +29,13 @@
             app:popUpTo="@+id/splashFragment"
             app:popUpToInclusive="true" />
     </fragment>
+
     <activity
         android:id="@+id/tutorialActivity"
         android:name="com.ebookfrenzy.withmap.view.intro.TutorialActivity"
         android:label="TutorialActivity"
         tools:layout="@layout/fragment_tutorial" />
+
     <fragment
         android:id="@+id/mainMapFragment"
         android:name="com.ebookfrenzy.withmap.view.main.MainMapFragment"
@@ -42,6 +51,7 @@
             android:id="@+id/action_mainMapFragment_to_searchFragment"
             app:destination="@id/searchFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.ebookfrenzy.withmap.view.search.SearchFragment"
@@ -50,5 +60,6 @@
         <action
             android:id="@+id/action_searchFragment_to_pinDetailFragment"
             app:destination="@id/pinDetailFragment" />
+
     </fragment>
 </navigation>

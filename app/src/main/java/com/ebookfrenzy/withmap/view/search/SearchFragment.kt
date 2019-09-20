@@ -25,7 +25,8 @@ class SearchFragment : Fragment() {
 
     private val onBackClicked = View.OnClickListener {
 
-
+        val action = SearchFragmentDirections.actionSearchFragmentToPinDetailFragment("넘어가나?")
+        Navigation.findNavController(it).navigate(action)
         //Navigation.findNavController(it).popBackStack()
     }
 

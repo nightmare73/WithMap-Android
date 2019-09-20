@@ -7,6 +7,7 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import com.ebookfrenzy.withmap.databinding.FragmentPinDetailBinding
+import com.ebookfrenzy.withmap.view.search.SearchFragmentDirections
 
 /**
  * Created By Yun Hyeok
@@ -29,6 +30,9 @@ class PinDetailFragment : Fragment() {
     ): View? {
         binding = FragmentPinDetailBinding.inflate(inflater)
         binding.returnBack = returnBack
+
+        val safeArgs =PinDetailFragmentArgs.fromBundle(arguments!!).message
+        binding.pinDetail = safeArgs
         //pinDetail 에다가 String 집어넣어보기
         return binding.root
     }
