@@ -1,9 +1,8 @@
 package com.ebookfrenzy.withmap.network
 
-import com.ebookfrenzy.withmap.network.response.KakaoKeywordAddressResponse
-import retrofit2.Call
+import com.ebookfrenzy.withmap.network.response.KakaoKeywordSearchResponse
+import io.reactivex.Single
 import retrofit2.http.GET
-import retrofit2.http.Header
 import retrofit2.http.Query
 
 /**
@@ -14,13 +13,13 @@ import retrofit2.http.Query
 interface KakaoService {
 
     @GET("/v2/local/search/keyword.json")
-    fun getKakaoKeywordAdressRequest(
+    fun requestKakaoKeywordSearch(
         @Query("query") query: String,
         @Query("page") page: Int = 1,
         @Query("size") size: Int = 15
-    ): Call<KakaoKeywordAddressResponse>
+    ): Single<KakaoKeywordSearchResponse>
 
-    companion object{
+    companion object {
         const val baseUrl = "http://dapi.kakao.com"
     }
 }
