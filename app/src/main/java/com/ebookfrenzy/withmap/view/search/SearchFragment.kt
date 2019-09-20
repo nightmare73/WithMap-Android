@@ -24,7 +24,9 @@ class SearchFragment : Fragment() {
     private val viewModel: SearchViewModel by viewModel()
 
     private val onBackClicked = View.OnClickListener {
-        Navigation.findNavController(it).popBackStack()
+
+
+        //Navigation.findNavController(it).popBackStack()
     }
 
     override fun onCreateView(

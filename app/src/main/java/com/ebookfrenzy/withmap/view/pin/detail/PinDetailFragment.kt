@@ -29,6 +29,7 @@ class PinDetailFragment : Fragment() {
     ): View? {
         binding = FragmentPinDetailBinding.inflate(inflater)
         binding.returnBack = returnBack
+        //pinDetail 에다가 String 집어넣어보기
         return binding.root
     }
 
