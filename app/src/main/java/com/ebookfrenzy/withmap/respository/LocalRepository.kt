@@ -8,9 +8,9 @@ package com.ebookfrenzy.withmap.respository
 class LocalRepository(private val sp: SharedPreferenceSource) {
 
     fun getFirstFlag(): Boolean {
-        val isFirst = sp.getFirstAccessFlag()
+        val isFirst = sp.firstFlag
         if (isFirst) {
-            sp.saveFirstAccessFlagFalse()
+            sp.firstFlag = false
         }
         return isFirst
     }
