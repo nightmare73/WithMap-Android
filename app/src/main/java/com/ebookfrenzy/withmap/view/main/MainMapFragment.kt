@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.core.os.persistableBundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -55,6 +56,8 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
     private lateinit var ivMarker: ImageView
     private lateinit var vm: MainViewModel
 
+    var bottomSheetLayout: View? = null
+
     private val TAG = "MainMapFragment"
 
     override fun onCreateView(
@@ -82,6 +85,14 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
             vmNoti = ViewModelProviders.of(this@MainMapFragment)[NotificationViewModel::class.java]
         }
 
+        vm.bottomSheetUpdate.observe(this, Observer {
+            Log.d(TAG, "bottomSheetUpdate in MainMapFragment : ${vm.bottomSheetUpdate.value}")
+            initPersistentBottonSheetBehavior(
+                vm.selectedMarkerLiveData.value!!.tag as MarkerItem,
+                vm.bottomSheetUpdate.value!!
+            )
+        })
+
         mapFragment = SupportMapFragment.newInstance()
         mapFragment.getMapAsync(this)
 
@@ -89,7 +100,6 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
 
         Log.d(TAG, vm.selectedMarkerLiveData.value.toString())
     }
-
 
     //View를 Bitmap으로 변환
     private fun createDrawableFromView(context: Context, view: View): Bitmap {
@@ -115,7 +125,6 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
 
         return bitmap
     }
-
 
     //샘플로 만든 마커들, +추가해놓기
     fun getSampleMarkerItems() {
@@ -215,109 +224,220 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
 //        }
         //선택된 마커를 selectedMarker로 '새로'지정해서 지도에 추가
         vm.selectedMarkerLiveData.value = marker
-        vm.selectedMarkerLiveData.observe(this, Observer {
-            initPersistentBottonSheetBehavior(it.tag as MarkerItem)
-        })
     }
 
 
     //BottomSheet발생시키는 함수
-    private fun initPersistentBottonSheetBehavior(markerItem: MarkerItem) {
-
-        var bottomSheetLayout: View? = null
+    private fun initPersistentBottonSheetBehavior(markerItem: MarkerItem, needUpdate: Boolean) {
+        val mMarkerItem = markerItem
 
         var h: Int = 1
         var off: Float = 0f
-        Log.d(TAG, "-----initPersistentBottomSheetBehavior()-----selectedMarkerItem : $markerItem")
+        Log.d(TAG, "-----initPersistentBottomSheetBehavior()-----selectedMarkerItem : $markerItem  $mMarkerItem"
+        )
 
-        if (persistentBottomSheetBehavior != null) {
-            Log.d(TAG, "persistentBottomSheetBehavior is not null")
-            persistentBottomSheetBehavior!!.state = BottomSheetBehavior.STATE_COLLAPSED
-        }
+        if (needUpdate) {
+            if (persistentBottomSheetBehavior != null) {
+                persistentBottomSheetBehavior!!.state = BottomSheetBehavior.STATE_COLLAPSED
+            }
+            if (!markerItem.improved) {
+                Log.d(TAG, "!markerItem.improved")
+                bottomSheetLayout = bottom_sheet_before
+                persistentBottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout).apply {
+                    Log.d(TAG, "persistentBottomSheetBehaivior : $this")
+                    setBottomSheetCallback(object :
+                        BottomSheetBehavior.BottomSheetCallback() {
+                        override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                            Log.d(TAG, "bottomsheet onSlide")
+                            h = bottomSheet.height
+                            off = h * slideOffset
+                            when (persistentBottomSheetBehavior!!.state) {
+                                BottomSheetBehavior.STATE_DRAGGING -> {
+                                    Log.d(TAG, "onSlide bottomSheet Dragging")
+                                    setMapPaddingBottom(off)
+                                    //reposition marker at the center
+                                    mMap.moveCamera(CameraUpdateFactory.newLatLng(mLoc))
+                                }
 
-        if (!markerItem.improved) {
-
-            Log.d(TAG, "!markerItem.improved")
-            bottomSheetLayout = bottom_sheet_before
-            persistentBottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout)
-
-            persistentBottomSheetBehavior!!.setBottomSheetCallback(object :
-                BottomSheetBehavior.BottomSheetCallback() {
-                override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                    Log.d(TAG, "bottomsheet onSlide")
-                    h = bottomSheet.height
-                    off = h * slideOffset
-                    when (persistentBottomSheetBehavior!!.state) {
-                        BottomSheetBehavior.STATE_DRAGGING -> {
-                            Log.d(TAG, "onSlide bottomSheet Dragging")
-                            setMapPaddingBottom(off)
-                            //reposition marker at the center
-                            mMap.moveCamera(CameraUpdateFactory.newLatLng(mLoc))
+                                BottomSheetBehavior.STATE_SETTLING -> {
+                                    Log.d(TAG, "onSlide bottomSheet settling")
+                                    setMapPaddingBottom(off)
+                                    //reposition marker at the center
+                                    mMap.moveCamera(CameraUpdateFactory.newLatLng(mLoc))
+                                }
+                            }
                         }
 
-                        BottomSheetBehavior.STATE_SETTLING -> {
-                            Log.d(TAG, "onSlide bottomSheet settling")
-                            setMapPaddingBottom(off)
-                            //reposition marker at the center
-                            mMap.moveCamera(CameraUpdateFactory.newLatLng(mLoc))
+                        override fun onStateChanged(view: View, newState: Int) {
+                            when (newState) {
+                                BottomSheetBehavior.STATE_HIDDEN -> {
+                                    Log.d(TAG, "bottomSheet hidden")
+                                }
+                                BottomSheetBehavior.STATE_EXPANDED -> {
+                                    Log.d(TAG, "bottomSheet expanded")
+
+                                    view.tv_title_sheet_before.text = mMarkerItem.title
+                                    view.tv_date_sheet_before.text = mMarkerItem.date
+                                    view.tv_location_sheet_before.text = mMarkerItem.location
+                                    Log.d(TAG, "title : ${mMarkerItem.title}")
+                                }
+                                BottomSheetBehavior.STATE_SETTLING -> {
+                                    view.tv_title_sheet_before.text = mMarkerItem.title
+                                    view.tv_date_sheet_before.text = mMarkerItem.date
+                                    view.tv_location_sheet_before.text = mMarkerItem.location
+                                }
+                            }
                         }
-                    }
+                    })
+                    state = BottomSheetBehavior.STATE_EXPANDED
+                    Log.d(TAG, "unImproved markerItem BottomSheet expanded")
                 }
 
-                override fun onStateChanged(view: View, newState: Int) {
-                    when (newState) {
-                        BottomSheetBehavior.STATE_EXPANDED -> {
-                            Log.d(TAG, "bottomSheet expanded")
-                            view.tv_title_sheet_before.text = markerItem.title
-                            view.tv_date_sheet_before.text = markerItem.date
-                            view.tv_location_sheet_before.text = markerItem.location
-                        }
+            } else {
+                bottomSheetLayoutImproved = bottom_sheet_after
+                persistentBottomSheetBehavior =
+                    BottomSheetBehavior.from(bottomSheetLayoutImproved).apply {
+                        Log.d(
+                            TAG,
+                            "persistentBottomSheetBehaivior : $persistentBottomSheetBehavior"
+                        )
 
+                        setBottomSheetCallback(object :
+                            BottomSheetBehavior.BottomSheetCallback() {
+                            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                                h = bottomSheet.height
+                                off = h * slideOffset
+                                when (persistentBottomSheetBehavior!!.state) {
+                                    BottomSheetBehavior.STATE_DRAGGING -> {
+                                        setMapPaddingBottom(off)
+                                        //reposition marker at the center
+                                        mMap.moveCamera(CameraUpdateFactory.newLatLng(mLoc))
+                                    }
+
+                                    BottomSheetBehavior.STATE_SETTLING -> {
+                                        setMapPaddingBottom(off)
+                                        //reposition marker at the center
+                                        mMap.moveCamera(CameraUpdateFactory.newLatLng(mLoc))
+                                    }
+                                }
+                            }
+
+                            override fun onStateChanged(view: View, newState: Int) {
+                                when (newState) {
+                                    BottomSheetBehavior.STATE_HIDDEN -> {
+                                        Log.d(TAG, "bottomSheet hiddden")
+                                    }
+                                    BottomSheetBehavior.STATE_EXPANDED -> {
+                                        view.tv_title_before.text = mMarkerItem.title
+                                        view.tv_date_before.text = mMarkerItem.date
+                                        view.tv_title_after.text = mMarkerItem.improvedTitle
+                                        view.tv_date_after.text = mMarkerItem.improvedDate
+                                    }
+                                    BottomSheetBehavior.STATE_SETTLING -> {
+                                        view.tv_title_before.text = mMarkerItem.title
+                                        view.tv_date_before.text = mMarkerItem.date
+                                        view.tv_title_after.text = mMarkerItem.improvedTitle
+                                        view.tv_date_after.text = mMarkerItem.improvedDate
+                                    }
+                                }
+                            }
+                        })
+                        state = BottomSheetBehavior.STATE_EXPANDED
+                        Log.d(TAG, "improved markerItem BottomSheet expanded")
                     }
-                }
-            })
-
-            persistentBottomSheetBehavior!!.state = BottomSheetBehavior.STATE_EXPANDED
-            Log.d(TAG, "unimproved markerItem BottomSheet expanded")
-
+            }
         } else {
-            bottomSheetLayoutImproved = bottom_sheet_after
-            persistentBottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayoutImproved)
+            Log.d(TAG, "needUpdate : $needUpdate")
+            Log.d(TAG, "persistentBottomSheetBehaivior : $persistentBottomSheetBehavior")
+            if (!mMarkerItem.improved) {
+                persistentBottomSheetBehavior!!.setBottomSheetCallback(object :
+                    BottomSheetBehavior.BottomSheetCallback() {
+                    override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                        Log.d(TAG, "bottomsheet onSlide")
+                        h = bottomSheet.height
+                        off = h * slideOffset
+                        when (persistentBottomSheetBehavior!!.state) {
+                            BottomSheetBehavior.STATE_DRAGGING -> {
+                                Log.d(TAG, "onSlide bottomSheet Dragging")
+                                setMapPaddingBottom(off)
+                                //reposition marker at the center
+                                mMap.moveCamera(CameraUpdateFactory.newLatLng(mLoc))
+                            }
 
-            persistentBottomSheetBehavior!!.setBottomSheetCallback(object :
-                BottomSheetBehavior.BottomSheetCallback() {
-                override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                    h = bottomSheet.height
-                    off = h * slideOffset
-                    when (persistentBottomSheetBehavior!!.state) {
-                        BottomSheetBehavior.STATE_DRAGGING -> {
-                            setMapPaddingBottom(off)
-                            //reposition marker at the center
-                            mMap.moveCamera(CameraUpdateFactory.newLatLng(mLoc))
-                        }
-
-                        BottomSheetBehavior.STATE_SETTLING -> {
-                            setMapPaddingBottom(off)
-                            //reposition marker at the center
-                            mMap.moveCamera(CameraUpdateFactory.newLatLng(mLoc))
-                        }
-                    }
-                }
-
-                override fun onStateChanged(view: View, newState: Int) {
-                    when (newState) {
-                        BottomSheetBehavior.STATE_EXPANDED -> {
-                            view.tv_title_before.text = markerItem.title
-                            view.tv_date_before.text = markerItem.date
-                            view.tv_title_after.text = markerItem.improvedTitle
-                            view.tv_date_after.text = markerItem.improvedDate
+                            BottomSheetBehavior.STATE_SETTLING -> {
+                                Log.d(TAG, "onSlide bottomSheet settling")
+                                setMapPaddingBottom(off)
+                                //reposition marker at the center
+                                mMap.moveCamera(CameraUpdateFactory.newLatLng(mLoc))
+                            }
                         }
                     }
-                }
-            })
 
+                    override fun onStateChanged(view: View, newState: Int) {
+                        when (newState) {
+                            BottomSheetBehavior.STATE_HIDDEN -> {
+                                Log.d(TAG, "bottomSheet hidden")
+                            }
+                            BottomSheetBehavior.STATE_EXPANDED -> {
+                                Log.d(TAG, "bottomSheet expanded")
+
+                                view.tv_title_sheet_before.text = mMarkerItem.title
+                                view.tv_date_sheet_before.text = mMarkerItem.date
+                                view.tv_location_sheet_before.text = mMarkerItem.location
+                                Log.d(TAG, "title : ${mMarkerItem.title}")
+                            }
+                            BottomSheetBehavior.STATE_SETTLING -> {
+                                view.tv_title_sheet_before.text = mMarkerItem.title
+                                view.tv_date_sheet_before.text = mMarkerItem.date
+                                view.tv_location_sheet_before.text = mMarkerItem.location
+                            }
+                        }
+                    }
+                })
+            } else {
+                persistentBottomSheetBehavior!!.setBottomSheetCallback(object :
+                    BottomSheetBehavior.BottomSheetCallback() {
+                    override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                        h = bottomSheet.height
+                        off = h * slideOffset
+                        when (persistentBottomSheetBehavior!!.state) {
+                            BottomSheetBehavior.STATE_DRAGGING -> {
+                                setMapPaddingBottom(off)
+                                //reposition marker at the center
+                                mMap.moveCamera(CameraUpdateFactory.newLatLng(mLoc))
+                            }
+
+                            BottomSheetBehavior.STATE_SETTLING -> {
+                                setMapPaddingBottom(off)
+                                //reposition marker at the center
+                                mMap.moveCamera(CameraUpdateFactory.newLatLng(mLoc))
+                            }
+                        }
+                    }
+
+                    override fun onStateChanged(view: View, newState: Int) {
+                        when (newState) {
+                            BottomSheetBehavior.STATE_HIDDEN -> {
+                                Log.d(TAG, "bottomSheet hiddden")
+                            }
+                            BottomSheetBehavior.STATE_EXPANDED -> {
+                                view.tv_title_before.text = mMarkerItem.title
+                                view.tv_date_before.text = mMarkerItem.date
+                                view.tv_title_after.text = mMarkerItem.improvedTitle
+                                view.tv_date_after.text = mMarkerItem.improvedDate
+                            }
+                            BottomSheetBehavior.STATE_SETTLING -> {
+                                view.tv_title_before.text = mMarkerItem.title
+                                view.tv_date_before.text = mMarkerItem.date
+                                view.tv_title_after.text = mMarkerItem.improvedTitle
+                                view.tv_date_after.text = mMarkerItem.improvedDate
+                            }
+                        }
+                    }
+                })
+            }
+            persistentBottomSheetBehavior!!.state = BottomSheetBehavior.STATE_HIDDEN
             persistentBottomSheetBehavior!!.state = BottomSheetBehavior.STATE_EXPANDED
-
         }
     }
 
@@ -327,44 +447,12 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
         mMap.setPadding(0, 0, 0, Math.round(offset * maxMapPaddingBottom))
     }
 
-
-//
-//    private fun addMarker(
-//        marker: Marker,
-//        isSelectedMarker: Boolean,
-//        beingHidden: Boolean = false
-//    ): Marker {
-//        val lat: Double = marker.position.latitude
-//        val lon = marker.position.longitude
-//        val extraMarkerData: MarkerItem = marker.tag as MarkerItem
-//
-//        val temp: MarkerItem = MarkerItem(
-//            lat,
-//            lon,
-//            extraMarkerData.type,
-//            extraMarkerData.title,
-//            extraMarkerData.date,
-//            extraMarkerData.location,
-//            extraMarkerData.improved,
-//            extraMarkerData.improvedTitle,
-//            extraMarkerData.improvedDate
-//        )
-//        if (!beingHidden) {
-//            initPersistentBottonSheetBehavior(marker.tag as MarkerItem)
-//        }
-//
-//        return addMarker(temp, isSelectedMarker)
-//
-//    }
-
-
     override fun onMapClick(p0: LatLng?) {
         if (persistentBottomSheetBehavior != null) {
-
             persistentBottomSheetBehavior!!.state = BottomSheetBehavior.STATE_COLLAPSED
+            vm.beforeSelectedwasImproved.value = 0
         }
     }
-
 }
 
 
