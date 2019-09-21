@@ -10,14 +10,17 @@ import android.util.DisplayMetrics
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import androidx.core.os.persistableBundleOf
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.Navigation
 
 import com.ebookfrenzy.withmap.R
 import com.ebookfrenzy.withmap.data.MarkerItem
@@ -32,16 +35,19 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.bottom_sheet_after.*
 import kotlinx.android.synthetic.main.bottom_sheet_after.view.*
 import kotlinx.android.synthetic.main.bottom_sheet_before.*
 import kotlinx.android.synthetic.main.bottom_sheet_before.view.*
+import kotlinx.android.synthetic.main.fragment_main_map.*
+import kotlinx.android.synthetic.main.navigation_drawer.*
 
 /**
  * A simple [Fragment] subclass.
  */
 class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
-    GoogleMap.OnMapClickListener {
+    GoogleMap.OnMapClickListener, NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var mLoc: LatLng
 
@@ -50,6 +56,7 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
 
     private lateinit var mapFragment: SupportMapFragment
 
+    private lateinit var headerView : View
     private lateinit var mMap: GoogleMap
     private lateinit var binding: FragmentMainMapBinding
     private lateinit var markerRootView: View
@@ -80,6 +87,12 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        bt_hamburger.setOnClickListener {
+            drawer_layout.openDrawer(nav_view)
+        }
+
+        setHeader(nav_view)
+
         binding.run {
             lifecycleOwner = this@MainMapFragment
             vmNoti = ViewModelProviders.of(this@MainMapFragment)[NotificationViewModel::class.java]
@@ -99,6 +112,14 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
         childFragmentManager.beginTransaction().replace(R.id.fl_main_map_frag, mapFragment).commit()
 
         Log.d(TAG, vm.selectedMarkerLiveData.value.toString())
+    }
+    fun setHeader(view_navi : NavigationView) {
+        headerView = view_navi.getHeaderView(0)
+
+        val myPinRegister : RelativeLayout = headerView.findViewById(R.id.rl_my_pin)
+        myPinRegister.setOnClickListener {
+            Log.d(TAG, "layout clicked")
+        }
     }
 
     //View를 Bitmap으로 변환
@@ -452,6 +473,10 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
             persistentBottomSheetBehavior!!.state = BottomSheetBehavior.STATE_COLLAPSED
             vm.beforeSelectedwasImproved.value = 0
         }
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        return true
     }
 }
 

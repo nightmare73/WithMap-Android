@@ -37,9 +37,16 @@
         <action
             android:id="@+id/action_mainMapFragment_to_searchFragment"
             app:destination="@id/searchFragment" />
+        <action
+            android:id="@+id/action_mainMapFragment_to_myRegisterPinFragment"
+            app:destination="@id/myRegisterPinFragment" />
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.ebookfrenzy.withmap.view.search.SearchFragment"
         android:label="SearchFragment" />
+    <fragment
+        android:id="@+id/myRegisterPinFragment"
+        android:name="com.ebookfrenzy.withmap.view.hamburg.MyRegisterPinFragment"
+        android:label="MyRegisterPinFragment" />
 </navigation>

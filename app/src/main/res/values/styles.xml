@@ -9,6 +9,8 @@
 
         <item name="android:statusBarColor">@android:color/white</item>
         <item name="android:windowLightStatusBar">true</item>
+
+        <item name="colorControlHighlight">#5ab8f2</item>
     </style>
 
     <style name="nanum_regular_login_textview">

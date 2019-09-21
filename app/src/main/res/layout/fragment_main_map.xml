@@ -10,81 +10,96 @@
             type="com.ebookfrenzy.withmap.viewmodel.NotificationViewModel"/>
     </data>
 
-
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".view.main.MainMapFragment">
+        android:fitsSystemWindows="true">
 
-
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            tools:context=".view.main.MainMapFragment">
 
-            <LinearLayout
-                android:id="@+id/ll_tab"
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:background="@color/white"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingLeft="16dp"
-                android:paddingRight="24dp"
-                app:layout_constraintBottom_toTopOf="@+id/fl_main_map_frag">
-                <RelativeLayout
-                    app:setImage="@{vmNoti.notificationLiveData}"
-                    android:layout_width="28dp"
+                android:layout_height="match_parent">
 
-                    android:layout_height="23dp"
-                    android:background="@drawable/home_burger_copy">
+                <LinearLayout
+                    android:id="@+id/ll_tab"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:background="@color/white"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="24dp"
+                    app:layout_constraintBottom_toTopOf="@+id/fl_main_map_frag">
+                    <RelativeLayout
+                        android:id="@+id/bt_hamburger"
+                        app:setImage="@{vmNoti.notificationLiveData}"
+                        android:layout_width="28dp"
 
-                    <TextView
-                        style="@style/nanum_semibold_login_textview"
-                        android:layout_alignParentBottom="true"
-                        android:layout_marginLeft="4dp"
+                        android:layout_height="23dp"
+                        android:background="@drawable/home_burger_copy">
 
-                        android:textColor="@color/white"
-                        android:textSize="8sp"
-                        tools:text="3"
-                        android:text="@{vmNoti.notificationSize}"/>
-                    <!--  ****vmNoti.notificationSize.value가 아니다-->
+                        <TextView
+                            style="@style/nanum_semibold_login_textview"
+                            android:layout_alignParentBottom="true"
+                            android:layout_marginLeft="4dp"
 
-                </RelativeLayout>
+                            android:textColor="@color/white"
+                            android:textSize="8sp"
+                            tools:text="3"
+                            android:text="@{vmNoti.notificationSize}"/>
+                        <!--  ****vmNoti.notificationSize.value가 아니다-->
 
-                <EditText
-                    style="@style/nanum_light_edittext"
+                    </RelativeLayout>
+
+                    <EditText
+                        style="@style/nanum_light_edittext"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginVertical="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:background="@drawable/bg_edittext_main_map_tab"
+                        android:hint="장소, 주소 검색"
+                        android:paddingVertical="8dp"
+                        android:paddingLeft="16dp" />
+
+                </LinearLayout>
+
+                <!--        <fragment-->
+                <!--            android:layout_width="match_parent"-->
+                <!--            android:layout_height="match_parent"-->
+                <!--            android:id="@+id/frag_main_map_frag"-->
+                <!--            tools:context=".view.main.MainActivity"-->
+                <!--            android:name="com.google.android.gms.maps.SupportMapFragment" />-->
+
+                <FrameLayout
+                    android:id="@+id/fl_main_map_frag"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginVertical="8dp"
-                    android:layout_marginLeft="4dp"
-                    android:background="@drawable/bg_edittext_main_map_tab"
-                    android:hint="장소, 주소 검색"
-                    android:paddingVertical="8dp"
-                    android:paddingLeft="16dp" />
+                    android:layout_marginTop="56dp"
+                    app:layout_constraintTop_toBottomOf="@id/ll_tab" />
 
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <!--        <fragment-->
-            <!--            android:layout_width="match_parent"-->
-            <!--            android:layout_height="match_parent"-->
-            <!--            android:id="@+id/frag_main_map_frag"-->
-            <!--            tools:context=".view.main.MainActivity"-->
-            <!--            android:name="com.google.android.gms.maps.SupportMapFragment" />-->
+            <include layout="@layout/bottom_sheet_before" />
 
-            <FrameLayout
-                android:id="@+id/fl_main_map_frag"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="56dp"
-                app:layout_constraintTop_toBottomOf="@id/ll_tab" />
+            <include layout="@layout/bottom_sheet_after" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-        <include layout="@layout/bottom_sheet_before" />
+        <com.google.android.material.navigation.NavigationView
+            android:id="@+id/nav_view"
+            android:layout_width="304dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="start|left"
+            app:headerLayout="@layout/navigation_drawer"/>
+    </androidx.drawerlayout.widget.DrawerLayout>
 
-        <include layout="@layout/bottom_sheet_after" />
-
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </layout>
