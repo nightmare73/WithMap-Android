@@ -1,10 +1,12 @@
 package com.ebookfrenzy.withmap.view.search
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import com.ebookfrenzy.withmap.databinding.FragmentSearchBinding
 import com.ebookfrenzy.withmap.network.KakaoService
@@ -40,7 +42,18 @@ class SearchFragment : Fragment() {
             returnBack = onBackClicked
             lifecycleOwner = this@SearchFragment
         }
+        tempSubcribe()
         return binding.root
     }
 
+
+    override fun onResume() {
+        Log.d("Malibin Debug","SearchFragment의 Livedata : ${viewModel.tempSharedData.value}")
+        super.onResume()
+    }
+    fun tempSubcribe() {
+        viewModel.tempSharedData.observe(viewLifecycleOwner, Observer {
+            binding.etSearchFragQuery.setText(it)
+        })
+    }
 }

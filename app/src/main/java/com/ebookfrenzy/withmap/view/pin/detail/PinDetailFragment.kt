@@ -3,11 +3,14 @@ package com.ebookfrenzy.withmap.view.pin.detail
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import com.ebookfrenzy.withmap.databinding.FragmentPinDetailBinding
 import com.ebookfrenzy.withmap.view.search.SearchFragmentDirections
+import com.ebookfrenzy.withmap.viewmodel.SearchViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  * Created By Yun Hyeok
@@ -19,8 +22,16 @@ class PinDetailFragment : Fragment() {
     lateinit var binding: FragmentPinDetailBinding
     lateinit var originalWindowAttributes: WindowManager.LayoutParams
 
+    private val tempSearchViewModel: SearchViewModel by viewModel()
+
     private val returnBack = View.OnClickListener {
+        tempSearchViewModel.setTempSharedData("뷰모델 셰어링 테스트")
+        Log.d(
+            "Malibin Debug",
+            "PinDetailFragment 에서의 Live데이터 : ${tempSearchViewModel.tempSharedData.value}"
+        )
         Navigation.findNavController(it).popBackStack()
+
     }
 
     override fun onCreateView(
@@ -31,7 +42,7 @@ class PinDetailFragment : Fragment() {
         binding = FragmentPinDetailBinding.inflate(inflater)
         binding.returnBack = returnBack
 
-        val safeArgs =PinDetailFragmentArgs.fromBundle(arguments!!).message
+        val safeArgs = PinDetailFragmentArgs.fromBundle(arguments!!).message
         binding.pinDetail = safeArgs
         //pinDetail 에다가 String 집어넣어보기
         return binding.root
@@ -63,8 +74,8 @@ class PinDetailFragment : Fragment() {
         }
     }
 
-    private fun resetStatusBarSettings(){
-        activity!!.window.apply{
+    private fun resetStatusBarSettings() {
+        activity!!.window.apply {
             decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             attributes = originalWindowAttributes
         }
@@ -80,7 +91,6 @@ class PinDetailFragment : Fragment() {
         winParams.flags = winParams.flags and bits.inv()
         win.attributes = winParams
     }
-
 
 
 }

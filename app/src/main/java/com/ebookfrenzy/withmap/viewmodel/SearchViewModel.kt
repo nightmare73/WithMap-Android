@@ -23,6 +23,14 @@ class SearchViewModel(private val kakaoService: KakaoService) : ViewModel() {
     val searchResult: LiveData<List<KeywordAddressDocument>>
         get() = _searchResult
 
+    private val _tempSharedData = MutableLiveData<String>()
+    val tempSharedData: LiveData<String>
+        get() = _tempSharedData
+
+    fun setTempSharedData(message: String) {
+        _tempSharedData.value = message
+    }
+
     override fun onCleared() {
         compositeDisposable.clear()
         super.onCleared()
