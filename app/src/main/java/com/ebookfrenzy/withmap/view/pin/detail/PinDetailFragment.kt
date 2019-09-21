@@ -10,6 +10,7 @@ import androidx.navigation.Navigation
 import com.ebookfrenzy.withmap.databinding.FragmentPinDetailBinding
 import com.ebookfrenzy.withmap.view.search.SearchFragmentDirections
 import com.ebookfrenzy.withmap.viewmodel.SearchViewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
@@ -22,7 +23,7 @@ class PinDetailFragment : Fragment() {
     lateinit var binding: FragmentPinDetailBinding
     lateinit var originalWindowAttributes: WindowManager.LayoutParams
 
-    private val tempSearchViewModel: SearchViewModel by viewModel()
+    private val tempSearchViewModel: SearchViewModel by sharedViewModel()
 
     private val returnBack = View.OnClickListener {
         tempSearchViewModel.setTempSharedData("뷰모델 셰어링 테스트")
@@ -39,6 +40,8 @@ class PinDetailFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        Log.d("Malibin Debug", "PinDetail viewmodel instance : ${tempSearchViewModel.toString()}")
         binding = FragmentPinDetailBinding.inflate(inflater)
         binding.returnBack = returnBack
 

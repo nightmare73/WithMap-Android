@@ -12,6 +12,7 @@ import com.ebookfrenzy.withmap.databinding.FragmentSearchBinding
 import com.ebookfrenzy.withmap.network.KakaoService
 import com.ebookfrenzy.withmap.viewmodel.SearchViewModel
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
@@ -23,7 +24,7 @@ class SearchFragment : Fragment() {
 
     lateinit var binding: FragmentSearchBinding
 
-    private val viewModel: SearchViewModel by viewModel()
+    private val viewModel: SearchViewModel by sharedViewModel()
 
     private val onBackClicked = View.OnClickListener {
 
@@ -37,6 +38,8 @@ class SearchFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        Log.d("Malibin Debug", "SEarchFragment viewmodel instance : ${viewModel.toString()}")
+
         binding = FragmentSearchBinding.inflate(inflater).apply {
             vm = viewModel
             returnBack = onBackClicked
@@ -51,6 +54,7 @@ class SearchFragment : Fragment() {
         Log.d("Malibin Debug","SearchFragment의 Livedata : ${viewModel.tempSharedData.value}")
         super.onResume()
     }
+    
     fun tempSubcribe() {
         viewModel.tempSharedData.observe(viewLifecycleOwner, Observer {
             binding.etSearchFragQuery.setText(it)
