@@ -13,10 +13,12 @@ class SharedPreferenceSource(context: Context) {
     private val sharedPreference = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE)
     private val editor = sharedPreference.edit()
 
-    fun saveFirstAccessFlagFalse() {
-        editor.putBoolean("isFirst", false)
+    var firstFlag: Boolean
+        get() = sharedPreference.getBoolean("isFirst", true)
+        set(flag) = saveFirstAccessFlag(flag)
+
+    private fun saveFirstAccessFlag(flag: Boolean) {
+        editor.putBoolean("isFirst", flag)
         editor.commit()
     }
-
-    fun getFirstAccessFlag() = sharedPreference.getBoolean("isFirst", true)
 }

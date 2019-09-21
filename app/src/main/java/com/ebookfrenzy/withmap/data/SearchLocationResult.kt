@@ -5,8 +5,10 @@ package com.ebookfrenzy.withmap.data
  * on 9월 14, 2019
  */
 
-data class SearchLocationResult (
-    val name:String,
+data class SearchLocationResult(
+    val id: String,
+
+    val name: String,
     val address: String,
 
     val latitude: Double,
