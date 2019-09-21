@@ -21,6 +21,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 
 import com.ebookfrenzy.withmap.R
 import com.ebookfrenzy.withmap.data.MarkerItem
@@ -119,6 +120,7 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
         val myPinRegister : RelativeLayout = headerView.findViewById(R.id.rl_my_pin)
         myPinRegister.setOnClickListener {
             Log.d(TAG, "layout clicked")
+            it.findNavController().navigate(R.id.action_mainMapFragment_to_myRegisterPinFragment)
         }
     }
 

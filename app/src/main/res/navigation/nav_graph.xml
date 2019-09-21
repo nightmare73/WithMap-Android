@@ -48,5 +48,9 @@
     <fragment
         android:id="@+id/myRegisterPinFragment"
         android:name="com.ebookfrenzy.withmap.view.hamburg.MyRegisterPinFragment"
-        android:label="MyRegisterPinFragment" />
+        android:label="MyRegisterPinFragment" >
+        <action
+            android:id="@+id/action_myRegisterPinFragment_to_pinDetailFragment"
+            app:destination="@id/pinDetailFragment" />
+    </fragment>
 </navigation>
