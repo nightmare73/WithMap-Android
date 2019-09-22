@@ -3,6 +3,7 @@ package com.ebookfrenzy.withmap.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.ebookfrenzy.withmap.data.SearchLocationResult
 import com.ebookfrenzy.withmap.network.KakaoService
 import com.ebookfrenzy.withmap.network.response.KeywordAddressDocument
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -19,20 +20,24 @@ class SearchViewModel(private val kakaoService: KakaoService) : ViewModel() {
 
     private val compositeDisposable = CompositeDisposable()
 
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean>
+        get() = _isLoading
+
     private val _searchResult = MutableLiveData<List<KeywordAddressDocument>>()
     val searchResult: LiveData<List<KeywordAddressDocument>>
         get() = _searchResult
 
-    private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading: LiveData<Boolean>
-        get() = _isLoading
+    private val _selectedLocation = MutableLiveData<SearchLocationResult>()
+    val selectedLocation: LiveData<SearchLocationResult>
+        get() = _selectedLocation
 
     override fun onCleared() {
         compositeDisposable.clear()
         super.onCleared()
     }
 
-    fun addDisposable(disposable: Disposable) {
+    private fun addDisposable(disposable: Disposable) {
         compositeDisposable.add(disposable)
     }
 
@@ -48,5 +53,9 @@ class SearchViewModel(private val kakaoService: KakaoService) : ViewModel() {
                 }, { /* 실패시 코드 작성 */ }
                 )
         )
+    }
+
+    fun setSelectedLocation(location: SearchLocationResult) {
+        _selectedLocation.value = location
     }
 }

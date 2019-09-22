@@ -5,8 +5,11 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
+import com.ebookfrenzy.withmap.R
 import com.ebookfrenzy.withmap.databinding.FragmentPinDetailBinding
 import com.ebookfrenzy.withmap.view.search.SearchFragmentDirections
 import com.ebookfrenzy.withmap.viewmodel.SearchViewModel
@@ -22,8 +25,12 @@ class PinDetailFragment : Fragment() {
 
     private lateinit var originalWindowAttributes: WindowManager.LayoutParams
 
+    private val tempSharedViewModel: SearchViewModel by sharedViewModel()
+
     private val returnBack = View.OnClickListener {
-        Navigation.findNavController(it).popBackStack()
+//        Navigation.findNavController(it).popBackStack()
+
+        Navigation.findNavController(it).navigate(R.id.action_pinDetailFragment_to_searchFragment)
     }
 
     override fun onCreateView(
@@ -44,6 +51,8 @@ class PinDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setStatusBarTransparent()
+
+        temp()
     }
 
     override fun onDetach() {
@@ -83,5 +92,11 @@ class PinDetailFragment : Fragment() {
         win.attributes = winParams
     }
 
+
+    fun temp() {
+        tempSharedViewModel.selectedLocation.observe(viewLifecycleOwner, Observer {
+            view!!.findViewById<TextView>(R.id.tv_pin_detail_frag_details).text = it.name
+        })
+    }
 
 }

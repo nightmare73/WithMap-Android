@@ -47,7 +47,9 @@ class SearchFragment : Fragment(), TextView.OnEditorActionListener {
         }
 
         val rvAdapter = SearchAdapter()
-        binding.rvSearchFragResult.adapter = rvAdapter
+        binding.rvSearchFragResult.adapter = rvAdapter.apply {
+            setViewModel(viewModel)
+        }
 
         binding.etSearchFragQuery.setOnEditorActionListener(this)
 

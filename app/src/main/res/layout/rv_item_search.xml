@@ -7,6 +7,10 @@
             name="location"
             type="com.ebookfrenzy.withmap.data.SearchLocationResult" />
 
+        <variable
+            name="selectClick"
+            type="android.view.View.OnClickListener" />
+
 
     </data>
 
@@ -15,7 +19,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:onClick="@{selectClick}">
 
         <View
             android:id="@+id/view"
