@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.ebookfrenzy.withmap.data.SearchLocationResult
 import com.ebookfrenzy.withmap.databinding.RvItemSearchBinding
+import com.ebookfrenzy.withmap.viewmodel.SearchViewModel
 
 /**
  * Created By Yun Hyeok
@@ -14,6 +15,8 @@ import com.ebookfrenzy.withmap.databinding.RvItemSearchBinding
  */
 
 class SearchAdapter : ListAdapter<SearchLocationResult, SearchAdapter.ViewHolder>(DiffCallback()) {
+
+    private var viewModel: SearchViewModel? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -29,6 +32,10 @@ class SearchAdapter : ListAdapter<SearchLocationResult, SearchAdapter.ViewHolder
             bind(location)
             itemView.tag = location
         }
+    }
+
+    fun setViewModel(viewModel: SearchViewModel) {
+        this.viewModel = viewModel
     }
 
 

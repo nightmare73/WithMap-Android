@@ -10,6 +10,7 @@ data class SearchLocationResult(
 
     val name: String,
     val address: String,
+    val roadAddress: String?,
 
     val latitude: Double,
     val longitude: Double

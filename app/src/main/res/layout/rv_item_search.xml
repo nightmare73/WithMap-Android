@@ -37,7 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            android:text="@{location.address}"
+            android:text="@{location.roadAddress != null ? location.roadAddress : location.address}"
             android:textSize="11sp" />
 
         <View
