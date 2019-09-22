@@ -29,10 +29,7 @@ class SearchFragment : Fragment(), TextView.OnEditorActionListener {
     private val viewModel: SearchViewModel by sharedViewModel()
 
     private val onBackClicked = View.OnClickListener {
-
-        val action = SearchFragmentDirections.actionSearchFragmentToPinDetailFragment("넘어가나?")
-        Navigation.findNavController(it).navigate(action)
-        //Navigation.findNavController(it).popBackStack()
+        Navigation.findNavController(it).popBackStack()
     }
 
     override fun onCreateView(

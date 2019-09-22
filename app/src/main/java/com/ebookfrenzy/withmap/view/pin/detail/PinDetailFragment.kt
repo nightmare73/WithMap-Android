@@ -3,18 +3,13 @@ package com.ebookfrenzy.withmap.view.pin.detail
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import android.view.*
-import android.widget.TextView
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
-import com.ebookfrenzy.withmap.R
 import com.ebookfrenzy.withmap.databinding.FragmentPinDetailBinding
-import com.ebookfrenzy.withmap.view.search.SearchFragmentDirections
-import com.ebookfrenzy.withmap.viewmodel.SearchViewModel
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  * Created By Yun Hyeok
@@ -25,12 +20,8 @@ class PinDetailFragment : Fragment() {
 
     private lateinit var originalWindowAttributes: WindowManager.LayoutParams
 
-    private val tempSharedViewModel: SearchViewModel by sharedViewModel()
-
     private val returnBack = View.OnClickListener {
-//        Navigation.findNavController(it).popBackStack()
-
-        Navigation.findNavController(it).navigate(R.id.action_pinDetailFragment_to_searchFragment)
+        Navigation.findNavController(it).popBackStack()
     }
 
     override fun onCreateView(
@@ -41,18 +32,12 @@ class PinDetailFragment : Fragment() {
 
         val binding = FragmentPinDetailBinding.inflate(inflater)
         binding.returnBack = returnBack
-
-//        val safeArgs = PinDetailFragmentArgs.fromBundle(arguments!!).message
-//        binding.pinDetail = safeArgs
-//        //pinDetail 에다가 String 집어넣어보기
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setStatusBarTransparent()
-
-        temp()
     }
 
     override fun onDetach() {
@@ -90,13 +75,6 @@ class PinDetailFragment : Fragment() {
         }
         winParams.flags = winParams.flags and bits.inv()
         win.attributes = winParams
-    }
-
-
-    fun temp() {
-        tempSharedViewModel.selectedLocation.observe(viewLifecycleOwner, Observer {
-            view!!.findViewById<TextView>(R.id.tv_pin_detail_frag_details).text = it.name
-        })
     }
 
 }
