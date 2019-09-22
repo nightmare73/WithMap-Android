@@ -23,13 +23,9 @@ class SearchViewModel(private val kakaoService: KakaoService) : ViewModel() {
     val searchResult: LiveData<List<KeywordAddressDocument>>
         get() = _searchResult
 
-    private val _tempSharedData = MutableLiveData<String>()
-    val tempSharedData: LiveData<String>
-        get() = _tempSharedData
-
-    fun setTempSharedData(message: String) {
-        _tempSharedData.value = message
-    }
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean>
+        get() = _isLoading
 
     override fun onCleared() {
         compositeDisposable.clear()
@@ -41,13 +37,15 @@ class SearchViewModel(private val kakaoService: KakaoService) : ViewModel() {
     }
 
     fun getSearchResult(query: String) {
+        _isLoading.value = true
         addDisposable(
             kakaoService.requestKakaoKeywordSearch(query)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(
-                    { _searchResult.value = it.documents },
-                    { /* 실패시 코드 작성 */ }
+                .subscribe({
+                    _searchResult.value = it.documents
+                    _isLoading.value = false
+                }, { /* 실패시 코드 작성 */ }
                 )
         )
     }

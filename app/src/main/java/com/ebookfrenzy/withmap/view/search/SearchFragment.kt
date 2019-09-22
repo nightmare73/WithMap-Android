@@ -40,8 +40,6 @@ class SearchFragment : Fragment(), TextView.OnEditorActionListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d("Malibin Debug", "SearchFragment viewmodel instance : ${viewModel}")
-
         val binding = FragmentSearchBinding.inflate(inflater).apply {
             vm = viewModel
             returnBack = onBackClicked

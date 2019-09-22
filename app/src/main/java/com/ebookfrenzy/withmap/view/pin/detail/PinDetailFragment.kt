@@ -26,13 +26,7 @@ class PinDetailFragment : Fragment() {
     private val tempSearchViewModel: SearchViewModel by sharedViewModel()
 
     private val returnBack = View.OnClickListener {
-        tempSearchViewModel.setTempSharedData("뷰모델 셰어링 테스트")
-        Log.d(
-            "Malibin Debug",
-            "PinDetailFragment 에서의 Live데이터 : ${tempSearchViewModel.tempSharedData.value}"
-        )
         Navigation.findNavController(it).popBackStack()
-
     }
 
     override fun onCreateView(
