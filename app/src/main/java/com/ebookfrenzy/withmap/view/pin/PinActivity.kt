@@ -11,9 +11,5 @@ class PinActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pin)
 
-        val fm = supportFragmentManager
-        val fragmentTransaction = fm.beginTransaction()
-        fragmentTransaction.add(R.id.fl_pin_act, PinRegisterFragment(2))
-        fragmentTransaction.commit()
     }
 }

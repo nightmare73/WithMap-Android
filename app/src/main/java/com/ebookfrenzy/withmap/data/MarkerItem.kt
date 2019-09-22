@@ -1,5 +1,9 @@
 package com.ebookfrenzy.withmap.data
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
 data class MarkerItem(
     val lat: Double,
     val lon: Double,
@@ -10,7 +14,7 @@ data class MarkerItem(
     val improved: Boolean,
     val improvedTitle : String? = null,
     val improvedDate : String? = null
-)
+) : Parcelable
 
 
 

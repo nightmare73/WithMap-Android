@@ -9,6 +9,7 @@ import android.database.Cursor
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.os.Parcelable
 import android.provider.MediaStore
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -25,20 +26,26 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.ebookfrenzy.withmap.BR
 import com.ebookfrenzy.withmap.R
+import com.ebookfrenzy.withmap.data.MarkerItem
 import com.ebookfrenzy.withmap.databinding.FragmentPinRegisterBinding
 import com.ebookfrenzy.withmap.databinding.ItemPinRegisterPhotoBinding
 import com.ebookfrenzy.withmap.viewmodel.PinRegisterViewModel
+import com.google.android.gms.maps.model.Marker
 import com.googry.googrybaserecyclerview.BaseRecyclerView
 import kotlinx.android.synthetic.main.fragment_pin_register.*
 
 /**
  * A simple [Fragment] subclass.
  */
-class PinRegisterFragment(val f: Int) : Fragment() {
 
-    val improveType = 2
-    var isNew: Boolean = true
-    var title: String = ""
+//f = 1 : 새로운 개선 필요 핀 등록
+//f = 2 : 개선되었습니다 핀 등록
+class PinRegisterFragment : Fragment() {
+
+    var isNew = MutableLiveData<Boolean>().apply{this.value = false}
+    var title = MutableLiveData<String>().apply{this.value = "핀 등록"}
+
+    private lateinit var markerItem : MarkerItem
 
     private val REQUEST_CODE_SELECT_IMAGE = 1111
     private val MY_READ_STORAGE_REQUEST_CODE = 7777
@@ -57,7 +64,8 @@ class PinRegisterFragment(val f: Int) : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
 
-        isNewOrImproved(f)
+        markerItem = arguments!!.getParcelable("item") as MarkerItem
+
         binding = FragmentPinRegisterBinding.inflate(LayoutInflater.from(this.context))
         return binding.root
     }
@@ -65,6 +73,7 @@ class PinRegisterFragment(val f: Int) : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        isNewOrImproved(markerItem.improved)
 
         binding.run {
             lifecycleOwner = this@PinRegisterFragment
@@ -76,27 +85,27 @@ class PinRegisterFragment(val f: Int) : Fragment() {
         }
 
         initDataBinding()
-        improvedTypePick(improveType)
+        improvedTypePick(markerItem.type)
         Log.d(TAG, binding.etTitle.text.toString())
 
     }
 
-    fun isNewOrImproved(i: Int) {
+    fun isNewOrImproved(i: Boolean) {
         when (i) {
-            1 -> {
-                isNew = true
-                title = "핀 등록"
+            false -> {
+                isNew.value = true
+                title.value = "핀 등록"
             }
-            else -> {
-                isNew = false
-                title = "개선되었습니다"
+            true -> {
+                isNew.value = false
+                title.value = "개선되었습니다"
             }
         }
     }
 
     //BindingAdapter
     fun improvedTypePick(i: Int) {
-        if (f == 2) {
+        if (markerItem.improved) {
             when (i) {
                 1 -> {
                     binding.ivObstacle.setImageResource(R.drawable.pin_hurdle_on)
@@ -150,7 +159,7 @@ class PinRegisterFragment(val f: Int) : Fragment() {
 
     fun pickType(i: Int) {
         typeAllOff()
-        if (f == 1) {
+        if (!markerItem.improved) {
             when (i) {
                 1 -> {
                     binding.ivObstacle.setImageResource(R.drawable.pin_hurdle_on)

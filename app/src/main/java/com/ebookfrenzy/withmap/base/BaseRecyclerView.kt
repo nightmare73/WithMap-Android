@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.squareup.picasso.Picasso
@@ -56,6 +57,9 @@ abstract class BaseRecyclerView {
                 bindingVariableId?.let {
                     binding.setVariable(it, item)
 
+                    binding.root.setOnClickListener{
+
+                    }
                 }
 
             } catch (e: Exception) {

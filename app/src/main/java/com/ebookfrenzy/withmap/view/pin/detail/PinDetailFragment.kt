@@ -31,7 +31,6 @@ class PinDetailFragment : Fragment() {
             "PinDetailFragment 에서의 Live데이터 : ${tempSearchViewModel.tempSharedData.value}"
         )
         Navigation.findNavController(it).popBackStack()
-
     }
 
     override fun onCreateView(

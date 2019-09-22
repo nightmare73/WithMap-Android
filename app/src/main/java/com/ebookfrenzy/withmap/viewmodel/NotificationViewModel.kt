@@ -9,6 +9,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
+import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import com.ebookfrenzy.withmap.R
 import com.ebookfrenzy.withmap.data.MyRegisterPinData
 import com.ebookfrenzy.withmap.data.NotificationData
@@ -36,7 +38,12 @@ class NotificationViewModel : ViewModel() {
                 }
         })
     }
+
+    fun goToMyRegisterDetail() {
+        Log.d(TAG, "MyRegister clicked")
+    }
 }
+
 
 @BindingAdapter("setImage")
 fun setImage(view: View, data: MutableLiveData<MutableList<NotificationData>>) {

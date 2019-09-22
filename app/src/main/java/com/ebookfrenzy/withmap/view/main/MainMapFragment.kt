@@ -6,6 +6,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.os.Bundle
+import android.os.Parcelable
 import android.util.DisplayMetrics
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -266,6 +267,29 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
             if (!markerItem.improved) {
                 Log.d(TAG, "!markerItem.improved")
                 bottomSheetLayout = bottom_sheet_before
+
+                bottomSheetLayout!!.bt_was_improved.setOnClickListener {
+                    val bundle = Bundle()
+                    bundle.putParcelable("item", markerItem as Parcelable)
+                    it.findNavController().navigate(R.id.action_mainMapFragment_to_pinRegisterFragment, bundle)
+                    Log.d(TAG, "bt_was_improved clicked")
+                }
+                bottomSheetLayout!!.bt_show_detail.setOnClickListener {
+                    it.findNavController().navigate(R.id.action_mainMapFragment_to_pinDetailFragment)
+                    Log.d(TAG, "bt_show_detail clicked")
+                }
+
+
+                if(markerItem.type == 5 || markerItem.type == 6) {
+                    bottomSheetLayout!!.bt_was_improved.visibility = View.GONE
+                    bottomSheetLayout!!.bt_show_detail.visibility = View.GONE
+                    bottomSheetLayout!!.bt_show_detail_blue.visibility = View.VISIBLE
+
+                    bottomSheetLayout!!.bt_show_detail_blue.setOnClickListener {
+                        it.findNavController().navigate(R.id.action_mainMapFragment_to_pinDetailFragment)
+                        Log.d(TAG, "bt_show_detail_blue clicked")
+                    }
+                }
                 persistentBottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout).apply {
                     Log.d(TAG, "persistentBottomSheetBehaivior : $this")
                     setBottomSheetCallback(object :
@@ -303,6 +327,7 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
                                     view.tv_date_sheet_before.text = mMarkerItem.date
                                     view.tv_location_sheet_before.text = mMarkerItem.location
                                     Log.d(TAG, "title : ${mMarkerItem.title}")
+
                                 }
                                 BottomSheetBehavior.STATE_SETTLING -> {
                                     view.tv_title_sheet_before.text = mMarkerItem.title

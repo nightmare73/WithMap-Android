@@ -91,6 +91,7 @@
         android:gravity="center">
 
         <Button
+            android:id="@+id/bt_was_improved"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:background="@drawable/bg_button"
@@ -99,6 +100,7 @@
             style="@style/nanum_semibold_bottom_button"
             android:textSize="14sp"/>
         <Button
+            android:id="@+id/bt_show_detail"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:background="@drawable/bg_button"
@@ -107,6 +109,17 @@
             android:text="자세히 볼게요"
             style="@style/nanum_semibold_bottom_button"
             android:textSize="14sp"/>
+
+        <Button
+            android:id="@+id/bt_show_detail_blue"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_button"
+            android:layout_weight="1"
+            android:text="자세히 볼게요"
+            style="@style/nanum_semibold_bottom_button"
+            android:textSize="18sp"
+            android:visibility="gone"/>
     </LinearLayout>
 
 

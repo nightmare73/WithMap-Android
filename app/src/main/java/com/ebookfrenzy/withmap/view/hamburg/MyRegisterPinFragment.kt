@@ -2,11 +2,13 @@ package com.ebookfrenzy.withmap.view.hamburg
 
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.Navigation
 import com.ebookfrenzy.withmap.BR
 
 import com.ebookfrenzy.withmap.R
@@ -20,6 +22,7 @@ import com.googry.googrybaserecyclerview.BaseRecyclerView
  */
 class MyRegisterPinFragment : Fragment() {
 
+    private val TAG = "MyRegisterPinFragment"
     private lateinit var binding : FragmentMyRegisterPinBinding
 
     override fun onCreateView(

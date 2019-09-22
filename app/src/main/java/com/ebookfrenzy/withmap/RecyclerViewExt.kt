@@ -37,3 +37,5 @@ fun ImageView.typeImageMyRegister(i : Int) {
     }
 }
 
+
+
