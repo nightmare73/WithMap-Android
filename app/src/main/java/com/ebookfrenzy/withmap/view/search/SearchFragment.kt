@@ -2,16 +2,21 @@ package com.ebookfrenzy.withmap.view.search
 
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
+import com.ebookfrenzy.withmap.data.SearchLocationResult
 import com.ebookfrenzy.withmap.databinding.FragmentSearchBinding
 import com.ebookfrenzy.withmap.network.KakaoService
 import com.ebookfrenzy.withmap.viewmodel.SearchViewModel
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
@@ -19,11 +24,9 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
  * on 9월 13, 2019
  */
 
-class SearchFragment : Fragment() {
+class SearchFragment : Fragment(), TextView.OnEditorActionListener {
 
-    lateinit var binding: FragmentSearchBinding
-
-    private val viewModel: SearchViewModel by viewModel()
+    private val viewModel: SearchViewModel by sharedViewModel()
 
     private val onBackClicked = View.OnClickListener {
 
@@ -37,23 +40,37 @@ class SearchFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentSearchBinding.inflate(inflater).apply {
+        val binding = FragmentSearchBinding.inflate(inflater).apply {
             vm = viewModel
             returnBack = onBackClicked
             lifecycleOwner = this@SearchFragment
         }
-        tempSubcribe()
+
+        val rvAdapter = SearchAdapter()
+        binding.rvSearchFragResult.adapter = rvAdapter.apply {
+            setViewModel(viewModel)
+        }
+
+        binding.etSearchFragQuery.setOnEditorActionListener(this)
+
+        searchResultSubscribe(rvAdapter)
+
         return binding.root
     }
 
-
-    override fun onResume() {
-        Log.d("Malibin Debug","SearchFragment의 Livedata : ${viewModel.tempSharedData.value}")
-        super.onResume()
+    override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
+        when (actionId) {
+            EditorInfo.IME_ACTION_SEARCH -> {
+                viewModel.getSearchResult(v?.text.toString())
+            }
+        }
+        return true
     }
-    fun tempSubcribe() {
-        viewModel.tempSharedData.observe(viewLifecycleOwner, Observer {
-            binding.etSearchFragQuery.setText(it)
+
+    private fun searchResultSubscribe(adapter: SearchAdapter) {
+        viewModel.searchResult.observe(viewLifecycleOwner, Observer {
+            val searchResults = it.map { kakaoResult -> kakaoResult.toSearchLocationResult() }
+            adapter.submitList(searchResults)
         })
     }
 }

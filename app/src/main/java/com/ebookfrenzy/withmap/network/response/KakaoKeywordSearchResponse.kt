@@ -1,5 +1,7 @@
 package com.ebookfrenzy.withmap.network.response
 
+import com.ebookfrenzy.withmap.data.SearchLocationResult
+
 /**
  * Created By Yun Hyeok
  * on 9월 12, 2019
@@ -31,12 +33,22 @@ data class KeywordAddressDocument(
     val category_group_name: String,        //중요 카테고리만 그룹핑한 카테고리 그룹명. Request에 category_group_code 테이블 참고
     val phone: String,                      //전화번호
     val address_name: String,               //전체 지번 주소
-    val road_address_name: String,          //전체 도로명 주소
+    val road_address_name: String?,          //전체 도로명 주소
     val x: String,                          //X 좌표값 혹은 longitude
     val y: String,                          //Y 좌표값 혹은 latitude
     val place_url: String,                  //장소 상세페이지 URL
     val distance: String                    //중심좌표까지의 거리(x,y 파라미터를 준 경우에만 존재). 단위 meter
-)
+) {
+    fun toSearchLocationResult() =
+        SearchLocationResult(
+            id,
+            place_name,
+            address_name,
+            road_address_name,
+            x.toDouble(),
+            y.toDouble()
+        )
+}
 
 //category_group_code
 //code	의미

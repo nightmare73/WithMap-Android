@@ -5,11 +5,15 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
+import com.ebookfrenzy.withmap.R
 import com.ebookfrenzy.withmap.databinding.FragmentPinDetailBinding
 import com.ebookfrenzy.withmap.view.search.SearchFragmentDirections
 import com.ebookfrenzy.withmap.viewmodel.SearchViewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
@@ -19,19 +23,14 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PinDetailFragment : Fragment() {
 
-    lateinit var binding: FragmentPinDetailBinding
-    lateinit var originalWindowAttributes: WindowManager.LayoutParams
+    private lateinit var originalWindowAttributes: WindowManager.LayoutParams
 
-    private val tempSearchViewModel: SearchViewModel by viewModel()
+    private val tempSharedViewModel: SearchViewModel by sharedViewModel()
 
     private val returnBack = View.OnClickListener {
-        tempSearchViewModel.setTempSharedData("뷰모델 셰어링 테스트")
-        Log.d(
-            "Malibin Debug",
-            "PinDetailFragment 에서의 Live데이터 : ${tempSearchViewModel.tempSharedData.value}"
-        )
-        Navigation.findNavController(it).popBackStack()
+//        Navigation.findNavController(it).popBackStack()
 
+        Navigation.findNavController(it).navigate(R.id.action_pinDetailFragment_to_searchFragment)
     }
 
     override fun onCreateView(
@@ -39,18 +38,21 @@ class PinDetailFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentPinDetailBinding.inflate(inflater)
+
+        val binding = FragmentPinDetailBinding.inflate(inflater)
         binding.returnBack = returnBack
 
-        val safeArgs = PinDetailFragmentArgs.fromBundle(arguments!!).message
-        binding.pinDetail = safeArgs
-        //pinDetail 에다가 String 집어넣어보기
+//        val safeArgs = PinDetailFragmentArgs.fromBundle(arguments!!).message
+//        binding.pinDetail = safeArgs
+//        //pinDetail 에다가 String 집어넣어보기
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setStatusBarTransparent()
+
+        temp()
     }
 
     override fun onDetach() {
@@ -62,8 +64,6 @@ class PinDetailFragment : Fragment() {
         originalWindowAttributes = activity!!.window.attributes
         activity!!.window.apply {
             addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            //WindowManager.LayoutParams.
-
             decorView.systemUiVisibility =
                 View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
                         View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
@@ -92,5 +92,11 @@ class PinDetailFragment : Fragment() {
         win.attributes = winParams
     }
 
+
+    fun temp() {
+        tempSharedViewModel.selectedLocation.observe(viewLifecycleOwner, Observer {
+            view!!.findViewById<TextView>(R.id.tv_pin_detail_frag_details).text = it.name
+        })
+    }
 
 }
