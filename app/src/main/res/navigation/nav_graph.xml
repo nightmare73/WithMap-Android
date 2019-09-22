@@ -62,4 +62,9 @@
             app:destination="@id/pinDetailFragment" />
 
     </fragment>
+    <fragment
+        android:id="@+id/tradeFragment"
+        android:name="com.ebookfrenzy.withmap.view.trade.TradeFragment"
+        android:label="TradeFragment"
+        tools:layout="@layout/fragment_trade"/>
 </navigation>

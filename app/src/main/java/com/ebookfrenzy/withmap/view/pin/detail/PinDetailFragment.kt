@@ -20,10 +20,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PinDetailFragment : Fragment() {
 
-    lateinit var binding: FragmentPinDetailBinding
-    lateinit var originalWindowAttributes: WindowManager.LayoutParams
-
-    private val tempSearchViewModel: SearchViewModel by sharedViewModel()
+    private lateinit var originalWindowAttributes: WindowManager.LayoutParams
 
     private val returnBack = View.OnClickListener {
         Navigation.findNavController(it).popBackStack()
@@ -35,13 +32,12 @@ class PinDetailFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        Log.d("Malibin Debug", "PinDetail viewmodel instance : ${tempSearchViewModel.toString()}")
-        binding = FragmentPinDetailBinding.inflate(inflater)
+        val binding = FragmentPinDetailBinding.inflate(inflater)
         binding.returnBack = returnBack
 
-        val safeArgs = PinDetailFragmentArgs.fromBundle(arguments!!).message
-        binding.pinDetail = safeArgs
-        //pinDetail 에다가 String 집어넣어보기
+//        val safeArgs = PinDetailFragmentArgs.fromBundle(arguments!!).message
+//        binding.pinDetail = safeArgs
+//        //pinDetail 에다가 String 집어넣어보기
         return binding.root
     }
 
@@ -59,8 +55,6 @@ class PinDetailFragment : Fragment() {
         originalWindowAttributes = activity!!.window.attributes
         activity!!.window.apply {
             addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            //WindowManager.LayoutParams.
-
             decorView.systemUiVisibility =
                 View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
                         View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR

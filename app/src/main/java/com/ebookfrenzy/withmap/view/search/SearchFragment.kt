@@ -56,7 +56,6 @@ class SearchFragment : Fragment(), TextView.OnEditorActionListener {
         return binding.root
     }
 
-
     override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
         when (actionId) {
             EditorInfo.IME_ACTION_SEARCH -> {
