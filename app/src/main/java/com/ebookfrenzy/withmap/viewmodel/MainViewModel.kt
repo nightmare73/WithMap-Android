@@ -13,7 +13,7 @@ class MainViewModel : ViewModel() {
 
     val markerItemLiveData = MutableLiveData<List<MarkerItem>>()
 
-    val selectedMarkerLiveData = MutableLiveData<Marker>()
+    val selectedMarkerLiveData = MutableLiveData<Marker?>()
 
     // 0: bottomsheet 내려져있는 상태, 1: 전에꺼 unImproved , 2: 전에꺼 improved
     val beforeSelectedwasImproved = MutableLiveData<Int>().apply {
@@ -28,12 +28,16 @@ class MainViewModel : ViewModel() {
         selectedMarkerLiveData.observeForever(Observer{
 
             Log.d(TAG, "beforeSelectedwasImproved.value : ${beforeSelectedwasImproved.value}")
-            if(selectedMarkerStatusToInt((it.tag as MarkerItem).improved) == beforeSelectedwasImproved.value) {
-                bottomSheetUpdate.postValue(false)
-                beforeSelectedwasImproved.value = selectedMarkerStatusToInt((it.tag as MarkerItem).improved)
-            } else{
-                bottomSheetUpdate.postValue(true)
-                beforeSelectedwasImproved.value = selectedMarkerStatusToInt((it.tag as MarkerItem).improved)
+            if(selectedMarkerLiveData.value != null) {
+                if (selectedMarkerStatusToInt((it!!.tag as MarkerItem).improved) == beforeSelectedwasImproved.value) {
+                    bottomSheetUpdate.postValue(false)
+                    beforeSelectedwasImproved.value =
+                        selectedMarkerStatusToInt((it.tag as MarkerItem).improved)
+                } else {
+                    bottomSheetUpdate.postValue(true)
+                    beforeSelectedwasImproved.value =
+                        selectedMarkerStatusToInt((it.tag as MarkerItem).improved)
+                }
             }
 
             Log.d(TAG, "bottomSheetUpdate : ${bottomSheetUpdate.value}")
