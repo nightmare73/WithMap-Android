@@ -11,6 +11,9 @@
         <variable
             name="myRegister"
             type="com.ebookfrenzy.withmap.data.MyRegisterPinData"/>
+        <variable
+            name="fragment"
+            type="com.ebookfrenzy.withmap.view.hamburg.MyRegisterPinFragment"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -26,7 +29,8 @@
             android:layout_marginTop="16dp"
             android:src="@drawable/ham_left"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:onClick="@{() -> fragment.popBackStack()}"/>
 
         <TextView
             android:id="@+id/tv_pin_register_frag_title"

@@ -14,23 +14,21 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.RelativeLayout
-import androidx.core.os.persistableBundleOf
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 
 import com.ebookfrenzy.withmap.R
 import com.ebookfrenzy.withmap.data.MarkerItem
-import com.ebookfrenzy.withmap.databinding.ActivityMainBinding
-import com.ebookfrenzy.withmap.databinding.BottomSheetAfterBinding
 import com.ebookfrenzy.withmap.databinding.FragmentMainMapBinding
 import com.ebookfrenzy.withmap.viewmodel.MainViewModel
 import com.ebookfrenzy.withmap.viewmodel.NotificationViewModel
+import com.ebookfrenzy.withmap.viewmodel.hamSetImage
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
@@ -43,7 +41,6 @@ import kotlinx.android.synthetic.main.bottom_sheet_after.view.*
 import kotlinx.android.synthetic.main.bottom_sheet_before.*
 import kotlinx.android.synthetic.main.bottom_sheet_before.view.*
 import kotlinx.android.synthetic.main.fragment_main_map.*
-import kotlinx.android.synthetic.main.navigation_drawer.*
 
 /**
  * A simple [Fragment] subclass.
@@ -58,14 +55,17 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
 
     private lateinit var mapFragment: SupportMapFragment
 
-    private lateinit var headerView : View
+    private lateinit var headerView: View
     private lateinit var mMap: GoogleMap
     private lateinit var binding: FragmentMainMapBinding
+
     private lateinit var markerRootView: View
     private lateinit var ivMarker: ImageView
     private lateinit var vm: MainViewModel
+    private lateinit var vmNoti: NotificationViewModel
 
     var bottomSheetLayout: View? = null
+
 
     private val TAG = "MainMapFragment"
 
@@ -78,6 +78,7 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
         markerRootView = LayoutInflater.from(this.context).inflate(R.layout.marker_layout, null)
         ivMarker = markerRootView.findViewById(R.id.iv_marker)
         vm = ViewModelProviders.of(this)[MainViewModel::class.java]
+        vmNoti = ViewModelProviders.of(this)[NotificationViewModel::class.java]
 
         binding = FragmentMainMapBinding.inflate(LayoutInflater.from(this.context))
 
@@ -115,14 +116,38 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
 
         Log.d(TAG, vm.selectedMarkerLiveData.value.toString())
     }
-    fun setHeader(view_navi : NavigationView) {
+
+    fun setHeader(view_navi: NavigationView) {
         headerView = view_navi.getHeaderView(0)
 
-        val myPinRegister : RelativeLayout = headerView.findViewById(R.id.rl_my_pin)
+        val headerAlarm : ImageView = headerView.findViewById(R.id.header_alarm)
+        val headerAccount : ConstraintLayout = headerView.findViewById(R.id.rl_account)
+        val headerExchange : Button = headerView.findViewById(R.id.bt_exchange)
+
+        headerExchange.setOnClickListener {
+            Log.d(TAG, "go to TradeFragment")
+            it.findNavController().navigate(R.id.action_mainMapFragment_to_tradeFragment)
+        }
+        headerAccount.setOnClickListener{
+            Log.d(TAG, "go to Account Manager")
+            it.findNavController().navigate(R.id.action_mainMapFragment_to_accountFragment)
+        }
+        headerAlarm.setOnClickListener{
+            Log.d(TAG, "go to Notification Fragment")
+            it.findNavController().navigate(R.id.action_mainMapFragment_to_notificationFragment)
+        }
+
+        val myPinRegister: RelativeLayout = headerView.findViewById(R.id.rl_my_pin)
         myPinRegister.setOnClickListener {
             Log.d(TAG, "layout clicked")
             it.findNavController().navigate(R.id.action_mainMapFragment_to_myRegisterPinFragment)
         }
+
+        vmNoti.notificationLiveData.observe(this, Observer {
+            hamSetImage(headerAlarm, it)
+        })
+
+
     }
 
     //View를 Bitmap으로 변환
@@ -174,7 +199,7 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
 
     //마커를 추가해놓는 함수
     private fun addMarker(markerItem: MarkerItem): Marker {
-        val position = LatLng(markerItem.lat, markerItem.lon)
+        val position = LatLng(markerItem.latitude, markerItem.longitude)
 
         if (!markerItem.improved) {
             //개선되기전
@@ -257,7 +282,9 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
 
         var h: Int = 1
         var off: Float = 0f
-        Log.d(TAG, "-----initPersistentBottomSheetBehavior()-----selectedMarkerItem : $markerItem  $mMarkerItem"
+        Log.d(
+            TAG,
+            "-----initPersistentBottomSheetBehavior()-----selectedMarkerItem : $markerItem  $mMarkerItem"
         )
 
         if (needUpdate) {
@@ -271,22 +298,25 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
                 bottomSheetLayout!!.bt_was_improved.setOnClickListener {
                     val bundle = Bundle()
                     bundle.putParcelable("item", markerItem as Parcelable)
-                    it.findNavController().navigate(R.id.action_mainMapFragment_to_pinRegisterFragment, bundle)
+                    it.findNavController()
+                        .navigate(R.id.action_mainMapFragment_to_pinRegisterFragment, bundle)
                     Log.d(TAG, "bt_was_improved clicked")
                 }
                 bottomSheetLayout!!.bt_show_detail.setOnClickListener {
-                    it.findNavController().navigate(R.id.action_mainMapFragment_to_pinDetailFragment)
+                    it.findNavController()
+                        .navigate(R.id.action_mainMapFragment_to_pinDetailFragment)
                     Log.d(TAG, "bt_show_detail clicked")
                 }
 
 
-                if(markerItem.type == 5 || markerItem.type == 6) {
+                if (markerItem.type == 5 || markerItem.type == 6) {
                     bottomSheetLayout!!.bt_was_improved.visibility = View.GONE
                     bottomSheetLayout!!.bt_show_detail.visibility = View.GONE
                     bottomSheetLayout!!.bt_show_detail_blue.visibility = View.VISIBLE
 
                     bottomSheetLayout!!.bt_show_detail_blue.setOnClickListener {
-                        it.findNavController().navigate(R.id.action_mainMapFragment_to_pinDetailFragment)
+                        it.findNavController()
+                            .navigate(R.id.action_mainMapFragment_to_pinDetailFragment)
                         Log.d(TAG, "bt_show_detail_blue clicked")
                     }
                 }
@@ -323,16 +353,16 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
                                 BottomSheetBehavior.STATE_EXPANDED -> {
                                     Log.d(TAG, "bottomSheet expanded")
 
-                                    view.tv_title_sheet_before.text = mMarkerItem.title
-                                    view.tv_date_sheet_before.text = mMarkerItem.date
-                                    view.tv_location_sheet_before.text = mMarkerItem.location
-                                    Log.d(TAG, "title : ${mMarkerItem.title}")
+                                    view.tv_title_sheet_before.text = mMarkerItem.name
+                                    view.tv_date_sheet_before.text = mMarkerItem.crtDate
+                                    view.tv_location_sheet_before.text = mMarkerItem.address
+                                    Log.d(TAG, "name : ${mMarkerItem.name}")
 
                                 }
                                 BottomSheetBehavior.STATE_SETTLING -> {
-                                    view.tv_title_sheet_before.text = mMarkerItem.title
-                                    view.tv_date_sheet_before.text = mMarkerItem.date
-                                    view.tv_location_sheet_before.text = mMarkerItem.location
+                                    view.tv_title_sheet_before.text = mMarkerItem.name
+                                    view.tv_date_sheet_before.text = mMarkerItem.crtDate
+                                    view.tv_location_sheet_before.text = mMarkerItem.address
                                 }
                             }
                         }
@@ -376,14 +406,14 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
                                         Log.d(TAG, "bottomSheet hiddden")
                                     }
                                     BottomSheetBehavior.STATE_EXPANDED -> {
-                                        view.tv_title_before.text = mMarkerItem.title
-                                        view.tv_date_before.text = mMarkerItem.date
+                                        view.tv_title_before.text = mMarkerItem.name
+                                        view.tv_date_before.text = mMarkerItem.crtDate
                                         view.tv_title_after.text = mMarkerItem.improvedTitle
                                         view.tv_date_after.text = mMarkerItem.improvedDate
                                     }
                                     BottomSheetBehavior.STATE_SETTLING -> {
-                                        view.tv_title_before.text = mMarkerItem.title
-                                        view.tv_date_before.text = mMarkerItem.date
+                                        view.tv_title_before.text = mMarkerItem.name
+                                        view.tv_date_before.text = mMarkerItem.crtDate
                                         view.tv_title_after.text = mMarkerItem.improvedTitle
                                         view.tv_date_after.text = mMarkerItem.improvedDate
                                     }
@@ -429,15 +459,15 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
                             BottomSheetBehavior.STATE_EXPANDED -> {
                                 Log.d(TAG, "bottomSheet expanded")
 
-                                view.tv_title_sheet_before.text = mMarkerItem.title
-                                view.tv_date_sheet_before.text = mMarkerItem.date
-                                view.tv_location_sheet_before.text = mMarkerItem.location
-                                Log.d(TAG, "title : ${mMarkerItem.title}")
+                                view.tv_title_sheet_before.text = mMarkerItem.name
+                                view.tv_date_sheet_before.text = mMarkerItem.crtDate
+                                view.tv_location_sheet_before.text = mMarkerItem.address
+                                Log.d(TAG, "name : ${mMarkerItem.name}")
                             }
                             BottomSheetBehavior.STATE_SETTLING -> {
-                                view.tv_title_sheet_before.text = mMarkerItem.title
-                                view.tv_date_sheet_before.text = mMarkerItem.date
-                                view.tv_location_sheet_before.text = mMarkerItem.location
+                                view.tv_title_sheet_before.text = mMarkerItem.name
+                                view.tv_date_sheet_before.text = mMarkerItem.crtDate
+                                view.tv_location_sheet_before.text = mMarkerItem.address
                             }
                         }
                     }
@@ -469,14 +499,14 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
                                 Log.d(TAG, "bottomSheet hiddden")
                             }
                             BottomSheetBehavior.STATE_EXPANDED -> {
-                                view.tv_title_before.text = mMarkerItem.title
-                                view.tv_date_before.text = mMarkerItem.date
+                                view.tv_title_before.text = mMarkerItem.name
+                                view.tv_date_before.text = mMarkerItem.crtDate
                                 view.tv_title_after.text = mMarkerItem.improvedTitle
                                 view.tv_date_after.text = mMarkerItem.improvedDate
                             }
                             BottomSheetBehavior.STATE_SETTLING -> {
-                                view.tv_title_before.text = mMarkerItem.title
-                                view.tv_date_before.text = mMarkerItem.date
+                                view.tv_title_before.text = mMarkerItem.name
+                                view.tv_date_before.text = mMarkerItem.crtDate
                                 view.tv_title_after.text = mMarkerItem.improvedTitle
                                 view.tv_date_after.text = mMarkerItem.improvedDate
                             }

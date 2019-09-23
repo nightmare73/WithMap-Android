@@ -3,6 +3,7 @@ package com.ebookfrenzy.withmap.viewmodel
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.LiveData
@@ -50,6 +51,14 @@ fun setImage(view: View, data: MutableLiveData<MutableList<NotificationData>>) {
     if (data.value != null) {
         if (data.value!!.size > 0) {
             view.setBackgroundResource(R.drawable.home_burger_notice)
+        }
+    }
+}
+
+fun hamSetImage(view : View, data: MutableList<NotificationData>) {
+    if(data != null) {
+        if(data!!.size>0) {
+            (view as ImageView).setImageResource(R.drawable.ham_alarm_isnoti)
         }
     }
 }

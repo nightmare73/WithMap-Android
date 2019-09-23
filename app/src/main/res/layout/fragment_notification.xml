@@ -8,6 +8,9 @@
         <variable
             name="vm"
             type="com.ebookfrenzy.withmap.viewmodel.NotificationViewModel"/>
+        <variable
+            name="fragment"
+            type="com.ebookfrenzy.withmap.view.hamburg.NotificationFragment"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -16,14 +19,15 @@
         tools:context=".view.hamburg.NotificationFragment">
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:src="@drawable/ham_left"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:onClick="@{() -> fragment.popBackStack()}"/>
 
         <TextView
             android:id="@+id/tv_pin_register_frag_title"

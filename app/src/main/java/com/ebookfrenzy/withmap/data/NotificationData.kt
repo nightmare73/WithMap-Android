@@ -1,11 +1,15 @@
 package com.ebookfrenzy.withmap.data
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
 data class NotificationData(
 
     val type: Int,
     val title: String,
     val date: String
-)
+): Parcelable
 
 fun getNotification() = mutableListOf(
     NotificationData(1, "first", "19.09.17"),

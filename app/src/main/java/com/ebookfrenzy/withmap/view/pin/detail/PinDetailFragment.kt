@@ -3,14 +3,13 @@ package com.ebookfrenzy.withmap.view.pin.detail
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import com.ebookfrenzy.withmap.databinding.FragmentPinDetailBinding
-import com.ebookfrenzy.withmap.view.search.SearchFragmentDirections
-import com.ebookfrenzy.withmap.viewmodel.SearchViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  * Created By Yun Hyeok
@@ -19,17 +18,9 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PinDetailFragment : Fragment() {
 
-    lateinit var binding: FragmentPinDetailBinding
-    lateinit var originalWindowAttributes: WindowManager.LayoutParams
-
-    private val tempSearchViewModel: SearchViewModel by viewModel()
+    private lateinit var originalWindowAttributes: WindowManager.LayoutParams
 
     private val returnBack = View.OnClickListener {
-        tempSearchViewModel.setTempSharedData("뷰모델 셰어링 테스트")
-        Log.d(
-            "Malibin Debug",
-            "PinDetailFragment 에서의 Live데이터 : ${tempSearchViewModel.tempSharedData.value}"
-        )
         Navigation.findNavController(it).popBackStack()
     }
 
@@ -38,12 +29,9 @@ class PinDetailFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentPinDetailBinding.inflate(inflater)
-        binding.returnBack = returnBack
 
-        val safeArgs = PinDetailFragmentArgs.fromBundle(arguments!!).message
-        binding.pinDetail = safeArgs
-        //pinDetail 에다가 String 집어넣어보기
+        val binding = FragmentPinDetailBinding.inflate(inflater)
+        binding.returnBack = returnBack
         return binding.root
     }
 
@@ -61,8 +49,6 @@ class PinDetailFragment : Fragment() {
         originalWindowAttributes = activity!!.window.attributes
         activity!!.window.apply {
             addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            //WindowManager.LayoutParams.
-
             decorView.systemUiVisibility =
                 View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
                         View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
@@ -90,6 +76,5 @@ class PinDetailFragment : Fragment() {
         winParams.flags = winParams.flags and bits.inv()
         win.attributes = winParams
     }
-
 
 }

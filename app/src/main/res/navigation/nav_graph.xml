@@ -56,6 +56,15 @@
         <action
             android:id="@+id/action_mainMapFragment_to_pinRegisterFragment"
             app:destination="@id/pinRegisterFragment" />
+        <action
+            android:id="@+id/action_mainMapFragment_to_notificationFragment"
+            app:destination="@id/notificationFragment" />
+        <action
+            android:id="@+id/action_mainMapFragment_to_accountFragment"
+            app:destination="@id/accountFragment" />
+        <action
+            android:id="@+id/action_mainMapFragment_to_tradeFragment"
+            app:destination="@id/tradeFragment" />
     </fragment>
 
     <fragment
@@ -71,7 +80,8 @@
     <fragment
         android:id="@+id/myRegisterPinFragment"
         android:name="com.ebookfrenzy.withmap.view.hamburg.MyRegisterPinFragment"
-        android:label="MyRegisterPinFragment" >
+        android:label="MyRegisterPinFragment"
+        tools:layout="@layout/fragment_my_register_pin">
         <action
             android:id="@+id/action_myRegisterPinFragment_to_pinDetailFragment"
             app:destination="@id/pinDetailFragment" />
@@ -89,4 +99,18 @@
             android:name="pinData"
             app:argType="com.ebookfrenzy.withmap.data.MyRegisterPinData" />
     </fragment>
+    <fragment
+        android:id="@+id/tradeFragment"
+        android:name="com.ebookfrenzy.withmap.view.trade.TradeFragment"
+        android:label="TradeFragment"
+        tools:layout="@layout/fragment_trade" />
+    <fragment
+        android:id="@+id/notificationFragment"
+        android:name="com.ebookfrenzy.withmap.view.hamburg.NotificationFragment"
+        android:label="NotificationFragment"
+        tools:layout="@layout/fragment_notification"/>
+    <fragment
+        android:id="@+id/accountFragment"
+        android:name="com.ebookfrenzy.withmap.view.hamburg.AccountFragment"
+        android:label="AccountFragment" />
 </navigation>

@@ -1,85 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="307dp"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tv_username"
-        style="@style/nanum_regular_login_textview"
-        android:textSize="36sp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="72dp"
-        android:text="이인하"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/tv_email"
-        style="@style/nanum_regular_login_textview"
-        android:textSize="14sp"
-        android:text="reduction59@naver.com"
-        app:layout_constraintStart_toStartOf="@+id/tv_username"
-        app:layout_constraintTop_toBottomOf="@+id/tv_username" />
-
-    <ImageView
-        android:id="@+id/imageView20"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/rl_account"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="144dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_username"
-        app:layout_constraintStart_toEndOf="@+id/tv_username"
-        app:srcCompat="@drawable/ham_right" />
+        android:paddingLeft="32dp"
+        android:layout_marginTop="72dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" >
+
+        <TextView
+            android:id="@+id/tv_username"
+            style="@style/nanum_regular_login_textview"
+
+            android:text="이인하"
+            android:textSize="36sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_email"
+            style="@style/nanum_regular_login_textview"
+            android:text="reduction59@naver.com"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="@+id/tv_username"
+            app:layout_constraintTop_toBottomOf="@+id/tv_username" />
+
+        <ImageView
+            android:id="@+id/imageView20"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="144dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_username"
+            app:layout_constraintStart_toEndOf="@+id/tv_username"
+            app:srcCompat="@drawable/ham_right" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <LinearLayout
         android:id="@+id/linearLayout4"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:layout_marginTop="24dp"
+        android:background="@drawable/bg_navigation_score"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingLeft="32dp"
-        app:layout_constraintTop_toBottomOf="@+id/tv_email"
-        tools:layout_editor_absoluteX="0dp"
-        android:background="@drawable/bg_navigation_score">
+        app:layout_constraintTop_toBottomOf="@+id/rl_account"
+        tools:layout_editor_absoluteX="0dp">
 
         <TextView
             android:id="@+id/textView17"
             style="@style/nanum_regular_login_textview"
-            android:textSize="14sp"
+            android:text="기여도"
             android:textColor="@color/white"
-            android:text="기여도" />
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/tv_score"
             style="@style/nanum_regular_login_textview"
-            android:textSize="36sp"
-            android:textColor="@color/white"
+            android:layout_marginLeft="8dp"
             android:text="5350"
-            android:layout_marginLeft="8dp"/>
+            android:textColor="@color/white"
+            android:textSize="36sp" />
 
         <TextView
             android:id="@+id/textView26"
             style="@style/nanum_semibold_login_textview"
-            android:textSize="14sp"
+            android:text="점"
             android:textColor="@color/white"
-            android:text="점" />
+            android:textSize="14sp" />
 
         <Button
             android:id="@+id/bt_exchange"
+            style="@style/nanum_semibold_login_textview"
             android:layout_width="96dp"
             android:layout_height="36dp"
             android:layout_marginLeft="16dp"
+            android:background="@drawable/bg_navigation_score_button"
             android:text="상품권으로 교환"
-            style="@style/nanum_semibold_login_textview"
-            android:textSize="10sp"
             android:textColor="@color/blue"
-            android:background="@drawable/bg_navigation_score_button"/>
+            android:textSize="10sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -92,9 +101,9 @@
             android:id="@+id/rl_my_pin"
             android:layout_width="match_parent"
             android:layout_height="60dp"
+            android:background="?attr/selectableItemBackground"
             android:paddingLeft="32dp"
-            tools:layout_editor_absoluteX="9dp"
-            android:background="?attr/selectableItemBackground">
+            tools:layout_editor_absoluteX="9dp">
 
             <TextView
                 style="@style/nanum_regular_login_textview"
@@ -132,10 +141,11 @@
                 android:text="장애인 지원단체"
                 android:textSize="14sp" />
         </RelativeLayout>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"
-            android:background="#c2c2c2"/>
+            android:background="#c2c2c2" />
 
         <RelativeLayout
             android:id="@+id/rl_use_info"
@@ -180,4 +190,15 @@
         </RelativeLayout>
     </LinearLayout>
 
+    <ImageView
+        android:id="@+id/header_alarm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/alarm_bell" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
+

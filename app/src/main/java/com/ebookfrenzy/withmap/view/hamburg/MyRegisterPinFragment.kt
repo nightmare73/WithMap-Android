@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import com.ebookfrenzy.withmap.BR
 
 import com.ebookfrenzy.withmap.R
@@ -44,7 +45,13 @@ class MyRegisterPinFragment : Fragment() {
                 R.layout.item_my_register,
                 BR.myRegister
             ){}
+            fragment = this@MyRegisterPinFragment
         }
+    }
+
+    fun popBackStack() {
+        Log.d(TAG, "go to BackStack")
+        binding.root.findNavController().popBackStack()
     }
 
 

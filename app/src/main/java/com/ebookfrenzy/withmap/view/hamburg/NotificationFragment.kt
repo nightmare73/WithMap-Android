@@ -2,11 +2,14 @@ package com.ebookfrenzy.withmap.view.hamburg
 
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import com.ebookfrenzy.withmap.BR
 import com.ebookfrenzy.withmap.R
 
@@ -46,6 +49,12 @@ class NotificationFragment : Fragment() {
                     BR.notification
                 ) {}
             vm = ViewModelProviders.of(this@NotificationFragment)[NotificationViewModel::class.java]
+            fragment = this@NotificationFragment
         }
+    }
+
+    fun popBackStack() {
+        Log.d(TAG, "go to BackStack")
+        binding.root.findNavController().popBackStack()
     }
 }
