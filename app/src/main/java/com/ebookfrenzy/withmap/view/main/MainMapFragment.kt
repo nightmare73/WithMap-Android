@@ -267,33 +267,33 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
         Log.d(TAG, "new selected : ${marker!!.tag}")
 
         //개선되지 않은 핀: 선택된 마커 이미지 변경
-        val selectedMarkerRootView = LayoutInflater.from(this.context).inflate(R.layout.marker_layout, null)
-        val selectedIvMarker : ImageView = selectedMarkerRootView.findViewById(R.id.iv_marker)
-        when ((marker.tag as MarkerItem).type) {
-            1 -> selectedIvMarker.setBackgroundResource(R.drawable.pin_hurdle_touch)
-            2 -> selectedIvMarker.setBackgroundResource(R.drawable.pin_dump_touch)
-            3 -> selectedIvMarker.setBackgroundResource(R.drawable.pin_unpaved_touch)
-            4 -> selectedIvMarker.setBackgroundResource(R.drawable.pin_narrow_touch)
-            5 -> selectedIvMarker.setBackgroundResource(R.drawable.pin_toilet_touch)
-            6 -> selectedIvMarker.setBackgroundResource(R.drawable.pin_restaurant_touch)
-        }
-        marker.setIcon(
-            BitmapDescriptorFactory.fromBitmap(
-                createDrawableFromView(
-                    this.context!!,
-                    selectedMarkerRootView
+        if(!(marker.tag as MarkerItem).improved) {
+            val selectedMarkerRootView =
+                LayoutInflater.from(this.context).inflate(R.layout.marker_layout, null)
+            val selectedIvMarker: ImageView = selectedMarkerRootView.findViewById(R.id.iv_marker)
+            when ((marker.tag as MarkerItem).type) {
+                1 -> selectedIvMarker.setBackgroundResource(R.drawable.pin_hurdle_touch)
+                2 -> selectedIvMarker.setBackgroundResource(R.drawable.pin_dump_touch)
+                3 -> selectedIvMarker.setBackgroundResource(R.drawable.pin_unpaved_touch)
+                4 -> selectedIvMarker.setBackgroundResource(R.drawable.pin_narrow_touch)
+                5 -> selectedIvMarker.setBackgroundResource(R.drawable.pin_toilet_touch)
+                6 -> selectedIvMarker.setBackgroundResource(R.drawable.pin_restaurant_touch)
+            }
+            marker.setIcon(
+                BitmapDescriptorFactory.fromBitmap(
+                    createDrawableFromView(
+                        this.context!!,
+                        selectedMarkerRootView
+                    )
                 )
             )
-        )
-//
-//        //직전에 선택된 핀이 있는 경우 -> 같은 마커를 '새로' 만들어서 지도에 추가
-//        if (selectedMarker != null) {
-//            addMarker(selectedMarker!!, false)
-//            selectedMarker!!.remove()//그 마커를 제거
-//        }
+        }
+
         if (vm.selectedMarkerLiveData.value != null) {
-            addMarker(vm.selectedMarkerLiveData.value!!.tag as MarkerItem)
-            vm.selectedMarkerLiveData.value!!.remove()
+            if(vm.selectedMarkerLiveData.value!!.tag != null) {
+                addMarker(vm.selectedMarkerLiveData.value!!.tag as MarkerItem)
+                vm.selectedMarkerLiveData.value!!.remove()
+            }
         }
         //선택된 마커를 selectedMarker로 '새로'지정해서 지도에 추가
         vm.selectedMarkerLiveData.value = marker
@@ -451,9 +451,39 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
                     }
             }
         } else {
+
+            persistentBottomSheetBehavior!!.state = BottomSheetBehavior.STATE_HIDDEN
             Log.d(TAG, "needUpdate : $needUpdate")//false여야함
             Log.d(TAG, "persistentBottomSheetBehaivior : $persistentBottomSheetBehavior")
+
             if (!mMarkerItem.improved) {
+                if (markerItem.type == 5 || markerItem.type == 6) {
+                    Log.d(TAG, "marker type is 5 or 6")
+                    bottomSheetLayout!!.bt_was_improved.visibility = View.GONE
+                    bottomSheetLayout!!.bt_show_detail.visibility = View.GONE
+                    bottomSheetLayout!!.bt_show_detail_blue.visibility = View.VISIBLE
+
+                    bottomSheetLayout!!.bt_show_detail_blue.setOnClickListener {
+                        it.findNavController()
+                            .navigate(R.id.action_mainMapFragment_to_pinDetailFragment)
+                        Log.d(TAG, "bt_show_detail_blue clicked")
+                    }
+                }else {
+
+                    bottomSheetLayout!!.bt_was_improved.setOnClickListener {
+                        val bundle = Bundle()
+                        bundle.putParcelable("item", markerItem as Parcelable)
+                        it.findNavController()
+                            .navigate(R.id.action_mainMapFragment_to_pinRegisterFragment, bundle)
+                        Log.d(TAG, "bt_was_improved clicked")
+                    }
+                    bottomSheetLayout!!.bt_show_detail.setOnClickListener {
+                        it.findNavController()
+                            .navigate(R.id.action_mainMapFragment_to_pinDetailFragment)
+                        Log.d(TAG, "bt_show_detail clicked")
+                    }
+                }
+                persistentBottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout)
                 persistentBottomSheetBehavior!!.setBottomSheetCallback(object :
                     BottomSheetBehavior.BottomSheetCallback() {
                     override fun onSlide(bottomSheet: View, slideOffset: Float) {
@@ -540,7 +570,6 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
                     }
                 })
             }
-            persistentBottomSheetBehavior!!.state = BottomSheetBehavior.STATE_HIDDEN
             persistentBottomSheetBehavior!!.state = BottomSheetBehavior.STATE_EXPANDED
         }
     }
@@ -552,10 +581,10 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
     }
 
     override fun onMapClick(p0: LatLng?) {
+        Log.d(TAG, "Map clicked")
         if (vm.selectedMarkerLiveData.value != null) {
             addMarker(vm.selectedMarkerLiveData.value!!.tag as MarkerItem)
             vm.selectedMarkerLiveData.value!!.remove()
-            vm.selectedMarkerLiveData.value = null
         }
 
         if (persistentBottomSheetBehavior != null) {
