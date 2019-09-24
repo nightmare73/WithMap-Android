@@ -8,6 +8,9 @@
         <variable
             name="vmNoti"
             type="com.ebookfrenzy.withmap.viewmodel.NotificationViewModel"/>
+        <variable
+            name="fragment"
+            type="com.ebookfrenzy.withmap.view.main.MainMapFragment"/>
     </data>
 
     <androidx.drawerlayout.widget.DrawerLayout
@@ -26,6 +29,28 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
+
+                <ImageView
+                    android:onClick="@{() -> fragment.goToPinRegister()}"
+                    android:clickable="true"
+                    android:id="@+id/bt_pin_register"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginBottom="88dp"
+                    android:src="@drawable/home_add_pin"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+                <ImageView
+                    android:id="@+id/bt_current_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="88dp"
+                    android:background="@drawable/home_location"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/bt_pin_register" />
 
                 <LinearLayout
                     android:id="@+id/ll_tab"
@@ -84,6 +109,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginTop="56dp"
                     app:layout_constraintTop_toBottomOf="@id/ll_tab" />
+
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

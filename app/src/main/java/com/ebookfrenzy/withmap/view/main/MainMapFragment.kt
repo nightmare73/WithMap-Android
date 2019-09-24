@@ -3,8 +3,10 @@ package com.ebookfrenzy.withmap.view.main
 
 import android.app.Activity
 import android.content.Context
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.location.Location
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.DisplayMetrics
@@ -17,7 +19,10 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.RelativeLayout
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -29,11 +34,17 @@ import com.ebookfrenzy.withmap.databinding.FragmentMainMapBinding
 import com.ebookfrenzy.withmap.viewmodel.MainViewModel
 import com.ebookfrenzy.withmap.viewmodel.NotificationViewModel
 import com.ebookfrenzy.withmap.viewmodel.hamSetImage
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.places.GeoDataClient
+import com.google.android.gms.location.places.PlaceDetectionClient
+import com.google.android.gms.location.places.PlaceLikelihoodBufferResponse
+import com.google.android.gms.location.places.Places
 import com.google.android.gms.maps.*
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.OnSuccessListener
+import com.google.android.gms.tasks.Task
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.bottom_sheet_after.*
@@ -47,6 +58,10 @@ import kotlinx.android.synthetic.main.fragment_main_map.*
  */
 class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
     GoogleMap.OnMapClickListener, NavigationView.OnNavigationItemSelectedListener {
+
+    private lateinit var currentLocation : Location
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private val LOCATION_REQUEST_CODE = 101
 
     private lateinit var mLoc: LatLng
 
@@ -99,6 +114,7 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
         binding.run {
             lifecycleOwner = this@MainMapFragment
             vmNoti = ViewModelProviders.of(this@MainMapFragment)[NotificationViewModel::class.java]
+            fragment = this@MainMapFragment
         }
 
         vm.bottomSheetUpdate.observe(this, Observer {
@@ -110,12 +126,91 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
         })
 
         mapFragment = SupportMapFragment.newInstance()
-        mapFragment.getMapAsync(this)
+//        mapFragment.getMapAsync(this)
 
         childFragmentManager.beginTransaction().replace(R.id.fl_main_map_frag, mapFragment).commit()
 
+        requestPermission()
+
         Log.d(TAG, vm.selectedMarkerLiveData.value.toString())
     }
+
+    private fun requestPermission() {
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(activity!!);
+        if (ActivityCompat.checkSelfPermission(context!!, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context!!, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Log.d(TAG, "request permission")
+            ActivityCompat.requestPermissions(activity!!, Array<String>(1, {android.Manifest.permission.ACCESS_FINE_LOCATION}), LOCATION_REQUEST_CODE)
+            return
+        }
+        fetchLastLocation()
+    }
+    private fun fetchLastLocation() {
+        Log.d(TAG, "fetchlatstLcoation")
+        val task : Task<Location> = fusedLocationProviderClient.lastLocation
+        task.addOnSuccessListener(object : OnSuccessListener<Location> {
+            override fun onSuccess(location: Location?) {
+                if(location != null) {
+                    currentLocation = location
+                    Log.d(TAG, "fetchLastLocation success")
+                    Toast.makeText(context, "hi", Toast.LENGTH_SHORT)
+                    val supportMapFragment : SupportMapFragment = childFragmentManager.findFragmentById(R.id.fl_main_map_frag) as SupportMapFragment
+                    supportMapFragment.getMapAsync(this@MainMapFragment)
+                }else {
+                    Log.d(TAG, "fetchLastLocation fail")
+                    Toast.makeText(context, "No Location recorded", Toast.LENGTH_SHORT).show()
+
+                }
+            }
+        })
+    }
+
+    fun goToPinRegister() {
+        Log.d(TAG, "go to Pin Register")
+        binding.root.findNavController().navigate(R.id.action_mainMapFragment_to_pinRegisterFragment)
+    }
+
+    fun showCurrent() {
+
+    }
+
+
+
+
+
+
+    override fun onMapReady(googleMap: GoogleMap?) {
+        mMap = googleMap!!
+
+        mLoc = LatLng(currentLocation.latitude, currentLocation.longitude)
+
+//        mLoc = LatLng(37.537523, 126.96558)
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mLoc, 14f))
+        mMap.setOnMarkerClickListener(this)
+        mMap.setOnMapClickListener(this)
+
+        getSampleMarkerItems()
+
+
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        when(requestCode) {
+            LOCATION_REQUEST_CODE -> {
+                if(grantResults.size >0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.d(TAG, "onRequestPermissionsresult granted")
+                    fetchLastLocation()
+                }else {
+                    Toast.makeText(context!!, "Lcoationp permission missing", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+
 
     fun setHeader(view_navi: NavigationView) {
         headerView = view_navi.getHeaderView(0)
@@ -186,16 +281,6 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
         }
     }
 
-    override fun onMapReady(googleMap: GoogleMap?) {
-        mMap = googleMap!!
-
-        mLoc = LatLng(37.537523, 126.96558)
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mLoc, 14f))
-        mMap.setOnMarkerClickListener(this)
-        mMap.setOnMapClickListener(this)
-
-        getSampleMarkerItems()
-    }
 
     //마커를 추가해놓는 함수
     private fun addMarker(markerItem: MarkerItem): Marker {
