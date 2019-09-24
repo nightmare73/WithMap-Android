@@ -9,10 +9,35 @@
         android:id="@+id/loginFragment"
         android:name="com.ebookfrenzy.withmap.view.login.LoginFragment"
         android:label="fragment_login"
-        tools:layout="@layout/fragment_login" />
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_loginFragment_to_signUpFragment"
+            app:destination="@+id/signUpFragment"
+            app:launchSingleTop="false"
+            app:popUpToInclusive="false" />
+    </fragment>
     <fragment
         android:id="@+id/signUpFragment"
         android:name="com.ebookfrenzy.withmap.view.login.SignUpFragment"
         android:label="fragment_sign_up"
-        tools:layout="@layout/fragment_sign_up" />
+        tools:layout="@layout/fragment_sign_up" >
+        <action
+            android:id="@+id/action_signUpFragment_to_signUpInfoFragment"
+            app:destination="@id/signUpInfoFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/loginFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/signUpInfoFragment"
+        android:name="com.ebookfrenzy.withmap.view.login.SignUpInfoFragment"
+        android:label="SignUpInfoFragment"
+        tools:layout="@layout/fragment_sign_up_info">
+        <action
+            android:id="@+id/action_signUpInfoFragment_to_loginFragment"
+            app:destination="@+id/loginFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/signUpInfoFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
 </navigation>

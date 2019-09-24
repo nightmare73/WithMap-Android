@@ -13,6 +13,7 @@ import android.widget.EditText
 import androidx.databinding.BindingAdapter
 import androidx.databinding.BindingMethod
 import androidx.lifecycle.MutableLiveData
+import androidx.navigation.Navigation
 import com.ebookfrenzy.withmap.R
 import com.ebookfrenzy.withmap.databinding.FragmentSignUpBinding
 import com.ebookfrenzy.withmap.viewmodel.LoginViewModel
@@ -41,6 +42,11 @@ class SignUpFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         repeatButtonListener()
+
+        // -혁- 다음화면으로 가는코드
+//        view.findViewById<Button>(R.id.btn_sign_up).setOnClickListener {
+//            Navigation.findNavController(it).navigate(R.id.action_signUpFragment_to_signUpInfoFragment)
+//        }
 
     }
     fun repeatButtonListener() {

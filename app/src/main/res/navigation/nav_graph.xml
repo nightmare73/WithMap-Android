@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/pinDetailFragment">
+    app:startDestination="@id/splashFragment">
 
     <fragment
         android:id="@+id/pinDetailFragment"
@@ -53,6 +53,9 @@
         <action
             android:id="@+id/action_mainMapFragment_to_myRegisterPinFragment"
             app:destination="@id/myRegisterPinFragment" />
+        <action
+            android:id="@+id/action_mainMapFragment_to_nav_graph_login"
+            app:destination="@id/nav_graph_login" />
     </fragment>
 
     <fragment
@@ -78,4 +81,5 @@
         android:name="com.ebookfrenzy.withmap.view.trade.TradeFragment"
         android:label="TradeFragment"
         tools:layout="@layout/fragment_trade"/>
+    <include app:graph="@navigation/nav_graph_login" />
 </navigation>

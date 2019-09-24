@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import androidx.navigation.Navigation
 
 import com.ebookfrenzy.withmap.R
 import com.ebookfrenzy.withmap.databinding.FragmentSignUpInfoBinding
@@ -48,6 +50,12 @@ class SignUpInfoFragment : Fragment() {
         imageView2.setOnClickListener { onClickInfo(2) }
         imageView3.setOnClickListener { onClickInfo(4) }
         imageView4.setOnClickListener { onClickInfo(3) }
+
+
+        // -혁- 회원가입 다 끝난후 로그인 프래그먼트로 돌아가는 코드
+//        view.findViewById<Button>(R.id.button).setOnClickListener {
+//            Navigation.findNavController(it).navigate(R.id.action_signUpInfoFragment_to_loginFragment)
+//        }
     }
 
     fun onClickInfo(i: Int) {
@@ -63,11 +71,11 @@ class SignUpInfoFragment : Fragment() {
                 man = 0
             }
 
-            2 -> if(man == 1 || man == 0) {
+            2 -> if (man == 1 || man == 0) {
                 imageView2.setImageResource(R.drawable.join_female_touch)
                 imageView1.setImageResource(R.drawable.join_male)
                 man = 2
-            }else {
+            } else {
                 imageView2.setImageResource(R.drawable.join_female)
                 man = 0
             }
