@@ -64,7 +64,9 @@ class PinRegisterFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
 
-        markerItem = arguments!!.getParcelable("item") as MarkerItem
+        if(arguments != null) {
+            markerItem = arguments!!.getParcelable("item") as MarkerItem
+        }
 
         binding = FragmentPinRegisterBinding.inflate(LayoutInflater.from(this.context))
         return binding.root

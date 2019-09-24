@@ -170,12 +170,9 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
     }
 
     fun showCurrent() {
-
+        mLoc = LatLng(currentLocation.latitude, currentLocation.longitude)
+        mMap.animateCamera(CameraUpdateFactory.newLatLng(mLoc))
     }
-
-
-
-
 
 
     override fun onMapReady(googleMap: GoogleMap?) {
@@ -662,7 +659,8 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
     private fun setMapPaddingBottom(offset: Float) {
         //From 0.0(min) - 1.0(max) //BottomShetExpanded - BottomSheepCollapsed
         val maxMapPaddingBottom = 1.0f
-        mMap.setPadding(0, 0, 0, Math.round(offset * maxMapPaddingBottom))
+//        mMap.setPadding(0, 0, 0, Math.round(offset * maxMapPaddingBottom))
+        cl_main_map_frag.setPadding(0, 0,0, Math.round(offset * maxMapPaddingBottom))
     }
 
     override fun onMapClick(p0: LatLng?) {
