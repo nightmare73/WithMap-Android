@@ -33,6 +33,8 @@ import com.ebookfrenzy.withmap.viewmodel.PinRegisterViewModel
 import com.google.android.gms.maps.model.Marker
 import com.googry.googrybaserecyclerview.BaseRecyclerView
 import kotlinx.android.synthetic.main.fragment_pin_register.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * A simple [Fragment] subclass.
@@ -42,10 +44,14 @@ import kotlinx.android.synthetic.main.fragment_pin_register.*
 //f = 2 : 개선되었습니다 핀 등록
 class PinRegisterFragment : Fragment() {
 
-    var isNew = MutableLiveData<Boolean>().apply{this.value = false}
-    var title = MutableLiveData<String>().apply{this.value = "핀 등록"}
+    private var mNow : Long = 0
+    private lateinit var mDate : Date
+    private var mFormat : SimpleDateFormat = SimpleDateFormat("yyyy-mm-dd hh:mm:ss")
 
-    private lateinit var markerItem : MarkerItem
+    var isNew = MutableLiveData<Boolean>().apply { this.value = false }
+    var title = MutableLiveData<String>().apply { this.value = "핀 등록" }
+
+    private var markerItem: MarkerItem? = null
 
     private val REQUEST_CODE_SELECT_IMAGE = 1111
     private val MY_READ_STORAGE_REQUEST_CODE = 7777
@@ -58,14 +64,17 @@ class PinRegisterFragment : Fragment() {
     val viewModel = PinRegisterViewModel()
     private lateinit var binding: FragmentPinRegisterBinding
 
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
 
-        if(arguments != null) {
+        if (arguments != null) {
             markerItem = arguments!!.getParcelable("item") as MarkerItem
+            Log.d(TAG, "before improved : $markerItem")
         }
 
         binding = FragmentPinRegisterBinding.inflate(LayoutInflater.from(this.context))
@@ -75,7 +84,8 @@ class PinRegisterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        isNewOrImproved(markerItem.improved)
+        isNewOrImproved()
+
 
         binding.run {
             lifecycleOwner = this@PinRegisterFragment
@@ -87,59 +97,79 @@ class PinRegisterFragment : Fragment() {
         }
 
         initDataBinding()
-        improvedTypePick(markerItem.type)
+
         Log.d(TAG, binding.etTitle.text.toString())
 
     }
 
-    fun isNewOrImproved(i: Boolean) {
-        when (i) {
-            false -> {
-                isNew.value = true
-                title.value = "핀 등록"
+    fun isNewOrImproved() {
+        if (markerItem != null) {
+            isNew.value = false
+            title.value = "개선되었습니다"
+
+            improvedTypePick(markerItem!!.type)
+            markerItem!!.improved = true
+
+
+            binding.btComplete.setOnClickListener {
+                markerItem!!.improvedTitle = binding.etTitle.text.toString()
+                markerItem!!.improvedDate = getTime()
+
+                Log.d(TAG, markerItem.toString())
+                //TODO() 작성완료시 markeritem 보내기
             }
-            true -> {
-                isNew.value = false
-                title.value = "개선되었습니다"
-            }
+
+
+        } else {
+            isNew.value = true
+            title.value = "핀 등록"
         }
     }
 
+    /**
+     * 개선되었어요
+     */
     //BindingAdapter
     fun improvedTypePick(i: Int) {
-        if (markerItem.improved) {
-            when (i) {
-                1 -> {
-                    binding.ivObstacle.setImageResource(R.drawable.pin_hurdle_on)
-                    binding.tvObstacle.setTextColor(resources.getColor(R.color.orange))
-                }
-                2 -> {
-                    binding.ivDump.setImageResource(R.drawable.pin_dump_on)
-                    binding.tvDump.setTextColor(resources.getColor(R.color.orange))
+        if (markerItem != null) {
+            if (!markerItem!!.improved) {
+                when (i) {
+                    1 -> {
+                        binding.ivObstacle.setImageResource(R.drawable.pin_hurdle_on)
+                        binding.tvObstacle.setTextColor(resources.getColor(R.color.orange))
+                    }
+                    2 -> {
+                        binding.ivDump.setImageResource(R.drawable.pin_dump_on)
+                        binding.tvDump.setTextColor(resources.getColor(R.color.orange))
 
-                }
-                3 -> {
-                    binding.ivUnpaved.setImageResource(R.drawable.group_9)
-                    binding.tvUnpaved.setTextColor(resources.getColor(R.color.orange))
-                }
-                4 -> {
-                    binding.ivNarrow.setImageResource(R.drawable.group_10)
-                    binding.tvNarrow.setTextColor(resources.getColor(R.color.orange))
+                    }
+                    3 -> {
+                        binding.ivUnpaved.setImageResource(R.drawable.group_9)
+                        binding.tvUnpaved.setTextColor(resources.getColor(R.color.orange))
+                    }
+                    4 -> {
+                        binding.ivNarrow.setImageResource(R.drawable.group_10)
+                        binding.tvNarrow.setTextColor(resources.getColor(R.color.orange))
 
-                }
-                5 -> {
-                    binding.ivToilet.setImageResource(R.drawable.pin_toilet_on)
-                    binding.tvToilet.setTextColor(resources.getColor(R.color.blue))
+                    }
+                    5 -> {
+                        binding.ivToilet.setImageResource(R.drawable.pin_toilet_on)
+                        binding.tvToilet.setTextColor(resources.getColor(R.color.blue))
 
-                }
-                6 -> {
-                    binding.ivRestaurant.setImageResource(R.drawable.pin_restaurant_on)
-                    binding.tvRestaurant.setTextColor(resources.getColor(R.color.blue))
+                    }
+                    6 -> {
+                        binding.ivRestaurant.setImageResource(R.drawable.pin_restaurant_on)
+                        binding.tvRestaurant.setTextColor(resources.getColor(R.color.blue))
 
+                    }
                 }
             }
         }
     }
+
+    /**
+     * 새로운 핀 등록
+     */
 
     fun typeAllOff() {
         binding.ivObstacle.setImageResource(R.drawable.pin_hurdle_off)
@@ -161,36 +191,34 @@ class PinRegisterFragment : Fragment() {
 
     fun pickType(i: Int) {
         typeAllOff()
-        if (!markerItem.improved) {
-            when (i) {
-                1 -> {
-                    binding.ivObstacle.setImageResource(R.drawable.pin_hurdle_on)
-                    binding.tvObstacle.setTextColor(resources.getColor(R.color.orange))
-                }
-                2 -> {
-                    binding.ivDump.setImageResource(R.drawable.pin_dump_on)
-                    binding.tvDump.setTextColor(resources.getColor(R.color.orange))
+        when (i) {
+            1 -> {
+                binding.ivObstacle.setImageResource(R.drawable.pin_hurdle_on)
+                binding.tvObstacle.setTextColor(resources.getColor(R.color.orange))
+            }
+            2 -> {
+                binding.ivDump.setImageResource(R.drawable.pin_dump_on)
+                binding.tvDump.setTextColor(resources.getColor(R.color.orange))
 
-                }
-                3 -> {
-                    binding.ivUnpaved.setImageResource(R.drawable.group_9)
-                    binding.tvUnpaved.setTextColor(resources.getColor(R.color.orange))
-                }
-                4 -> {
-                    binding.ivNarrow.setImageResource(R.drawable.group_10)
-                    binding.tvNarrow.setTextColor(resources.getColor(R.color.orange))
+            }
+            3 -> {
+                binding.ivUnpaved.setImageResource(R.drawable.group_9)
+                binding.tvUnpaved.setTextColor(resources.getColor(R.color.orange))
+            }
+            4 -> {
+                binding.ivNarrow.setImageResource(R.drawable.group_10)
+                binding.tvNarrow.setTextColor(resources.getColor(R.color.orange))
 
-                }
-                5 -> {
-                    binding.ivToilet.setImageResource(R.drawable.pin_toilet_on)
-                    binding.tvToilet.setTextColor(resources.getColor(R.color.blue))
+            }
+            5 -> {
+                binding.ivToilet.setImageResource(R.drawable.pin_toilet_on)
+                binding.tvToilet.setTextColor(resources.getColor(R.color.blue))
 
-                }
-                6 -> {
-                    binding.ivRestaurant.setImageResource(R.drawable.pin_restaurant_on)
-                    binding.tvRestaurant.setTextColor(resources.getColor(R.color.blue))
+            }
+            6 -> {
+                binding.ivRestaurant.setImageResource(R.drawable.pin_restaurant_on)
+                binding.tvRestaurant.setTextColor(resources.getColor(R.color.blue))
 
-                }
             }
         }
     }
@@ -285,7 +313,14 @@ class PinRegisterFragment : Fragment() {
         cursor.close()
         return result
     }
+
+    private fun getTime() : String{
+        mNow = System.currentTimeMillis()
+        mDate = Date(mNow)
+        return mFormat.format(mDate)
+    }
 }
+
 
 
 

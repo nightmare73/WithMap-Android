@@ -11,9 +11,10 @@ data class MarkerItem(
     val name : String,
     val crtDate : String,
     val address : String,
-    val improved: Boolean,
-    val improvedTitle : String? = null,
-    val improvedDate : String? = null
+    var improved: Boolean,
+    var improvedTitle : String? = null,
+    var improvedDate : String? = null,
+    var comment : String? = null
 ) : Parcelable
 
 

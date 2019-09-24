@@ -380,7 +380,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/rv_photo" />
 
             <Button
-                android:id="@+id/button2"
+                android:id="@+id/bt_complete"
                 style="@style/nanum_semibold_bottom_button"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"

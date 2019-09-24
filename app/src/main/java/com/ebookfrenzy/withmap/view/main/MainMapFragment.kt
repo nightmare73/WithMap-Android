@@ -23,6 +23,7 @@ import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.marginTop
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -403,6 +404,7 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
 
                 if (markerItem.type == 5 || markerItem.type == 6) {
                     Log.d(TAG, "marker type is 5 or 6")
+
                     bottomSheetLayout!!.bt_was_improved.visibility = View.GONE
                     bottomSheetLayout!!.bt_show_detail.visibility = View.GONE
                     bottomSheetLayout!!.bt_show_detail_blue.visibility = View.VISIBLE
