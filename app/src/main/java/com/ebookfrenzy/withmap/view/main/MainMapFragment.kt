@@ -98,6 +98,13 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
         binding = FragmentMainMapBinding.inflate(LayoutInflater.from(this.context))
 
 
+        // -혁- 임시로 로그인 프래그먼틀 가는 코드
+//        binding.llTab.setOnClickListener{
+//            Navigation.findNavController(it).navigate(R.id.action_mainMapFragment_to_nav_graph_login)
+//        }
+
+
+
         return binding.root
     }
 
