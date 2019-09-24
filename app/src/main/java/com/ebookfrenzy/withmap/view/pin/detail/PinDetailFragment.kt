@@ -22,6 +22,7 @@ class PinDetailFragment : Fragment() {
 
     private val returnBack = View.OnClickListener {
         Navigation.findNavController(it).popBackStack()
+        resetStatusBarSettings()
     }
 
     override fun onCreateView(
