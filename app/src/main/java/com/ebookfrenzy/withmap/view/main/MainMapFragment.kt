@@ -80,6 +80,8 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
     private lateinit var vm: MainViewModel
     private lateinit var vmNoti: NotificationViewModel
 
+    private val params = ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+
     var bottomSheetLayout: View? = null
 
 
@@ -392,6 +394,9 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
 
     //BottomSheet발생시키는 함수
     private fun initPersistentBottonSheetBehavior(markerItem: MarkerItem, needUpdate: Boolean) {
+
+        params.setMargins(0, 16, 0, 0)
+
         val mMarkerItem = markerItem
 
         var h: Int = 1
@@ -412,6 +417,9 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
                 if (markerItem.type == 5 || markerItem.type == 6) {
                     Log.d(TAG, "marker type is 5 or 6")
 
+                    bottomSheetLayout!!.ll_info_orange.visibility = View.GONE
+                    bottomSheetLayout!!.ll_info_blue.visibility = View.VISIBLE
+
                     bottomSheetLayout!!.bt_was_improved.visibility = View.GONE
                     bottomSheetLayout!!.bt_show_detail.visibility = View.GONE
                     bottomSheetLayout!!.bt_show_detail_blue.visibility = View.VISIBLE
@@ -423,6 +431,8 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
                     }
                 }else {
 
+                    bottomSheetLayout!!.ll_info_orange.visibility = View.VISIBLE
+                    bottomSheetLayout!!.ll_info_blue.visibility = View.GONE
                     bottomSheetLayout!!.bt_was_improved.setOnClickListener {
                         val bundle = Bundle()
                         bundle.putParcelable("item", markerItem as Parcelable)
@@ -470,6 +480,12 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
                                 BottomSheetBehavior.STATE_EXPANDED -> {
                                     Log.d(TAG, "bottomSheet expanded")
 
+                                    view.tv_title_sheet_before_blue.text = mMarkerItem.name
+                                    view.tv_date_sheet_before_blue.text = mMarkerItem.crtDate
+                                    view.tv_info_location_blue.text = mMarkerItem.address
+                                    view.tv_usable_time_blue.text = mMarkerItem.useable_time
+                                    view.tv_call_number_blue.text = mMarkerItem.call_number
+
                                     view.tv_title_sheet_before.text = mMarkerItem.name
                                     view.tv_date_sheet_before.text = mMarkerItem.crtDate
                                     view.tv_location_sheet_before.text = mMarkerItem.address
@@ -477,6 +493,13 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
 
                                 }
                                 BottomSheetBehavior.STATE_SETTLING -> {
+
+                                    view.tv_title_sheet_before_blue.text = mMarkerItem.name
+                                    view.tv_date_sheet_before_blue.text = mMarkerItem.crtDate
+                                    view.tv_info_location_blue.text = mMarkerItem.address
+                                    view.tv_usable_time_blue.text = mMarkerItem.useable_time
+                                    view.tv_call_number_blue.text = mMarkerItem.call_number
+
                                     view.tv_title_sheet_before.text = mMarkerItem.name
                                     view.tv_date_sheet_before.text = mMarkerItem.crtDate
                                     view.tv_location_sheet_before.text = mMarkerItem.address
@@ -550,6 +573,10 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
             if (!mMarkerItem.improved) {
                 if (markerItem.type == 5 || markerItem.type == 6) {
                     Log.d(TAG, "marker type is 5 or 6")
+
+                    bottomSheetLayout!!.ll_info_orange.visibility = View.GONE
+                    bottomSheetLayout!!.ll_info_blue.visibility = View.VISIBLE
+
                     bottomSheetLayout!!.bt_was_improved.visibility = View.GONE
                     bottomSheetLayout!!.bt_show_detail.visibility = View.GONE
                     bottomSheetLayout!!.bt_show_detail_blue.visibility = View.VISIBLE
@@ -560,6 +587,9 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
                         Log.d(TAG, "bt_show_detail_blue clicked")
                     }
                 }else {
+
+                    bottomSheetLayout!!.ll_info_orange.visibility = View.VISIBLE
+                    bottomSheetLayout!!.ll_info_blue.visibility = View.GONE
 
                     bottomSheetLayout!!.bt_was_improved.setOnClickListener {
                         val bundle = Bundle()
@@ -606,12 +636,25 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
                             BottomSheetBehavior.STATE_EXPANDED -> {
                                 Log.d(TAG, "bottomSheet expanded")
 
+                                view.tv_title_sheet_before_blue.text = mMarkerItem.name
+                                view.tv_date_sheet_before_blue.text = mMarkerItem.crtDate
+                                view.tv_info_location_blue.text = mMarkerItem.address
+                                view.tv_usable_time_blue.text = mMarkerItem.useable_time
+                                view.tv_call_number_blue.text = mMarkerItem.call_number
+
                                 view.tv_title_sheet_before.text = mMarkerItem.name
                                 view.tv_date_sheet_before.text = mMarkerItem.crtDate
                                 view.tv_location_sheet_before.text = mMarkerItem.address
                                 Log.d(TAG, "name : ${mMarkerItem.name}")
                             }
                             BottomSheetBehavior.STATE_SETTLING -> {
+
+                                view.tv_title_sheet_before_blue.text = mMarkerItem.name
+                                view.tv_date_sheet_before_blue.text = mMarkerItem.crtDate
+                                view.tv_info_location_blue.text = mMarkerItem.address
+                                view.tv_usable_time_blue.text = mMarkerItem.useable_time
+                                view.tv_call_number_blue.text = mMarkerItem.call_number
+
                                 view.tv_title_sheet_before.text = mMarkerItem.name
                                 view.tv_date_sheet_before.text = mMarkerItem.crtDate
                                 view.tv_location_sheet_before.text = mMarkerItem.address

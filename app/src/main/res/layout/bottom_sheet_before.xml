@@ -2,15 +2,16 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="224dp"
-    android:elevation="8dp"
-    android:background="@drawable/bg_bottom_sheet_orange"
     android:id="@+id/bottom_sheet_before"
+    android:layout_width="match_parent"
+    android:layout_height="224dp"
+    android:background="@drawable/bg_bottom_sheet_orange"
+    android:elevation="8dp"
+    android:orientation="vertical"
 
-    app:layout_behavior="@string/bottom_sheet_behavior"
     app:behavior_hideable="true"
-    app:behavior_peekHeight="0dp">
+    app:behavior_peekHeight="0dp"
+    app:layout_behavior="@string/bottom_sheet_behavior">
 
 
     <ImageView
@@ -33,93 +34,210 @@
         app:layout_constraintTop_toBottomOf="@+id/imageView17"
         app:srcCompat="@drawable/bg_improved_frag_type" />
 
-    <TextView
-        android:id="@+id/tv_title_sheet_before"
-        style="@style/nanum_semibold_login_textview"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="32dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageView18"
-        app:layout_constraintTop_toBottomOf="@+id/imageView17"
-        tools:text="울퉁불퉁 비포장길"
-        />
-
-    <TextView
-        android:id="@+id/tv_date_sheet_before"
-        style="@style/nanum_medium_login_textview"
-        android:layout_marginTop="8dp"
-        tools:text="TextView"
-        app:layout_constraintEnd_toEndOf="@+id/tv_title_sheet_before"
-        app:layout_constraintStart_toStartOf="@+id/tv_title_sheet_before"
-        app:layout_constraintTop_toBottomOf="@+id/tv_title_sheet_before"
-        android:textColor="@color/et_pin_text_gray"/>
-
     <LinearLayout
+        android:id="@+id/ll_info_orange"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="@+id/tv_date_sheet_before"
-        app:layout_constraintStart_toStartOf="@+id/tv_date_sheet_before"
-        app:layout_constraintTop_toBottomOf="@+id/tv_date_sheet_before">
+        android:layout_marginTop="24dp"
+        android:layout_marginRight="16dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imageView18"
+        app:layout_constraintTop_toBottomOf="@+id/imageView17">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/home_detail_pin"
-            android:layout_gravity="center"/>
 
         <TextView
-            android:id="@+id/tv_location_sheet_before"
+            android:id="@+id/tv_title_sheet_before"
+            style="@style/nanum_semibold_login_textview"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="울퉁불퉁 비포장길" />
+
+        <TextView
+            android:id="@+id/tv_date_sheet_before"
             style="@style/nanum_medium_login_textview"
-            tools:layout_editor_absoluteX="202dp"
-            tools:layout_editor_absoluteY="104dp"
-            tools:text="마포 김밥천국 옆 골목길"
-            android:layout_marginLeft="4dp"
-            android:textColor="@color/et_pin_text_gray"/>
+            android:layout_marginTop="4dp"
+            android:textColor="@color/et_pin_text_gray"
+            tools:text="TextView" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/linearLayout6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/home_detail_pin" />
+
+                <TextView
+                    android:id="@+id/tv_location_sheet_before"
+                    style="@style/nanum_medium_login_textview"
+                    android:layout_marginLeft="4dp"
+                    android:textColor="@color/et_pin_text_gray"
+                    tools:layout_editor_absoluteX="202dp"
+                    tools:layout_editor_absoluteY="104dp"
+                    tools:text="마포 김밥천국 옆 골목길" />
+            </LinearLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/ll_info_blue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="16dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imageView18"
+        app:layout_constraintTop_toBottomOf="@+id/imageView17">
+
+
+        <TextView
+            android:id="@+id/tv_title_sheet_before_blue"
+            style="@style/nanum_semibold_login_textview"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="울퉁불퉁 비포장길" />
+
+        <TextView
+            android:id="@+id/tv_date_sheet_before_blue"
+            style="@style/nanum_medium_login_textview"
+            android:textColor="@color/et_pin_text_gray"
+            tools:text="TextView" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/ll_info_location_blue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/home_detail_pin" />
+
+                <TextView
+                    android:id="@+id/tv_info_location_blue"
+                    style="@style/nanum_medium_login_textview"
+                    android:layout_marginLeft="4dp"
+                    android:textSize="10sp"
+                    android:textColor="@color/et_pin_text_gray"
+                    tools:layout_editor_absoluteX="202dp"
+                    tools:layout_editor_absoluteY="104dp"
+                    tools:text="마포 김밥천국 옆 골목길" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_useable_time_blue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/clock_blue" />
+
+                <TextView
+                    android:id="@+id/tv_usable_time_blue"
+                    style="@style/nanum_medium_login_textview"
+                    android:layout_marginLeft="4dp"
+                    android:textColor="@color/et_pin_text_gray"
+                    android:textSize="10sp"
+                    tools:layout_editor_absoluteX="202dp"
+                    tools:layout_editor_absoluteY="104dp"
+                    tools:text="마포 김밥천국 옆 골목길" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_call_number_blue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/call_blue" />
+
+                <TextView
+                    android:id="@+id/tv_call_number_blue"
+                    style="@style/nanum_medium_login_textview"
+                    android:layout_marginLeft="4dp"
+                    android:textColor="@color/et_pin_text_gray"
+                    android:textSize="10sp"
+                    tools:layout_editor_absoluteX="202dp"
+                    tools:layout_editor_absoluteY="104dp"
+                    tools:text="마포 김밥천국 옆 골목길" />
+            </LinearLayout>
+        </LinearLayout>
+
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_marginBottom="16dp"
+        android:gravity="center"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout_editor_absoluteX="0dp"
         android:paddingHorizontal="12dp"
-        android:gravity="center">
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_editor_absoluteX="0dp">
 
         <Button
             android:id="@+id/bt_was_improved"
+            style="@style/nanum_semibold_bottom_button"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:background="@drawable/bg_button"
             android:layout_weight="1"
+            android:background="@drawable/bg_button"
             android:text="개선되었어요"
-            style="@style/nanum_semibold_bottom_button"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
+
         <Button
             android:id="@+id/bt_show_detail"
+            style="@style/nanum_semibold_bottom_button"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:background="@drawable/bg_button"
             android:layout_marginLeft="12dp"
             android:layout_weight="1"
+            android:background="@drawable/bg_button"
             android:text="자세히 볼게요"
-            style="@style/nanum_semibold_bottom_button"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
 
         <Button
             android:id="@+id/bt_show_detail_blue"
+            style="@style/nanum_semibold_bottom_button"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/bg_button"
             android:layout_weight="1"
+            android:background="@drawable/bg_button"
             android:text="자세히 볼게요"
-            style="@style/nanum_semibold_bottom_button"
             android:textSize="18sp"
-            android:visibility="gone"/>
+            android:visibility="gone" />
     </LinearLayout>
 
 
