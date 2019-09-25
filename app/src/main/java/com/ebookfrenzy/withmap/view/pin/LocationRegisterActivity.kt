@@ -1,5 +1,7 @@
 package com.ebookfrenzy.withmap.view.pin
 
+import android.app.Activity
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
@@ -242,9 +244,20 @@ class LocationRegisterActivity : AppCompatActivity(), OnMapReadyCallback,
         }
     }
 
+    fun registerLocation() {
+        Log.d(TAG, "register clicked")
+
+        val intent = Intent()
+        intent.putExtra("latitude", (centerLatLng.value as LatLng).latitude.toString())
+        intent.putExtra("longitude", (centerLatLng.value as LatLng).longitude.toString())
+        intent.putExtra("address", area.value)
+        setResult(Activity.RESULT_OK, intent)
+        finish()
+    }
+
     fun popBackStack() {
         Log.d(TAG, "popBackStack")
-
+        finish()
     }
 
 }

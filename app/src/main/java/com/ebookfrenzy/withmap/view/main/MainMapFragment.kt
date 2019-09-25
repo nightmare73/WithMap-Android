@@ -60,7 +60,7 @@ import kotlinx.android.synthetic.main.fragment_main_map.*
 class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
     GoogleMap.OnMapClickListener, NavigationView.OnNavigationItemSelectedListener {
 
-    private lateinit var currentLocation : Location
+    private lateinit var currentLocation: Location
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private val LOCATION_REQUEST_CODE = 101
 
@@ -80,9 +80,14 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
     private lateinit var vm: MainViewModel
     private lateinit var vmNoti: NotificationViewModel
 
-    private val params = ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+    private val params = ConstraintLayout.LayoutParams(
+        ViewGroup.LayoutParams.WRAP_CONTENT,
+        ViewGroup.LayoutParams.WRAP_CONTENT
+    )
 
     var bottomSheetLayout: View? = null
+
+    var beingClicked : Boolean = false
 
 
     private val TAG = "MainMapFragment"
@@ -105,7 +110,6 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
 //        binding.llTab.setOnClickListener{
 //            Navigation.findNavController(it).navigate(R.id.action_mainMapFragment_to_nav_graph_login)
 //        }
-
 
 
         return binding.root
@@ -147,25 +151,38 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
 
     private fun requestPermission() {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(activity!!);
-        if (ActivityCompat.checkSelfPermission(context!!, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context!!, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(
+                context!!,
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                context!!,
+                android.Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
             Log.d(TAG, "request permission")
-            ActivityCompat.requestPermissions(activity!!, Array<String>(1, {android.Manifest.permission.ACCESS_FINE_LOCATION}), LOCATION_REQUEST_CODE)
+            ActivityCompat.requestPermissions(
+                activity!!,
+                Array<String>(1, { android.Manifest.permission.ACCESS_FINE_LOCATION }),
+                LOCATION_REQUEST_CODE
+            )
             return
         }
         fetchLastLocation()
     }
+
     private fun fetchLastLocation() {
         Log.d(TAG, "fetchlatstLcoation")
-        val task : Task<Location> = fusedLocationProviderClient.lastLocation
+        val task: Task<Location> = fusedLocationProviderClient.lastLocation
         task.addOnSuccessListener(object : OnSuccessListener<Location> {
             override fun onSuccess(location: Location?) {
-                if(location != null) {
+                if (location != null) {
                     currentLocation = location
                     Log.d(TAG, "fetchLastLocation success")
                     Toast.makeText(context, "hi", Toast.LENGTH_SHORT)
-                    val supportMapFragment : SupportMapFragment = childFragmentManager.findFragmentById(R.id.fl_main_map_frag) as SupportMapFragment
+                    val supportMapFragment: SupportMapFragment =
+                        childFragmentManager.findFragmentById(R.id.fl_main_map_frag) as SupportMapFragment
                     supportMapFragment.getMapAsync(this@MainMapFragment)
-                }else {
+                } else {
                     Log.d(TAG, "fetchLastLocation fail")
                     Toast.makeText(context, "No Location recorded", Toast.LENGTH_SHORT).show()
 
@@ -176,7 +193,8 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
 
     fun goToPinRegister() {
         Log.d(TAG, "go to Pin Register")
-        binding.root.findNavController().navigate(R.id.action_mainMapFragment_to_pinRegisterFragment)
+        binding.root.findNavController()
+            .navigate(R.id.action_mainMapFragment_to_pinRegisterFragment)
     }
 
     fun showCurrent() {
@@ -205,18 +223,18 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        when(requestCode) {
+        when (requestCode) {
             LOCATION_REQUEST_CODE -> {
-                if(grantResults.size >0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Log.d(TAG, "onRequestPermissionsresult granted")
                     fetchLastLocation()
-                }else {
-                    Toast.makeText(context!!, "Lcoationp permission missing", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(context!!, "Lcoationp permission missing", Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
         }
     }
-
 
 
     fun setHeader(view_navi: NavigationView) {
@@ -350,7 +368,8 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
         center = CameraUpdateFactory.newLatLng(mLoc)
         mMap.animateCamera(center)
 
-        changeSelectedMarker(marker)
+        if (!beingClicked)
+            changeSelectedMarker(marker)
 
         return true
     }
@@ -359,7 +378,7 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
         Log.d(TAG, "new selected : ${marker!!.tag}")
 
         //개선되지 않은 핀: 선택된 마커 이미지 변경
-        if(!(marker.tag as MarkerItem).improved) {
+        if (!(marker.tag as MarkerItem).improved) {
             val selectedMarkerRootView =
                 LayoutInflater.from(this.context).inflate(R.layout.marker_layout, null)
             val selectedIvMarker: ImageView = selectedMarkerRootView.findViewById(R.id.iv_marker)
@@ -382,7 +401,7 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
         }
 
         if (vm.selectedMarkerLiveData.value != null) {
-            if(vm.selectedMarkerLiveData.value!!.tag != null) {
+            if (vm.selectedMarkerLiveData.value!!.tag != null) {
                 addMarker(vm.selectedMarkerLiveData.value!!.tag as MarkerItem)
                 vm.selectedMarkerLiveData.value!!.remove()
             }
@@ -395,8 +414,7 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
     //BottomSheet발생시키는 함수
     private fun initPersistentBottonSheetBehavior(markerItem: MarkerItem, needUpdate: Boolean) {
 
-        params.setMargins(0, 16, 0, 0)
-
+        beingClicked = true
         val mMarkerItem = markerItem
 
         var h: Int = 1
@@ -429,7 +447,7 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
                             .navigate(R.id.action_mainMapFragment_to_pinDetailFragment)
                         Log.d(TAG, "bt_show_detail_blue clicked")
                     }
-                }else {
+                } else {
 
                     bottomSheetLayout!!.ll_info_orange.visibility = View.VISIBLE
                     bottomSheetLayout!!.ll_info_blue.visibility = View.GONE
@@ -475,7 +493,16 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
                         override fun onStateChanged(view: View, newState: Int) {
                             when (newState) {
                                 BottomSheetBehavior.STATE_HIDDEN -> {
+                                    beingClicked = false
                                     Log.d(TAG, "bottomSheet hidden")
+                                    if (vm.selectedMarkerLiveData.value != null) {
+                                        addMarker(vm.selectedMarkerLiveData.value!!.tag as MarkerItem)
+                                        vm.selectedMarkerLiveData.value!!.remove()
+                                    }
+
+                                    if (persistentBottomSheetBehavior != null) {
+                                        vm.beforeSelectedwasImproved.value = 0
+                                    }
                                 }
                                 BottomSheetBehavior.STATE_EXPANDED -> {
                                     Log.d(TAG, "bottomSheet expanded")
@@ -543,7 +570,16 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
                             override fun onStateChanged(view: View, newState: Int) {
                                 when (newState) {
                                     BottomSheetBehavior.STATE_HIDDEN -> {
+                                        beingClicked = false
                                         Log.d(TAG, "bottomSheet hiddden")
+                                        if (vm.selectedMarkerLiveData.value != null) {
+                                            addMarker(vm.selectedMarkerLiveData.value!!.tag as MarkerItem)
+                                            vm.selectedMarkerLiveData.value!!.remove()
+                                        }
+
+                                        if (persistentBottomSheetBehavior != null) {
+                                            vm.beforeSelectedwasImproved.value = 0
+                                        }
                                     }
                                     BottomSheetBehavior.STATE_EXPANDED -> {
                                         view.tv_title_before.text = mMarkerItem.name
@@ -586,7 +622,7 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
                             .navigate(R.id.action_mainMapFragment_to_pinDetailFragment)
                         Log.d(TAG, "bt_show_detail_blue clicked")
                     }
-                }else {
+                } else {
 
                     bottomSheetLayout!!.ll_info_orange.visibility = View.VISIBLE
                     bottomSheetLayout!!.ll_info_blue.visibility = View.GONE
@@ -631,7 +667,16 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
                     override fun onStateChanged(view: View, newState: Int) {
                         when (newState) {
                             BottomSheetBehavior.STATE_HIDDEN -> {
+                                beingClicked = false
                                 Log.d(TAG, "bottomSheet hidden")
+                                if (vm.selectedMarkerLiveData.value != null) {
+                                    addMarker(vm.selectedMarkerLiveData.value!!.tag as MarkerItem)
+                                    vm.selectedMarkerLiveData.value!!.remove()
+                                }
+
+                                if (persistentBottomSheetBehavior != null) {
+                                    vm.beforeSelectedwasImproved.value = 0
+                                }
                             }
                             BottomSheetBehavior.STATE_EXPANDED -> {
                                 Log.d(TAG, "bottomSheet expanded")
@@ -686,7 +731,16 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
                     override fun onStateChanged(view: View, newState: Int) {
                         when (newState) {
                             BottomSheetBehavior.STATE_HIDDEN -> {
+                                beingClicked = false
                                 Log.d(TAG, "bottomSheet hiddden")
+                                if (vm.selectedMarkerLiveData.value != null) {
+                                    addMarker(vm.selectedMarkerLiveData.value!!.tag as MarkerItem)
+                                    vm.selectedMarkerLiveData.value!!.remove()
+                                }
+
+                                if (persistentBottomSheetBehavior != null) {
+                                    vm.beforeSelectedwasImproved.value = 0
+                                }
                             }
                             BottomSheetBehavior.STATE_EXPANDED -> {
                                 view.tv_title_before.text = mMarkerItem.name
@@ -712,10 +766,11 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
         //From 0.0(min) - 1.0(max) //BottomShetExpanded - BottomSheepCollapsed
         val maxMapPaddingBottom = 1.0f
 //        mMap.setPadding(0, 0, 0, Math.round(offset * maxMapPaddingBottom))
-        cl_main_map_frag.setPadding(0, 0,0, Math.round(offset * maxMapPaddingBottom))
+        cl_main_map_frag.setPadding(0, 0, 0, Math.round(offset * maxMapPaddingBottom))
     }
 
     override fun onMapClick(p0: LatLng?) {
+        beingClicked = false
         Log.d(TAG, "Map clicked")
         if (vm.selectedMarkerLiveData.value != null) {
             addMarker(vm.selectedMarkerLiveData.value!!.tag as MarkerItem)

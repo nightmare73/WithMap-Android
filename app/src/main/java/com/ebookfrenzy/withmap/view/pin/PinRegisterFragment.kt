@@ -51,7 +51,7 @@ class PinRegisterFragment : Fragment() {
 
     var isNew = MutableLiveData<Boolean>().apply { this.value = false }
     var title = MutableLiveData<String>().apply { this.value = "핀 등록" }
-    var address : MutableLiveData<String?> = MutableLiveData<String?>()
+    var address: MutableLiveData<String?> = MutableLiveData<String?>()
 
     private var markerItem: MarkerItem? = null
 
@@ -69,6 +69,11 @@ class PinRegisterFragment : Fragment() {
 
     private var bundle: Bundle? = Bundle()
 
+    private var latitude: Double? = null
+    private var longitude: Double? = null
+    private var type: Int = 0
+
+    private var newMarkerItem: MarkerItem? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -80,7 +85,7 @@ class PinRegisterFragment : Fragment() {
             bundle = arguments
 
         if (bundle != null) {
-            if(bundle!!.containsKey("item")) {
+            if (bundle!!.containsKey("item")) {
                 markerItem = bundle!!.getParcelable("item") as MarkerItem
                 Log.d(TAG, "before improved : $markerItem")
             }
@@ -110,6 +115,38 @@ class PinRegisterFragment : Fragment() {
         Log.d(TAG, binding.etTitle.text.toString())
     }
 
+    //작성완료
+    fun registerComplete() {
+
+        if (isNew.value as Boolean) {
+            newMarkerItem = MarkerItem(
+                latitude!!, longitude!!, type, binding.etTitle.text.toString(),
+                getTime(),
+                address.value!!,
+                false,
+                null,
+                null,
+                binding.tvContent.text.toString()
+            )
+            Log.d(TAG, "new markerItem ${newMarkerItem.toString()}")
+        } else {
+            newMarkerItem = MarkerItem(
+                markerItem!!.latitude,
+                markerItem!!.longitude,
+                markerItem!!.type,
+                markerItem!!.name,
+                markerItem!!.crtDate,
+                markerItem!!.address,
+                true,
+                binding.etTitle.text.toString(),
+                getTime(),
+                markerItem!!.comment
+            )
+            Log.d(TAG, "newMarkeritem : ${newMarkerItem.toString()}")
+        }
+    }
+
+
     fun isNewOrImproved() {
         if (markerItem != null) {
             isNew.value = false
@@ -120,15 +157,7 @@ class PinRegisterFragment : Fragment() {
             markerItem!!.improved = true
 
 
-            binding.btComplete.setOnClickListener {
-                markerItem!!.improvedTitle = binding.etTitle.text.toString()
-                markerItem!!.improvedDate = getTime()
-
-                Log.d(TAG, markerItem.toString())
-                //TODO() 작성완료시 markeritem 보내기
-            }
-
-
+            //TODO() 작성완료시 markeritem 보내기
         } else {
             isNew.value = true
             title.value = "핀 등록"
@@ -148,30 +177,34 @@ class PinRegisterFragment : Fragment() {
                     1 -> {
                         binding.ivObstacle.setImageResource(R.drawable.pin_hurdle_on)
                         binding.tvObstacle.setTextColor(resources.getColor(R.color.orange))
+                        type = 1
+
                     }
                     2 -> {
                         binding.ivDump.setImageResource(R.drawable.pin_dump_on)
                         binding.tvDump.setTextColor(resources.getColor(R.color.orange))
-
+                        type = 2
                     }
                     3 -> {
                         binding.ivUnpaved.setImageResource(R.drawable.group_9)
                         binding.tvUnpaved.setTextColor(resources.getColor(R.color.orange))
+                        type = 3
                     }
                     4 -> {
                         binding.ivNarrow.setImageResource(R.drawable.group_10)
                         binding.tvNarrow.setTextColor(resources.getColor(R.color.orange))
+                        type = 4
 
                     }
                     5 -> {
                         binding.ivToilet.setImageResource(R.drawable.pin_toilet_on)
                         binding.tvToilet.setTextColor(resources.getColor(R.color.blue))
-
+                        type = 5
                     }
                     6 -> {
                         binding.ivRestaurant.setImageResource(R.drawable.pin_restaurant_on)
                         binding.tvRestaurant.setTextColor(resources.getColor(R.color.blue))
-
+                        type = 6
                     }
                 }
             }
@@ -186,8 +219,6 @@ class PinRegisterFragment : Fragment() {
         val intent = Intent(this.context, LocationRegisterActivity::class.java)
         startActivityForResult(intent, LOCATION_REGISTER_REQUEST_CODE)
     }
-
-
 
     fun typeAllOff() {
         binding.ivObstacle.setImageResource(R.drawable.pin_hurdle_off)
@@ -210,7 +241,8 @@ class PinRegisterFragment : Fragment() {
     fun pickType(i: Int) {
         if (markerItem == null) {
             typeAllOff()
-            isNew.value = false
+            binding.tvRegisterPickWarn.visibility = View.GONE
+            binding.rlImproveTypeBg.visibility = View.GONE
             when (i) {
                 1 -> {
                     binding.ivObstacle.setImageResource(R.drawable.pin_hurdle_on)
@@ -311,9 +343,15 @@ class PinRegisterFragment : Fragment() {
             }
         }
 
-        if(requestCode == LOCATION_REGISTER_REQUEST_CODE) {
-            if(resultCode == Activity.RESULT_OK) {
+        if (requestCode == LOCATION_REGISTER_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                if (data != null) {
+                    latitude = data.getStringExtra("latitude").toDouble()
+                    longitude = data!!.getStringExtra("longitude").toDouble()
+                    address.value = data.getStringExtra("address")
 
+                    Log.d(TAG, "selected Location : $latitude $longitude ${address.value}")
+                }
             }
         }
     }

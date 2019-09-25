@@ -285,6 +285,8 @@
             </LinearLayout>
 
             <LinearLayout
+                android:background="@drawable/bg_register_location_btn"
+                android:onClick="@{() -> fragment.registerLocation()}"
                 android:id="@+id/linearLayout"
                 android:layout_width="88dp"
                 android:layout_height="28dp"
@@ -384,6 +386,8 @@
                 app:layout_constraintTop_toBottomOf="@+id/rv_photo" />
 
             <Button
+                android:onClick="@{() -> fragment.registerComplete()}"
+
                 android:id="@+id/bt_complete"
                 style="@style/nanum_semibold_bottom_button"
                 android:layout_width="match_parent"
