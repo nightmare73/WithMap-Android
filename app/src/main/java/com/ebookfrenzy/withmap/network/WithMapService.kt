@@ -2,13 +2,12 @@ package com.ebookfrenzy.withmap.network
 
 import com.ebookfrenzy.withmap.network.request.SignInParams
 import com.ebookfrenzy.withmap.network.request.SignUpParams
+import com.ebookfrenzy.withmap.network.response.PinDetailResponse
 import com.ebookfrenzy.withmap.network.response.SignInResponse
+import io.reactivex.Observable
 import io.reactivex.Single
 import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.POST
+import retrofit2.http.*
 
 /**
  * Created By Yun Hyeok
@@ -34,6 +33,22 @@ interface WithMapService {
     fun getUserInfo(
         @Header("Authorization") token: String
     ) //UserInfo class 만들어놓음
+
+    // 주위 핀 조회
+    @GET("/withmap/pins")
+    fun getPinsAroundPosition(
+        @Header("Authorization") token: String,
+        @Query("latitude") latitude: Double,
+        @Query("longitude") longitude: Double
+    )
+
+    // 핀 자세히보기
+    @GET("/withmap/pins/{id}")
+    fun getPinDetails(
+        @Header("Authorization") token: String,
+        @Path("id") id: Int
+    ): Single<PinDetailResponse>
+
 
     companion object {
         const val baseUrl = "http://withmap-253307.appspot.com"
