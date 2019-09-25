@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="activity"
+            type="com.ebookfrenzy.withmap.view.pin.LocationRegisterActivity" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".view.pin.LocationRegisterActivity">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="#c5000000"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/fl_loc_regist_act">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ham_left_white"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="16dp"/>
+            <TextView
+                style="@style/nanum_semibold_login_textview"
+                android:textSize="14sp"
+                android:text="지도를 움직여 위치를 설정하세요"
+                android:textColor="@color/white"
+                android:layout_centerInParent="true"
+        </RelativeLayout>
+
+        <FrameLayout
+            android:id="@+id/fl_loc_regist_act"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+           android:layout_marginBottom="180dp"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/map_yogi"
+            app:layout_constraintBottom_toTopOf="@+id/bottom_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/fl_loc_regist_act" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/home_location"
+            android:onClick="@{() -> activity.showCurrent()}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/bottom_layout"/>
+
+        <RelativeLayout
+            android:id="@+id/bottom_layout"
+            android:layout_width="match_parent"
+            android:layout_height="176dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:background="@drawable/bg_location_register_bottom"
+            android:gravity="center_horizontal"
+            android:elevation="16dp">
+
+            <TextView
+                android:layout_centerHorizontal="true"
+                style="@style/nanum_semibold_login_textview"
+                android:textSize="20sp"
+                android:text="@{activity.area}"
+                tools:text="서울시"
+                android:gravity="center"
+                android:layout_marginTop="32dp"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/bg_button"
+                android:text="이 위치로 설정"
+                style="@style/nanum_semibold_login_textview"
+                android:textColor="@color/white"
+                android:textSize="18sp"/>
+        </RelativeLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

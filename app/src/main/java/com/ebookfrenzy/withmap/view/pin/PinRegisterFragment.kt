@@ -22,6 +22,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.loader.content.CursorLoader
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.ebookfrenzy.withmap.BR
@@ -44,17 +45,19 @@ import java.util.*
 //f = 2 : 개선되었습니다 핀 등록
 class PinRegisterFragment : Fragment() {
 
-    private var mNow : Long = 0
-    private lateinit var mDate : Date
-    private var mFormat : SimpleDateFormat = SimpleDateFormat("yyyy-mm-dd hh:mm:ss")
+    private var mNow: Long = 0
+    private lateinit var mDate: Date
+    private var mFormat: SimpleDateFormat = SimpleDateFormat("yyyy-mm-dd hh:mm:ss")
 
     var isNew = MutableLiveData<Boolean>().apply { this.value = false }
     var title = MutableLiveData<String>().apply { this.value = "핀 등록" }
+    var address : MutableLiveData<String?> = MutableLiveData<String?>()
 
     private var markerItem: MarkerItem? = null
 
     private val REQUEST_CODE_SELECT_IMAGE = 1111
     private val MY_READ_STORAGE_REQUEST_CODE = 7777
+    private val LOCATION_REGISTER_REQUEST_CODE = 2222
     private val TAG = "PinRegisterFragment"
 
     var imageURI: String? = null
@@ -64,6 +67,7 @@ class PinRegisterFragment : Fragment() {
     val viewModel = PinRegisterViewModel()
     private lateinit var binding: FragmentPinRegisterBinding
 
+    private var bundle: Bundle? = Bundle()
 
 
     override fun onCreateView(
@@ -72,9 +76,14 @@ class PinRegisterFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
 
-        if (arguments != null) {
-            markerItem = arguments!!.getParcelable("item") as MarkerItem
-            Log.d(TAG, "before improved : $markerItem")
+        if (arguments != null)
+            bundle = arguments
+
+        if (bundle != null) {
+            if(bundle!!.containsKey("item")) {
+                markerItem = bundle!!.getParcelable("item") as MarkerItem
+                Log.d(TAG, "before improved : $markerItem")
+            }
         }
 
         binding = FragmentPinRegisterBinding.inflate(LayoutInflater.from(this.context))
@@ -99,13 +108,13 @@ class PinRegisterFragment : Fragment() {
         initDataBinding()
 
         Log.d(TAG, binding.etTitle.text.toString())
-
     }
 
     fun isNewOrImproved() {
         if (markerItem != null) {
             isNew.value = false
             title.value = "개선되었습니다"
+            address.value = markerItem!!.address
 
             improvedTypePick(markerItem!!.type)
             markerItem!!.improved = true
@@ -123,6 +132,8 @@ class PinRegisterFragment : Fragment() {
         } else {
             isNew.value = true
             title.value = "핀 등록"
+
+            //var newMarkerItem : MarkerItem = MarkerItem()
         }
     }
 
@@ -170,6 +181,13 @@ class PinRegisterFragment : Fragment() {
     /**
      * 새로운 핀 등록
      */
+    //위치등록
+    fun registerLocation() {
+        val intent = Intent(this.context, LocationRegisterActivity::class.java)
+        startActivityForResult(intent, LOCATION_REGISTER_REQUEST_CODE)
+    }
+
+
 
     fun typeAllOff() {
         binding.ivObstacle.setImageResource(R.drawable.pin_hurdle_off)
@@ -190,35 +208,38 @@ class PinRegisterFragment : Fragment() {
     }
 
     fun pickType(i: Int) {
-        typeAllOff()
-        when (i) {
-            1 -> {
-                binding.ivObstacle.setImageResource(R.drawable.pin_hurdle_on)
-                binding.tvObstacle.setTextColor(resources.getColor(R.color.orange))
-            }
-            2 -> {
-                binding.ivDump.setImageResource(R.drawable.pin_dump_on)
-                binding.tvDump.setTextColor(resources.getColor(R.color.orange))
+        if (markerItem == null) {
+            typeAllOff()
+            isNew.value = false
+            when (i) {
+                1 -> {
+                    binding.ivObstacle.setImageResource(R.drawable.pin_hurdle_on)
+                    binding.tvObstacle.setTextColor(resources.getColor(R.color.orange))
+                }
+                2 -> {
+                    binding.ivDump.setImageResource(R.drawable.pin_dump_on)
+                    binding.tvDump.setTextColor(resources.getColor(R.color.orange))
 
-            }
-            3 -> {
-                binding.ivUnpaved.setImageResource(R.drawable.group_9)
-                binding.tvUnpaved.setTextColor(resources.getColor(R.color.orange))
-            }
-            4 -> {
-                binding.ivNarrow.setImageResource(R.drawable.group_10)
-                binding.tvNarrow.setTextColor(resources.getColor(R.color.orange))
+                }
+                3 -> {
+                    binding.ivUnpaved.setImageResource(R.drawable.group_9)
+                    binding.tvUnpaved.setTextColor(resources.getColor(R.color.orange))
+                }
+                4 -> {
+                    binding.ivNarrow.setImageResource(R.drawable.group_10)
+                    binding.tvNarrow.setTextColor(resources.getColor(R.color.orange))
 
-            }
-            5 -> {
-                binding.ivToilet.setImageResource(R.drawable.pin_toilet_on)
-                binding.tvToilet.setTextColor(resources.getColor(R.color.blue))
+                }
+                5 -> {
+                    binding.ivToilet.setImageResource(R.drawable.pin_toilet_on)
+                    binding.tvToilet.setTextColor(resources.getColor(R.color.blue))
 
-            }
-            6 -> {
-                binding.ivRestaurant.setImageResource(R.drawable.pin_restaurant_on)
-                binding.tvRestaurant.setTextColor(resources.getColor(R.color.blue))
+                }
+                6 -> {
+                    binding.ivRestaurant.setImageResource(R.drawable.pin_restaurant_on)
+                    binding.tvRestaurant.setTextColor(resources.getColor(R.color.blue))
 
+                }
             }
         }
     }
@@ -289,6 +310,12 @@ class PinRegisterFragment : Fragment() {
                 }
             }
         }
+
+        if(requestCode == LOCATION_REGISTER_REQUEST_CODE) {
+            if(resultCode == Activity.RESULT_OK) {
+
+            }
+        }
     }
 
     private fun initDataBinding() {
@@ -314,10 +341,15 @@ class PinRegisterFragment : Fragment() {
         return result
     }
 
-    private fun getTime() : String{
+    private fun getTime(): String {
         mNow = System.currentTimeMillis()
         mDate = Date(mNow)
         return mFormat.format(mDate)
+    }
+
+    fun popBackStack() {
+        Log.d(TAG, "popBackStack()")
+        binding.root.findNavController().popBackStack()
     }
 }
 

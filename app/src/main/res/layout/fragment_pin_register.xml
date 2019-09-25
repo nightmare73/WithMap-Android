@@ -27,6 +27,8 @@
             tools:context=".view.pin.PinRegisterFragment">
 
             <ImageView
+                android:onClick="@{() -> fragment.popBackStack()}"
+
                 android:id="@+id/imageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -307,10 +309,12 @@
             <TextView
                 android:id="@+id/tv_location"
                 style="@style/nanum_medium_login_textview"
+                android:textColor="#bebebe"
                 android:layout_marginStart="8dp"
                 app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
                 app:layout_constraintStart_toEndOf="@+id/linearLayout"
                 app:layout_constraintTop_toTopOf="@+id/linearLayout"
+                android:text="@{fragment.address}"
                 tools:text="TextView" />
 
             <RelativeLayout
