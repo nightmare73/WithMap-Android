@@ -148,10 +148,10 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
 
         Log.d(TAG, vm.selectedMarkerLiveData.value.toString())
     }
-
-    private requestAroundPIn() {
-
-    }
+//
+//    private requestAroundPIn() {
+//
+//    }
 
 
     private fun requestPermission() {
