@@ -41,5 +41,5 @@ class SplashFragment : Fragment() {
         super.onPause()
         handler.removeCallbacks(thread)
     }
-
 }
+

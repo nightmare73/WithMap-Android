@@ -1,6 +1,7 @@
 package com.ebookfrenzy.withmap.config
 
 import com.ebookfrenzy.withmap.network.KakaoService
+import com.ebookfrenzy.withmap.network.WithMapService
 import com.ebookfrenzy.withmap.respository.LocalRepository
 import com.ebookfrenzy.withmap.respository.SharedPreferenceSource
 import com.ebookfrenzy.withmap.viewmodel.SearchViewModel
@@ -17,8 +18,8 @@ import retrofit2.converter.gson.GsonConverterFactory
  * on 9월 12, 2019
  */
 
-private val httpClient = module {
-    single<OkHttpClient> {
+val kakaoApiModule = module(override=true) {
+    single<OkHttpClient>(override=true) {
         OkHttpClient.Builder()
             .addInterceptor {
                 val request = it.request()
@@ -29,13 +30,7 @@ private val httpClient = module {
             }
             .build()
     }
-}
 
-val apiModule = module {
-
-}
-
-val kakaoApiModule = module {
     single<KakaoService> {
         Retrofit.Builder()
             .baseUrl(KakaoService.baseUrl)
@@ -44,6 +39,30 @@ val kakaoApiModule = module {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(KakaoService::class.java)
+    }
+}
+
+val apiModule = module(override=true) {
+    single<OkHttpClient>(override=true) {
+        OkHttpClient.Builder()
+            .addInterceptor {
+                val request = it.request()
+                    .newBuilder()
+                    .addHeader("Content-Type", "application/json")
+                    .build()
+                return@addInterceptor it.proceed(request)
+            }
+            .build()
+    }
+
+    single<WithMapService> {
+        Retrofit.Builder()
+            .baseUrl(WithMapService.baseUrl)
+            .client(get())
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(WithMapService::class.java)
     }
 }
 
@@ -61,6 +80,5 @@ val diModules =
         apiModule,
         kakaoApiModule,
         viewModelModule,
-        httpClient,
         localRepositoryModule
     )
