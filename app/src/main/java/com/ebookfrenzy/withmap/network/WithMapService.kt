@@ -2,6 +2,7 @@ package com.ebookfrenzy.withmap.network
 
 import com.ebookfrenzy.withmap.network.request.SignInParams
 import com.ebookfrenzy.withmap.network.request.SignUpParams
+import com.ebookfrenzy.withmap.network.response.CommonPinInfo
 import com.ebookfrenzy.withmap.network.response.PinDetailResponse
 import com.ebookfrenzy.withmap.network.response.SignInResponse
 import io.reactivex.Observable
@@ -40,7 +41,7 @@ interface WithMapService {
         @Header("Authorization") token: String,
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double
-    )
+    ):Single<List<CommonPinInfo>>
 
     // 핀 자세히보기
     @GET("/withmap/pins/{id}")

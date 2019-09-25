@@ -149,6 +149,11 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
         Log.d(TAG, vm.selectedMarkerLiveData.value.toString())
     }
 
+    private requestAroundPIn() {
+
+    }
+
+
     private fun requestPermission() {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(activity!!);
         if (ActivityCompat.checkSelfPermission(

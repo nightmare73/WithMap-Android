@@ -19,8 +19,6 @@ data class MarkerItem(
     var call_number : String? = null
 ) : Parcelable
 
-
-
 fun getMarkerItems() = mutableListOf<MarkerItem>(
 
     MarkerItem(37.538523, 126.96568, 1, "구부정한 길", "20.19.19", "서울시 마포구", false),
