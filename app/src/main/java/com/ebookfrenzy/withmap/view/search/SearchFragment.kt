@@ -1,6 +1,7 @@
 package com.ebookfrenzy.withmap.view.search
 
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -11,13 +12,16 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
-import com.ebookfrenzy.withmap.data.SearchLocationResult
 import com.ebookfrenzy.withmap.databinding.FragmentSearchBinding
-import com.ebookfrenzy.withmap.network.KakaoService
+import com.ebookfrenzy.withmap.network.WithMapService
+import com.ebookfrenzy.withmap.network.request.SignInParams
+import com.ebookfrenzy.withmap.network.response.SignInResponse
 import com.ebookfrenzy.withmap.viewmodel.SearchViewModel
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 /**
  * Created By Yun Hyeok
@@ -25,6 +29,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
  */
 
 class SearchFragment : Fragment(), TextView.OnEditorActionListener {
+
+    private val dayeService: WithMapService by inject()
 
     private val viewModel: SearchViewModel by sharedViewModel()
 
@@ -70,4 +76,24 @@ class SearchFragment : Fragment(), TextView.OnEditorActionListener {
             adapter.submitList(searchResults)
         })
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        dayeService.requestSignIn(SignInParams("test@naver.com", "12345678")).enqueue(object :
+            Callback<SignInResponse> {
+            override fun onFailure(call: Call<SignInResponse>, t: Throwable) {
+                Log.d("Malibin Debug", "호롤리 ㅠㅠ : ${TextUtils.join("\n", t.stackTrace)}")
+            }
+
+            override fun onResponse(
+                call: Call<SignInResponse>,
+                response: Response<SignInResponse>
+            ) {
+                Log.d("Malibin Debug", "호롤리 : ${response.raw()}")
+                Log.d("Malibin Debug", "호롤리 : ${response?.body()}")
+            }
+        })
+    }
+
 }
