@@ -4,6 +4,7 @@ package com.ebookfrenzy.withmap.view.login
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Patterns
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -28,6 +29,25 @@ class SignUpFragment : Fragment() {
 
     private val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
 
+    private val emailEditTextListener = object : TextWatcher {
+        override fun afterTextChanged(s: Editable?) {
+            if(s.isNullOrBlank()){
+
+            }
+        }
+
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            val isEmail = Patterns.EMAIL_ADDRESS.matcher(s).matches()
+            if (isEmail) {
+                tv_frag_sign_up_email_form.visibility = View.GONE
+                return
+            }
+            tv_frag_sign_up_email_form.visibility = View.VISIBLE
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -49,8 +69,11 @@ class SignUpFragment : Fragment() {
 //        }
 
     }
+
     fun repeatButtonListener() {
-        et_email.addTextChangedListener( object : TextWatcher{
+        et_email.addTextChangedListener(emailEditTextListener)
+
+        et_nickname.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
             }
 
@@ -58,34 +81,15 @@ class SignUpFragment : Fragment() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if(s!!.isNotEmpty()) {
-                    btn_email_repeat
-                        .setBackgroundResource(R.drawable.bg_button_repeat_focus)
-                    if(isValidEmail(s)){
-                        tv_frag_sign_up_email_form.visibility = View.GONE
-                    }else
-                        tv_frag_sign_up_email_form.visibility = View.VISIBLE
-                }else{
-                    btn_email_repeat.setBackgroundResource(R.drawable.bg_button_repeat_not_focus)
-                }
-            }
-        })
-        et_nickname.addTextChangedListener( object : TextWatcher{
-            override fun afterTextChanged(s: Editable?) {
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if(s!!.isNotEmpty()) {
+                if (s!!.isNotEmpty()) {
                     btn_nickname_repeat.setBackgroundResource(R.drawable.bg_button_repeat_focus)
-                }else{
+                } else {
                     btn_nickname_repeat.setBackgroundResource(R.drawable.bg_button_repeat_not_focus)
                 }
             }
         })
     }
+
     fun isValidEmail(target: CharSequence?): Boolean {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches()
 
