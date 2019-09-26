@@ -4,6 +4,7 @@ import com.ebookfrenzy.withmap.network.request.SignInParams
 import com.ebookfrenzy.withmap.network.request.SignUpParams
 import com.ebookfrenzy.withmap.network.response.PinDetail
 import com.ebookfrenzy.withmap.network.response.SignInResponse
+import io.reactivex.Completable
 import io.reactivex.Single
 import retrofit2.Call
 import retrofit2.http.*
@@ -48,6 +49,19 @@ interface WithMapService {
         @Path("id") id: Int
     ): Single<PinDetail>
 
+    // 핀 추천
+    @PUT("/withmap/pins/like/{id}")
+    fun recommendPin(
+        @Header("Authorization") token: String,
+        @Path("id") id: Int
+    ): Completable
+
+    // 핀 신고
+    @PUT("/withmap/pins/report/{id}")
+    fun reportPin(
+        @Header("Authorization") token: String,
+        @Path("id") id: Int
+    ): Completable
 
     companion object {
         const val baseUrl = "http://withmap-253307.appspot.com"

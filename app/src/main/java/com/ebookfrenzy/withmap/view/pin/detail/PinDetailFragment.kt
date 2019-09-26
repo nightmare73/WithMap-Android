@@ -41,6 +41,7 @@ class PinDetailFragment : Fragment() {
 
         viewModel.getPinDetail(1)
 
+
         subscribePinDetail(binding)
 
         return binding.root

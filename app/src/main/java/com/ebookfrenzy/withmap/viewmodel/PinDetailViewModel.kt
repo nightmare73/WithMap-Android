@@ -30,6 +30,14 @@ class PinDetailViewModel(
     val pinDetail: LiveData<PinDetail>
         get() = _pinDetail
 
+    private val _isRecommended = MutableLiveData<Boolean>()
+    val isRecommneded: LiveData<Boolean>
+        get() = _isRecommended
+
+    private val _isReported = MutableLiveData<Boolean>()
+    val isReported: LiveData<Boolean>
+        get() = _isReported
+
     override fun onCleared() {
         compositeDisposable.clear()
         super.onCleared()
@@ -64,7 +72,56 @@ class PinDetailViewModel(
                     }
                 )
         )
+    }
 
+    fun recommendPin(pinId: Int) {
+        val token =
+            "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJob21lc2tpbkBuYXZlci5jb20iLCJuaWNrbmFtZSI6Iuy1nOyEoOyerCIsImlzcyI6IldJVEhNQVAiLCJpYXQiOjE1NjkzMjI0NjEsImV4cCI6MTU2OTkyNzI2MX0.c7mUFv1BhyQLwiemXbYYfF_y8tEb45AoOVQ9-btpC_w"
+        addDisposable(
+            withMapService.recommendPin(token, pinId)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                    { _isRecommended.value = false },
+                    {
+                        /* 실패시 코드 작성 */
+                        _isRecommended.value = true
+                        Log.d(
+                            "Malibin Debug",
+                            "response : ${TextUtils.join("\n", it.stackTrace)}"
+                        )
+                        Log.d(
+                            "Malibin Debug",
+                            "response : ${it.message}"
+                        )
+                    }
+                )
+        )
+    }
+
+    fun reportPin(pinId: Int) {
+        val token =
+            "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJob21lc2tpbkBuYXZlci5jb20iLCJuaWNrbmFtZSI6Iuy1nOyEoOyerCIsImlzcyI6IldJVEhNQVAiLCJpYXQiOjE1NjkzMjI0NjEsImV4cCI6MTU2OTkyNzI2MX0.c7mUFv1BhyQLwiemXbYYfF_y8tEb45AoOVQ9-btpC_w"
+        addDisposable(
+            withMapService.reportPin(token, pinId)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(
+                    { _isReported.value = false },
+                    {
+                        /* 실패시 코드 작성 */
+                        _isReported.value = true
+                        Log.d(
+                            "Malibin Debug",
+                            "response : ${TextUtils.join("\n", it.stackTrace)}"
+                        )
+                        Log.d(
+                            "Malibin Debug",
+                            "response : ${it.message}"
+                        )
+                    }
+                )
+        )
     }
 
 }
