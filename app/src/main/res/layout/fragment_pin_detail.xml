@@ -13,6 +13,10 @@
         <variable
             name="returnBack"
             type="android.view.View.OnClickListener" />
+
+        <variable
+            name="vm"
+            type="com.ebookfrenzy.withmap.viewmodel.PinDetailViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -324,7 +328,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="12dp"
-                    android:text="12"
+                    android:text="@{String.valueOf(vm.pinDetail.pin.likeCount)}"
                     android:textColor="@color/selector_color_gray_pink"
                     android:textSize="13sp"
                     android:textStyle="bold"
