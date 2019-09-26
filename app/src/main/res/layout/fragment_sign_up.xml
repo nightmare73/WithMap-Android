@@ -156,6 +156,8 @@
             android:textColor="@color/red"
             android:textSize="9sp"
             android:text="이메일 형식이 잘못되었습니다"
+            android:visibility="gone"
+            tools:visibility="visible"
             app:layout_constraintStart_toStartOf="@+id/relativeLayout"
             app:layout_constraintTop_toBottomOf="@+id/relativeLayout" />
 
