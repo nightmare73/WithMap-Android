@@ -27,6 +27,7 @@ import androidx.core.view.marginTop
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 
 import com.ebookfrenzy.withmap.R
@@ -87,7 +88,7 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
 
     var bottomSheetLayout: View? = null
 
-    var beingClicked : Boolean = false
+    var beingClicked: Boolean = false
 
 
     private val TAG = "MainMapFragment"
@@ -106,11 +107,14 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
         binding = FragmentMainMapBinding.inflate(LayoutInflater.from(this.context))
 
 
-        // -혁- 임시로 로그인 프래그먼틀 가는 코드
-//        binding.llTab.setOnClickListener{
-//            Navigation.findNavController(it).navigate(R.id.action_mainMapFragment_to_nav_graph_login)
+        // 뷰모델 공유 안하고 navigation 으로만 데이터 주고받는거 성공 !
+//        val temp = MainMapFragmentArgs.fromBundle(arguments!!).location
+//
+//        Log.d("Malibin Debug", "arg : $temp")
+//
+//        binding.llTab.setOnClickListener {
+//            Navigation.findNavController(it).navigate(R.id.action_mainMapFragment_to_searchFragment)
 //        }
-
 
         return binding.root
     }
