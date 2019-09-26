@@ -8,10 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
 import com.ebookfrenzy.withmap.databinding.FragmentPinDetailBinding
 import com.ebookfrenzy.withmap.viewmodel.PinDetailViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.android.ext.android.inject
 
 /**
  * Created By Yun Hyeok
@@ -22,7 +24,10 @@ class PinDetailFragment : Fragment() {
 
     private lateinit var originalWindowAttributes: WindowManager.LayoutParams
 
-    private val viewModel: PinDetailViewModel by viewModel()
+    //private val viewModel: PinDetailViewModel by viewModel()
+
+    private val viewModelFactory: ViewModelProvider.Factory by inject()
+    private lateinit var viewModel: PinDetailViewModel
 
     private val returnBack = View.OnClickListener {
         Navigation.findNavController(it).popBackStack()
@@ -34,13 +39,13 @@ class PinDetailFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        viewModel = ViewModelProviders.of(this, viewModelFactory)[PinDetailViewModel::class.java]
 
         val binding = FragmentPinDetailBinding.inflate(inflater)
         binding.returnBack = returnBack
         binding.vm = viewModel
 
         viewModel.getPinDetail(1)
-
 
         subscribePinDetail(binding)
 
