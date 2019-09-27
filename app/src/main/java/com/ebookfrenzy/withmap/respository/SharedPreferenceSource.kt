@@ -12,6 +12,7 @@ class SharedPreferenceSource(context: Context) {
     private val FILE_NAME = "WithMap"
     private val sharedPreference = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE)
     private val editor = sharedPreference.edit()
+    private val myAuth = "myAuth"
 
     var firstFlag: Boolean
         get() = sharedPreference.getBoolean("isFirst", true)
@@ -21,4 +22,5 @@ class SharedPreferenceSource(context: Context) {
         editor.putBoolean("isFirst", flag)
         editor.commit()
     }
+
 }

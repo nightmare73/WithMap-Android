@@ -2,8 +2,11 @@ package com.ebookfrenzy.withmap.config
 
 import com.ebookfrenzy.withmap.network.KakaoService
 import com.ebookfrenzy.withmap.network.WithMapService
+import com.ebookfrenzy.withmap.network.response.DataModel
+import com.ebookfrenzy.withmap.network.response.DataModelImpl
 import com.ebookfrenzy.withmap.respository.LocalRepository
 import com.ebookfrenzy.withmap.respository.SharedPreferenceSource
+import com.ebookfrenzy.withmap.viewmodel.MainViewModel
 import com.ebookfrenzy.withmap.viewmodel.SearchViewModel
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
@@ -18,8 +21,8 @@ import retrofit2.converter.gson.GsonConverterFactory
  * on 9월 12, 2019
  */
 
-val kakaoApiModule = module(override=true) {
-    single<OkHttpClient>(override=true) {
+val kakaoApiModule = module(override = true) {
+    single<OkHttpClient>(override = true) {
         OkHttpClient.Builder()
             .addInterceptor {
                 val request = it.request()
@@ -42,8 +45,8 @@ val kakaoApiModule = module(override=true) {
     }
 }
 
-val apiModule = module(override=true) {
-    single<OkHttpClient>(override=true) {
+val apiModule = module(override = true) {
+    single<OkHttpClient>(override = true) {
         OkHttpClient.Builder()
             .addInterceptor {
                 val request = it.request()
@@ -75,10 +78,22 @@ val viewModelModule = module {
     viewModel { SearchViewModel(get()) }
 }
 
+val mainViewModelModule = module {
+    viewModel{MainViewModel()}
+}
+
+val modelpart = module {
+    factory<DataModel> {
+        DataModelImpl(get())
+    }
+}
+
 val diModules =
     listOf(
         apiModule,
         kakaoApiModule,
         viewModelModule,
-        localRepositoryModule
+        localRepositoryModule,
+        modelpart,
+        mainViewModelModule
     )

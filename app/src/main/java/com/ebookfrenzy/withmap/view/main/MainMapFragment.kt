@@ -87,7 +87,7 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
 
     var bottomSheetLayout: View? = null
 
-    var beingClicked : Boolean = false
+    var beingClicked: Boolean = false
 
 
     private val TAG = "MainMapFragment"
@@ -373,9 +373,8 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
         center = CameraUpdateFactory.newLatLng(mLoc)
         mMap.animateCamera(center)
 
-        if (!beingClicked)
+        if (marker != vm.selectedMarkerLiveData.value)
             changeSelectedMarker(marker)
-
         return true
     }
 
@@ -428,7 +427,6 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
             TAG,
             "-----initPersistentBottomSheetBehavior()-----selectedMarkerItem : $markerItem  $mMarkerItem"
         )
-
         if (needUpdate) {
             if (persistentBottomSheetBehavior != null) {
                 persistentBottomSheetBehavior!!.state = BottomSheetBehavior.STATE_COLLAPSED
@@ -453,6 +451,10 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
                         Log.d(TAG, "bt_show_detail_blue clicked")
                     }
                 } else {
+                    Log.d(TAG, "marker type is 1~4")
+                    bottomSheetLayout!!.bt_was_improved.visibility = View.VISIBLE
+                    bottomSheetLayout!!.bt_show_detail.visibility = View.VISIBLE
+                    bottomSheetLayout!!.bt_show_detail_blue.visibility = View.GONE
 
                     bottomSheetLayout!!.ll_info_orange.visibility = View.VISIBLE
                     bottomSheetLayout!!.ll_info_blue.visibility = View.GONE
@@ -607,7 +609,7 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
             }
         } else {
 
-            persistentBottomSheetBehavior!!.state = BottomSheetBehavior.STATE_HIDDEN
+            persistentBottomSheetBehavior!!.state = BottomSheetBehavior.STATE_COLLAPSED
             Log.d(TAG, "needUpdate : $needUpdate")//false여야함
             Log.d(TAG, "persistentBottomSheetBehaivior : $persistentBottomSheetBehavior")
 
@@ -628,6 +630,9 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
                         Log.d(TAG, "bt_show_detail_blue clicked")
                     }
                 } else {
+                    bottomSheetLayout!!.bt_was_improved.visibility = View.VISIBLE
+                    bottomSheetLayout!!.bt_show_detail.visibility = View.VISIBLE
+                    bottomSheetLayout!!.bt_show_detail_blue.visibility = View.GONE
 
                     bottomSheetLayout!!.ll_info_orange.visibility = View.VISIBLE
                     bottomSheetLayout!!.ll_info_blue.visibility = View.GONE
@@ -763,6 +768,7 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
                     }
                 })
             }
+
             persistentBottomSheetBehavior!!.state = BottomSheetBehavior.STATE_EXPANDED
         }
     }
@@ -792,5 +798,3 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
         return true
     }
 }
-
-
