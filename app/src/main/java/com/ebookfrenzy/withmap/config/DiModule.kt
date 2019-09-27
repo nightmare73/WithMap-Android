@@ -11,9 +11,11 @@ import com.ebookfrenzy.withmap.viewmodel.MainViewModel
 import com.ebookfrenzy.withmap.viewmodel.PinDetailViewModel
 import com.ebookfrenzy.withmap.viewmodel.SearchViewModel
 import com.ebookfrenzy.withmap.viewmodel.ViewModelFactory
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -24,8 +26,8 @@ import retrofit2.converter.gson.GsonConverterFactory
  * on 9월 12, 2019
  */
 
-val kakaoApiModule = module(override = true) {
-    single<OkHttpClient>(override = true) {
+val kakaoApiModule = module {
+    single<OkHttpClient> {
         OkHttpClient.Builder()
             .addInterceptor {
                 val request = it.request()
@@ -48,23 +50,24 @@ val kakaoApiModule = module(override = true) {
     }
 }
 
-val apiModule = module(override = true) {
-    single<OkHttpClient>(override = true) {
-        OkHttpClient.Builder()
-            .addInterceptor {
-                val request = it.request()
-                    .newBuilder()
-                    .addHeader("Content-Type", "application/json")
-                    .build()
-                return@addInterceptor it.proceed(request)
+val apiModule = module {
+    single(named("contentType")) {
+        Interceptor {
+            val builder = it.request().newBuilder().apply {
+                header("Content-Type", "application/json")
             }
-            .build()
+            it.proceed(builder.build())
+        }
     }
 
     single<WithMapService> {
         Retrofit.Builder()
             .baseUrl(WithMapService.baseUrl)
-            .client(get())
+            .client(
+                OkHttpClient.Builder()
+                    .addInterceptor(get(named("contentType")))
+                    .build()
+            )
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
             .build()

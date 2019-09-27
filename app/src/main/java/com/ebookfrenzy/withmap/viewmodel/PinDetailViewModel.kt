@@ -12,6 +12,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import retrofit2.HttpException
 
 /**
  * Created By Yun Hyeok
@@ -49,7 +50,7 @@ class PinDetailViewModel(
 
     fun getPinDetail(pinId: Int) {
         val token =
-            "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJob21lc2tpbkBuYXZlci5jb20iLCJuaWNrbmFtZSI6Iuy1nOyEoOyerCIsImlzcyI6IldJVEhNQVAiLCJpYXQiOjE1NjkzMjI0NjEsImV4cCI6MTU2OTkyNzI2MX0.c7mUFv1BhyQLwiemXbYYfF_y8tEb45AoOVQ9-btpC_w"
+            "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtb2RlbG1ha2VyQG5hdmVyLmNvbSIsIm5pY2tuYW1lIjoic3RyaW5nIiwiaXNzIjoiV0lUSE1BUCIsImlhdCI6MTU2OTU2MzA0NCwiZXhwIjoxNTcwMTY3ODQ0fQ.ZHb2-3h_Ew_pec6t9ta5tCoOLjdZn6xdT7KBtGhao54"
         addDisposable(
             withMapService.getPinDetails(token, pinId)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -67,10 +68,11 @@ class PinDetailViewModel(
                         )
                         Log.d(
                             "Malibin Debug",
-                            "response : ${it.message}"
+                            "errorBody: ${(it as HttpException).response().errorBody()?.string()}"
                         )
                     }
                 )
+
         )
     }
 
