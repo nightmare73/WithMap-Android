@@ -39,10 +39,6 @@ class MainViewModel(val model: DataModel ) : BaseViewModel() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    if(it.isEmpty()) {
-                        Log.d(TAG, "비어있음")
-                        return@subscribe
-                    }
                     it.run {
                         Log.d(TAG, "run")
                         if (this.size > 0) {
@@ -52,7 +48,7 @@ class MainViewModel(val model: DataModel ) : BaseViewModel() {
                                     it.latitude,
                                     it.longitude,
                                     it.type,
-                                    it.unimprovedName!!,
+                                    it.unimprovedName,
                                     it.crtDate,
                                     it.address,
                                     it.state,

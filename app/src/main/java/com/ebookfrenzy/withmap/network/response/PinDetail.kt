@@ -16,11 +16,11 @@ data class PinDetail(
 
 data class CommonPinInfo(
     val crtDate: String,
-    var updDate: String?,
+    var updDate: String,
     val id: Int,
-    var userId: Int?,
-    var unimprovedName: String?,
-    var improvedName: String?,
+    var userId: Int,
+    var unimprovedName: String ,
+    var improvedName: String,
     val type: Int,
     val latitude: Double,
     val longitude: Double,

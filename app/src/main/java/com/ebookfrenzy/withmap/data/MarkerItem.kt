@@ -5,12 +5,12 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class MarkerItem(
-    val latitude: Double,
-    val longitude: Double,
-    val type : Int,
-    val name : String,
-    val crtDate : String,
-    val address : String,
+    val latitude: Double?,
+    val longitude: Double?,
+    val type : Int?,
+    val name : String?,
+    val crtDate : String?,
+    val address : String?,
     var improved: Boolean,
     var improvedTitle : String? = null,
     var improvedDate : String? = null,

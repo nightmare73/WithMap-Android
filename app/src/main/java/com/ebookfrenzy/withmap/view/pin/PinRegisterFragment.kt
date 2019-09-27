@@ -153,7 +153,7 @@ class PinRegisterFragment : Fragment() {
             title.value = "개선되었습니다"
             address.value = markerItem!!.address
 
-            improvedTypePick(markerItem!!.type)
+            improvedTypePick(markerItem!!.type!!)
             markerItem!!.improved = true
 
 

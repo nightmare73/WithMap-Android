@@ -246,14 +246,16 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
     override fun onMapReady(googleMap: GoogleMap?) {
         mMap = googleMap!!
 
-        mLoc = LatLng(currentLocation.latitude, currentLocation.longitude)
+//        mLoc = LatLng(currentLocation.latitude, currentLocation.longitude)
 
-//        mLoc = LatLng(37.537523, 126.96558)
+        mLoc = LatLng(37.537523, 126.96558)
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mLoc, 14f))
         mMap.setOnMarkerClickListener(this)
         mMap.setOnMapClickListener(this)
 
-        vm.getPinsAround(currentLocation.latitude, currentLocation.longitude)
+        vm.getPinsAround(37.57261267, 126.9757016)
+        vm.getPinsAround(37.57261267, 126.9757016)
+//        vm.getPinsAround(currentLocation.latitude, currentLocation.longitude)
 //        getAroundPins()
 
         getSampleMarkerItems()
@@ -340,20 +342,23 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
     fun getSampleMarkerItems() {
 
 //        vm.getPinsAround(currentLocation.latitude, currentLocation.longitude)
-        if(vm.markerItemLiveData.value != null) {
-            val sampleList = vm.markerItemLiveData.value
-            Log.d(TAG, "sampleList : ${sampleList.toString()}")
+        vm.markerItemLiveData.observe(this, Observer{
+            if(it != null) {
+                val sampleList = it
+                Log.d(TAG, "sampleList : ${sampleList}")
 
-            for (markerItem in sampleList!!.iterator()) {
-                addMarker(markerItem)
+                for (markerItem in sampleList.iterator()) {
+                    addMarker(markerItem)
+                }
             }
-        }
+        })
+
     }
 
 
     //마커를 추가해놓는 함수
     private fun addMarker(markerItem: MarkerItem): Marker {
-        val position = LatLng(markerItem.latitude, markerItem.longitude)
+        val position = LatLng(markerItem.latitude!!, markerItem.longitude!!)
 
         if (!markerItem.improved) {
             //개선되기전
