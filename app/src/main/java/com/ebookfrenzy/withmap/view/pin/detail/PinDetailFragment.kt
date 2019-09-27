@@ -24,8 +24,6 @@ class PinDetailFragment : Fragment() {
 
     private lateinit var originalWindowAttributes: WindowManager.LayoutParams
 
-    //private val viewModel: PinDetailViewModel by viewModel()
-
     private val viewModelFactory: ViewModelProvider.Factory by inject()
     private lateinit var viewModel: PinDetailViewModel
 
@@ -44,10 +42,9 @@ class PinDetailFragment : Fragment() {
         val binding = FragmentPinDetailBinding.inflate(inflater)
         binding.returnBack = returnBack
         binding.vm = viewModel
+        binding.lifecycleOwner = this
 
         viewModel.getPinDetail(1)
-
-        subscribePinDetail(binding)
 
         return binding.root
     }
@@ -94,8 +91,5 @@ class PinDetailFragment : Fragment() {
         win.attributes = winParams
     }
 
-    private fun subscribePinDetail(binding: FragmentPinDetailBinding) {
-
-    }
 
 }
