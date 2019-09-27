@@ -83,14 +83,11 @@ val localRepositoryModule = module {
 val viewModelModule = module {
     viewModel { SearchViewModel(get()) }
     viewModel { PinDetailViewModel(get(), get()) }
+    viewModel { MainViewModel() }
 }
 
 val viewModelFactoryModule = module {
     single<ViewModelProvider.Factory> { ViewModelFactory(get(), get(), get()) }
-}
-
-val mainViewModelModule = module {
-    viewModel{MainViewModel()}
 }
 
 val modelpart = module {
@@ -106,6 +103,5 @@ val diModules =
         viewModelModule,
         localRepositoryModule,
         modelpart,
-        mainViewModelModule,
         viewModelFactoryModule
     )
