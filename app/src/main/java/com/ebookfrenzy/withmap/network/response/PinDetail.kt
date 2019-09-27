@@ -11,7 +11,9 @@ import androidx.databinding.BindingAdapter
 data class PinDetail(
     val detailContents: PinDetailExtra,
     val pin: CommonPinInfo,
-    val pinImages: List<PinDetailImage>
+    val pinImages: List<PinDetailImage>,
+    val mine: Boolean,
+    val recommended: Boolean
 )
 
 data class CommonPinInfo(
