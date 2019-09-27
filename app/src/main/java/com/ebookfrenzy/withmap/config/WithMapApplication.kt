@@ -22,7 +22,7 @@ class WithMapApplication : Application() {
     fun buildNetwork() {
         val builder = Retrofit.Builder()
         val retrofit = builder
-            .baseUrl(baseUrl)
+            .baseUrl("http://withmap-253307.appspot.com/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 

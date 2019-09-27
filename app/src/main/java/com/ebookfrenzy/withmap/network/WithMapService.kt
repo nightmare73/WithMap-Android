@@ -48,7 +48,7 @@ interface WithMapService {
         @Header("Authorization") token: String,
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double
-    ):Call<List<CommonPinInfo>>
+    ):Call<ArrayList<CommonPinInfo>>
 
     // 핀 자세히보기
     @GET("/withmap/pins/{id}")

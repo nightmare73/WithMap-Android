@@ -1,5 +1,6 @@
 package com.ebookfrenzy.withmap.viewmodel
 
+import android.text.TextUtils
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -14,7 +15,8 @@ import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
-class MainViewModel(val model: DataModel) : BaseViewModel() {
+class MainViewModel(val model: DataModel ) : BaseViewModel() {
+
     private val TAG = "MainViewModel"
 
     private val _aroundPinResponseLiveData = MutableLiveData<List<CommonPinInfo>>()
@@ -37,7 +39,10 @@ class MainViewModel(val model: DataModel) : BaseViewModel() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    Log.d(TAG, "subscribe()")
+                    if(it.isEmpty()) {
+                        Log.d(TAG, "비어있음")
+                        return@subscribe
+                    }
                     it.run {
                         Log.d(TAG, "run")
                         if (this.size > 0) {
@@ -47,7 +52,7 @@ class MainViewModel(val model: DataModel) : BaseViewModel() {
                                     it.latitude,
                                     it.longitude,
                                     it.type,
-                                    it.unimprovedName,
+                                    it.unimprovedName!!,
                                     it.crtDate,
                                     it.address,
                                     it.state,
@@ -58,14 +63,14 @@ class MainViewModel(val model: DataModel) : BaseViewModel() {
                         }
                     }
                 }, {
-                    Log.d(TAG, "response error, message : ${it.message}")
+                    Log.d(TAG, "response error, message : ${TextUtils.join("\n", it.stackTrace)}")
                 })
         )
     }
 
 
     init {
-        getPinsAround(37.537523, 126.96558)
+//        getPinsAround(37.537523, 126.96558)
         printSelectedMarkerLiveData()
 
         selectedMarkerLiveData.observeForever(Observer {

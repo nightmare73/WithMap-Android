@@ -9,6 +9,7 @@ import android.graphics.Canvas
 import android.location.Location
 import android.os.Bundle
 import android.os.Parcelable
+import android.text.TextUtils
 import android.util.DisplayMetrics
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -155,19 +156,21 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
     }
 //
 //    fun getAroundPins() {
+//        Log.d(TAG, "getAroundPins()")
 //        val networkService = WithMapApplication.instance.networkService
 //        val getPinsAroundPosition2 = networkService.getPinsAroundPosition2(
-//            "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJob21lc2tpbkBuYXZlci5jb20iLCJuaWNrbmFtZSI6Iuy1nOyEoOyerCIsImlzcyI6IldJVEhNQVAiLCJpYXQiOjE1NjkzMjI0NjEsImV4cCI6MTU2OTkyNzI2MX0.c7mUFv1BhyQLwiemXbYYfF_y8tEb45AoOVQ9-btpC_w",
-//            currentLocation.latitude, currentLocation.longitude
+//            "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJob21lc2tpbkBuYXZlci5jb20iLCJuaWNrbmFtZSI6Iuy1nOyEoOyerCIsImlzcyI6IldJVEhNQVAiLCJpYXQiOjE1NjkzMjI0NjEsImV4cCI6MTU2OTkyNzI2MX0.c7mUFv1BhyQLwiemXbYYfF_y8tEb45AoOVQ9-btpC_w"
+//        ,currentLocation.latitude
+//        ,currentLocation.longitude
 //        )
-//        getPinsAroundPosition2.enqueue(object : Callback<List<CommonPinInfo>>{
-//            override fun onFailure(call: Call<List<CommonPinInfo>>, t: Throwable) {
-//                Log.e(TAG, t.toString())
+//        getPinsAroundPosition2.enqueue(object : Callback<ArrayList<CommonPinInfo>>{
+//            override fun onFailure(call: Call<ArrayList<CommonPinInfo>>, t: Throwable) {
+//                Log.e(TAG, "error : ${TextUtils.join("\n",t.stackTrace)}")
 //            }
 //
 //            override fun onResponse(
-//                call: Call<List<CommonPinInfo>>,
-//                response: Response<List<CommonPinInfo>>
+//                call: Call<ArrayList<CommonPinInfo>>,
+//                response: Response<ArrayList<CommonPinInfo>>
 //            ) {
 //                if(response.isSuccessful) {
 //                    Log.d(TAG, "getPindAroundPositioon2 success")
@@ -250,11 +253,10 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
         mMap.setOnMarkerClickListener(this)
         mMap.setOnMapClickListener(this)
 
-        getSampleMarkerItems()
-
+        vm.getPinsAround(currentLocation.latitude, currentLocation.longitude)
 //        getAroundPins()
 
-
+        getSampleMarkerItems()
     }
 
     override fun onRequestPermissionsResult(
@@ -336,7 +338,6 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
 
     //샘플로 만든 마커들, +추가해놓기
     fun getSampleMarkerItems() {
-
 
 //        vm.getPinsAround(currentLocation.latitude, currentLocation.longitude)
         if(vm.markerItemLiveData.value != null) {
