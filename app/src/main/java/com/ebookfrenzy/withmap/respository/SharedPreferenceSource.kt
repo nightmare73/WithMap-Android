@@ -18,9 +18,18 @@ class SharedPreferenceSource(context: Context) {
         get() = sharedPreference.getBoolean("isFirst", true)
         set(flag) = saveFirstAccessFlag(flag)
 
+    var authToken: String
+        get() = sharedPreference.getString("authToken", "")!!
+        set(token) = saveAuthToken(token)
+
+
     private fun saveFirstAccessFlag(flag: Boolean) {
         editor.putBoolean("isFirst", flag)
         editor.commit()
     }
 
+    private fun saveAuthToken(token: String) {
+        editor.putString("authToken", "")
+        editor.commit()
+    }
 }

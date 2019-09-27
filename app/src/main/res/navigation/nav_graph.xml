@@ -27,7 +27,8 @@
             app:destination="@id/mainMapFragment"
             app:launchSingleTop="true"
             app:popUpTo="@+id/splashFragment"
-            app:popUpToInclusive="true" />
+            app:popUpToInclusive="true" >
+        </action>
     </fragment>
 
     <activity
@@ -49,7 +50,8 @@
             app:destination="@id/pinDetailFragment" />
         <action
             android:id="@+id/action_mainMapFragment_to_searchFragment"
-            app:destination="@id/searchFragment" />
+            app:destination="@id/searchFragment"
+            app:launchSingleTop="true" />
         <action
             android:id="@+id/action_mainMapFragment_to_myRegisterPinFragment"
             app:destination="@id/myRegisterPinFragment" />
@@ -68,6 +70,11 @@
         <action
             android:id="@+id/action_mainMapFragment_to_nav_graph_login"
             app:destination="@id/nav_graph_login" />
+        <argument
+            android:name="location"
+            app:argType="com.ebookfrenzy.withmap.data.SearchLocationResult"
+            app:nullable="true"
+            android:defaultValue="@null"/>
 
     </fragment>
 
@@ -79,6 +86,11 @@
         <action
             android:id="@+id/action_searchFragment_to_pinDetailFragment"
             app:destination="@id/pinDetailFragment" />
+        <action
+            android:id="@+id/action_searchFragment_to_mainMapFragment"
+            app:destination="@id/mainMapFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/mainMapFragment" />
 
     </fragment>
     <fragment

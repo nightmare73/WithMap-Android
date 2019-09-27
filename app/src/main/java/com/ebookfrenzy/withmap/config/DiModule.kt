@@ -1,5 +1,6 @@
 package com.ebookfrenzy.withmap.config
 
+import androidx.lifecycle.ViewModelProvider
 import com.ebookfrenzy.withmap.network.KakaoService
 import com.ebookfrenzy.withmap.network.WithMapService
 import com.ebookfrenzy.withmap.network.response.DataModel
@@ -7,7 +8,9 @@ import com.ebookfrenzy.withmap.network.response.DataModelImpl
 import com.ebookfrenzy.withmap.respository.LocalRepository
 import com.ebookfrenzy.withmap.respository.SharedPreferenceSource
 import com.ebookfrenzy.withmap.viewmodel.MainViewModel
+import com.ebookfrenzy.withmap.viewmodel.PinDetailViewModel
 import com.ebookfrenzy.withmap.viewmodel.SearchViewModel
+import com.ebookfrenzy.withmap.viewmodel.ViewModelFactory
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -76,6 +79,11 @@ val localRepositoryModule = module {
 
 val viewModelModule = module {
     viewModel { SearchViewModel(get()) }
+    viewModel { PinDetailViewModel(get(), get()) }
+}
+
+val viewModelFactoryModule = module {
+    single<ViewModelProvider.Factory> { ViewModelFactory(get(), get(), get()) }
 }
 
 val mainViewModelModule = module {
@@ -95,5 +103,6 @@ val diModules =
         viewModelModule,
         localRepositoryModule,
         modelpart,
-        mainViewModelModule
+        mainViewModelModule,
+        viewModelFactoryModule
     )

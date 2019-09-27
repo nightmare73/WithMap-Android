@@ -15,4 +15,12 @@ class LocalRepository(private val sp: SharedPreferenceSource) {
         return isFirst
     }
 
+    fun getAuthToken(): String {
+        return sp.authToken
+    }
+
+    fun saveAuthToken(token: String) {
+        sp.authToken = token
+    }
+
 }

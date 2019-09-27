@@ -11,6 +11,8 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
 import com.ebookfrenzy.withmap.databinding.FragmentSearchBinding
 import com.ebookfrenzy.withmap.network.WithMapService
@@ -30,9 +32,10 @@ import retrofit2.Response
 
 class SearchFragment : Fragment(), TextView.OnEditorActionListener {
 
-    private val dayeService: WithMapService by inject()
+    //private val viewModel: SearchViewModel by sharedViewModel()
 
-    private val viewModel: SearchViewModel by sharedViewModel()
+    private val viewModelFactory: ViewModelProvider.Factory by inject()
+    private lateinit var viewModel: SearchViewModel
 
     private val onBackClicked = View.OnClickListener {
         Navigation.findNavController(it).popBackStack()
@@ -43,6 +46,8 @@ class SearchFragment : Fragment(), TextView.OnEditorActionListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        viewModel = ViewModelProviders.of(this, viewModelFactory)[SearchViewModel::class.java]
+
         val binding = FragmentSearchBinding.inflate(inflater).apply {
             vm = viewModel
             returnBack = onBackClicked
@@ -50,9 +55,7 @@ class SearchFragment : Fragment(), TextView.OnEditorActionListener {
         }
 
         val rvAdapter = SearchAdapter()
-        binding.rvSearchFragResult.adapter = rvAdapter.apply {
-            setViewModel(viewModel)
-        }
+        binding.rvSearchFragResult.adapter = rvAdapter.apply { setViewModel(viewModel) }
 
         binding.etSearchFragQuery.setOnEditorActionListener(this)
 
@@ -77,23 +80,5 @@ class SearchFragment : Fragment(), TextView.OnEditorActionListener {
         })
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        dayeService.requestSignIn(SignInParams("test@naver.com", "12345678")).enqueue(object :
-            Callback<SignInResponse> {
-            override fun onFailure(call: Call<SignInResponse>, t: Throwable) {
-                Log.d("Malibin Debug", "호롤리 ㅠㅠ : ${TextUtils.join("\n", t.stackTrace)}")
-            }
-
-            override fun onResponse(
-                call: Call<SignInResponse>,
-                response: Response<SignInResponse>
-            ) {
-                Log.d("Malibin Debug", "호롤리 : ${response.raw()}")
-                Log.d("Malibin Debug", "호롤리 : ${response?.body()}")
-            }
-        })
-    }
 
 }

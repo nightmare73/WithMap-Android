@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.ebookfrenzy.withmap.data.SearchLocationResult
 import com.ebookfrenzy.withmap.databinding.RvItemSearchBinding
+import com.ebookfrenzy.withmap.view.main.MainMapFragmentDirections
 import com.ebookfrenzy.withmap.viewmodel.SearchViewModel
 
 /**
@@ -40,8 +41,10 @@ class SearchAdapter : ListAdapter<SearchLocationResult, SearchAdapter.ViewHolder
 
     private fun createClickListener(location: SearchLocationResult) = View.OnClickListener {
         viewModel?.setSelectedLocation(location)
-        Navigation.findNavController(it).popBackStack()
+        //Navigation.findNavController(it).popBackStack()
         Log.d("Malibin Debug", "clicked  ${location.name}")
+        val direction = SearchFragmentDirections.actionSearchFragmentToMainMapFragment(location)
+        Navigation.findNavController(it).navigate(direction)
     }
 
     fun setViewModel(viewModel: SearchViewModel) {
