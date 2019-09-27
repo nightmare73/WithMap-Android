@@ -15,18 +15,18 @@ data class PinDetail(
 )
 
 data class CommonPinInfo(
-    val address: String,
-    val crtDate: String,   //how to use yyyy-mm-ddThh:mm:ss.733Z object in java
-    val id: Int,
-    val improvedName: String,
-    val latitude: Double,
-    val likeCount: Int,
-    val longitude: Double,
-    val state: Boolean,
-    val type: Int,
-    val unimprovedName: String,
+    val crtDate: String,
     val updDate: String,
-    val userId: Int
+    val id: Int,
+    val userId: Int,
+    val unimprovedName: String,
+    val improvedName: String,
+    val type: Int,
+    val latitude: Double,
+    val longitude: Double,
+    val address: String,
+    val state: Boolean,
+    val likeCount: Int
 )
 
 data class PinDetailImage(

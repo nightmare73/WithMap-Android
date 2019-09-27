@@ -42,6 +42,13 @@ interface WithMapService {
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double
     ):Single<List<CommonPinInfo>>
+    // 주위 핀 조회
+    @GET("/withmap/pins")
+    fun getPinsAroundPosition2(
+        @Header("Authorization") token: String,
+        @Query("latitude") latitude: Double,
+        @Query("longitude") longitude: Double
+    ):Call<List<CommonPinInfo>>
 
     // 핀 자세히보기
     @GET("/withmap/pins/{id}")

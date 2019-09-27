@@ -31,8 +31,10 @@ import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 
 import com.ebookfrenzy.withmap.R
+import com.ebookfrenzy.withmap.config.WithMapApplication
 import com.ebookfrenzy.withmap.data.MarkerItem
 import com.ebookfrenzy.withmap.databinding.FragmentMainMapBinding
+import com.ebookfrenzy.withmap.network.response.CommonPinInfo
 import com.ebookfrenzy.withmap.viewmodel.MainViewModel
 import com.ebookfrenzy.withmap.viewmodel.NotificationViewModel
 import com.ebookfrenzy.withmap.viewmodel.hamSetImage
@@ -54,6 +56,10 @@ import kotlinx.android.synthetic.main.bottom_sheet_after.view.*
 import kotlinx.android.synthetic.main.bottom_sheet_before.*
 import kotlinx.android.synthetic.main.bottom_sheet_before.view.*
 import kotlinx.android.synthetic.main.fragment_main_map.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 /**
  * A simple [Fragment] subclass.
@@ -78,13 +84,9 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
 
     private lateinit var markerRootView: View
     private lateinit var ivMarker: ImageView
-    private lateinit var vm: MainViewModel
+    private val vm: MainViewModel by viewModel()
     private lateinit var vmNoti: NotificationViewModel
 
-    private val params = ConstraintLayout.LayoutParams(
-        ViewGroup.LayoutParams.WRAP_CONTENT,
-        ViewGroup.LayoutParams.WRAP_CONTENT
-    )
 
     var bottomSheetLayout: View? = null
 
@@ -101,7 +103,6 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
 
         markerRootView = LayoutInflater.from(this.context).inflate(R.layout.marker_layout, null)
         ivMarker = markerRootView.findViewById(R.id.iv_marker)
-        vm = ViewModelProviders.of(this)[MainViewModel::class.java]
         vmNoti = ViewModelProviders.of(this)[NotificationViewModel::class.java]
 
         binding = FragmentMainMapBinding.inflate(LayoutInflater.from(this.context))
@@ -152,6 +153,33 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
 
         Log.d(TAG, vm.selectedMarkerLiveData.value.toString())
     }
+//
+//    fun getAroundPins() {
+//        val networkService = WithMapApplication.instance.networkService
+//        val getPinsAroundPosition2 = networkService.getPinsAroundPosition2(
+//            "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJob21lc2tpbkBuYXZlci5jb20iLCJuaWNrbmFtZSI6Iuy1nOyEoOyerCIsImlzcyI6IldJVEhNQVAiLCJpYXQiOjE1NjkzMjI0NjEsImV4cCI6MTU2OTkyNzI2MX0.c7mUFv1BhyQLwiemXbYYfF_y8tEb45AoOVQ9-btpC_w",
+//            currentLocation.latitude, currentLocation.longitude
+//        )
+//        getPinsAroundPosition2.enqueue(object : Callback<List<CommonPinInfo>>{
+//            override fun onFailure(call: Call<List<CommonPinInfo>>, t: Throwable) {
+//                Log.e(TAG, t.toString())
+//            }
+//
+//            override fun onResponse(
+//                call: Call<List<CommonPinInfo>>,
+//                response: Response<List<CommonPinInfo>>
+//            ) {
+//                if(response.isSuccessful) {
+//                    Log.d(TAG, "getPindAroundPositioon2 success")
+//                    if (response.body() != null) {
+//                        val list = response.body() as List<CommonPinInfo>
+//                        if (list.size > 0)
+//                            Log.d(TAG, list.size.toString())
+//                    }
+//                }
+//            }
+//        })
+//    }
 //
 //    private requestAroundPIn() {
 //
@@ -223,6 +251,8 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
         mMap.setOnMapClickListener(this)
 
         getSampleMarkerItems()
+
+//        getAroundPins()
 
 
     }
@@ -307,11 +337,15 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
     //샘플로 만든 마커들, +추가해놓기
     fun getSampleMarkerItems() {
 
-        val sampleList = vm.markerItemLiveData.value
-        Log.d(TAG, sampleList.toString())
 
-        for (markerItem in sampleList!!.iterator()) {
-            addMarker(markerItem)
+//        vm.getPinsAround(currentLocation.latitude, currentLocation.longitude)
+        if(vm.markerItemLiveData.value != null) {
+            val sampleList = vm.markerItemLiveData.value
+            Log.d(TAG, "sampleList : ${sampleList.toString()}")
+
+            for (markerItem in sampleList!!.iterator()) {
+                addMarker(markerItem)
+            }
         }
     }
 
