@@ -26,7 +26,8 @@ data class CommonPinInfo(
     val longitude: Double,
     val address: String,
     val state: Boolean,
-    val likeCount: Int
+    val likeCount: Int,
+    var comment: String? = null
 )
 
 data class PinDetailImage(

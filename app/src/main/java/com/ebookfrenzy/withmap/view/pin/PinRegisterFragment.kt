@@ -6,6 +6,8 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
@@ -34,6 +36,12 @@ import com.ebookfrenzy.withmap.viewmodel.PinRegisterViewModel
 import com.google.android.gms.maps.model.Marker
 import com.googry.googrybaserecyclerview.BaseRecyclerView
 import kotlinx.android.synthetic.main.fragment_pin_register.*
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.InputStream
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -44,6 +52,9 @@ import java.util.*
 //f = 1 : 새로운 개선 필요 핀 등록
 //f = 2 : 개선되었습니다 핀 등록
 class PinRegisterFragment : Fragment() {
+
+    private var mImage: MultipartBody.Part? = null
+    private var mImageList = mutableListOf<MultipartBody.Part?>()
 
     private var mNow: Long = 0
     private lateinit var mDate: Date
@@ -339,6 +350,26 @@ class PinRegisterFragment : Fragment() {
                     viewModel.albumImageListLiveData.postValue(imageUris)
                     Log.d(TAG, "imageUri : ${viewModel.albumImageListLiveData.value}")
 
+                    data?.let {
+                        var selectedPictureUri = data.data
+                        val options = BitmapFactory.Options()
+                        val inputStream: InputStream =
+                            activity!!.contentResolver.openInputStream(selectedPictureUri)
+                        val bitmap = BitmapFactory.decodeStream(inputStream, null, options)
+                        val byteArrayOutputStream = ByteArrayOutputStream()
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 20, byteArrayOutputStream)
+                        val photoBody = RequestBody.create(
+                            MediaType.parse("image/jpg"),
+                            byteArrayOutputStream.toByteArray()
+                        )
+                        //첫번째 매개변수 Stringㅡㄹ 꼭 서버 api에 명시된 이름으로 넣어주세요
+                        mImage = MultipartBody.Part.createFormData(
+                            "file",
+                            File(selectedPictureUri.toString()).name,
+                            photoBody
+                        )
+                        mImageList.add(mImage)
+                    }
                 }
             }
         }
@@ -355,6 +386,9 @@ class PinRegisterFragment : Fragment() {
             }
         }
     }
+    //통신
+//    private fun get
+
 
     private fun initDataBinding() {
         viewModel.albumImageListLiveData.observe(this, Observer {

@@ -475,6 +475,7 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
             if (persistentBottomSheetBehavior != null) {
                 persistentBottomSheetBehavior!!.state = BottomSheetBehavior.STATE_COLLAPSED
             }
+
             if (!markerItem.improved) {
                 Log.d(TAG, "!markerItem.improved")
                 bottomSheetLayout = bottom_sheet_before

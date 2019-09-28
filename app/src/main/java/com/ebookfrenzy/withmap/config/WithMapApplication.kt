@@ -1,6 +1,7 @@
 package com.ebookfrenzy.withmap.config
 
 import android.app.Application
+import androidx.multidex.MultiDexApplication
 import com.ebookfrenzy.withmap.network.WithMapService
 import com.ebookfrenzy.withmap.network.WithMapService.Companion.baseUrl
 import org.koin.android.ext.koin.androidContext
@@ -13,7 +14,7 @@ import retrofit2.converter.gson.GsonConverterFactory
  * on 9월 12, 2019
  */
 
-class WithMapApplication : Application() {
+class WithMapApplication : MultiDexApplication() {
     lateinit var networkService : WithMapService
     companion object {
         lateinit var instance : WithMapApplication

@@ -35,17 +35,18 @@ interface WithMapService {
         @Header("Authorization") token: String
     ) //UserInfo class 만들어놓음
 
+    @POST
+
     // 주위 핀 조회
     @GET("/withmap/pins")
     fun getPinsAroundPosition(
-        @Header("Authorization") token: String,
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double
     ):Single<List<CommonPinInfo>>
     // 주위 핀 조회
     @GET("/withmap/pins")
     fun getPinsAroundPosition2(
-        @Header("Authorization") token: String,
+        @Header("Content-Type") content_type : String,
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double
     ):Call<ArrayList<CommonPinInfo>>
