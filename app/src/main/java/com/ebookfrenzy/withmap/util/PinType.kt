@@ -1,5 +1,6 @@
 package com.ebookfrenzy.withmap.util
 
+import android.text.TextUtils
 import androidx.annotation.DrawableRes
 import com.ebookfrenzy.withmap.R
 
@@ -10,12 +11,13 @@ import com.ebookfrenzy.withmap.R
 
 enum class PinType(val id: Int, @DrawableRes val resId: Int) {
 
-    OBSTACLE(0, R.drawable.pin_hurdle_on),
-    CURB(1, R.drawable.pin_dump_on),
-    UNPAVED_ROAD(2, R.drawable.pin_unpaved_on),
-    NARROW_ROAD(3, R.drawable.pin_narrow_on),
-    TOILET(4, R.drawable.pin_toilet_on),
-    RESTAURANT(5, R.drawable.pin_restaurant_on);
+    DEFAULT(0, R.drawable.pin_hurdle_on),
+    OBSTACLE(1, R.drawable.pin_hurdle_on),
+    CURB(2, R.drawable.pin_dump_on),
+    UNPAVED_ROAD(3, R.drawable.pin_unpaved_on),
+    NARROW_ROAD(4, R.drawable.pin_narrow_on),
+    TOILET(5, R.drawable.pin_toilet_on),
+    RESTAURANT(6, R.drawable.pin_restaurant_on);
 
 
     companion object {
