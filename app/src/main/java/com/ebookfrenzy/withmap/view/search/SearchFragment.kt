@@ -79,6 +79,4 @@ class SearchFragment : Fragment(), TextView.OnEditorActionListener {
             adapter.submitList(searchResults)
         })
     }
-
-
 }
