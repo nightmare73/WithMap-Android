@@ -59,14 +59,14 @@ interface WithMapService {
     ): Single<PinDetail>
 
     // 핀 추천
-    @PUT("/withmap/pins/like/{id}")
+    @PUT("/withmap/pins/{id}/like")
     fun recommendPin(
         @Header("Authorization") token: String,
         @Path("id") id: Int
     ): Completable
 
     // 핀 신고
-    @PUT("/withmap/pins/report/{id}")
+    @PUT("/withmap/pins/{id}/report")
     fun reportPin(
         @Header("Authorization") token: String,
         @Path("id") id: Int

@@ -7,12 +7,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
 import com.ebookfrenzy.withmap.databinding.FragmentPinDetailBinding
+import com.ebookfrenzy.withmap.network.response.PinDetail
+import com.ebookfrenzy.withmap.view.dialog.PlainDialog
 import com.ebookfrenzy.withmap.viewmodel.PinDetailViewModel
+import kotlinx.android.synthetic.main.fragment_pin_detail.view.*
 import org.koin.android.ext.android.inject
 
 /**
@@ -23,8 +28,6 @@ import org.koin.android.ext.android.inject
 class PinDetailFragment : Fragment() {
 
     private lateinit var originalWindowAttributes: WindowManager.LayoutParams
-
-    //private val viewModel: PinDetailViewModel by viewModel()
 
     private val viewModelFactory: ViewModelProvider.Factory by inject()
     private lateinit var viewModel: PinDetailViewModel
@@ -44,10 +47,13 @@ class PinDetailFragment : Fragment() {
         val binding = FragmentPinDetailBinding.inflate(inflater)
         binding.returnBack = returnBack
         binding.vm = viewModel
-
-        viewModel.getPinDetail(1)
+        binding.lifecycleOwner = this
 
         subscribePinDetail(binding)
+        subscribeIsRecommended(binding)
+        subscribeIsReported()
+
+        viewModel.getPinDetail(4)
 
         return binding.root
     }
@@ -94,8 +100,58 @@ class PinDetailFragment : Fragment() {
         win.attributes = winParams
     }
 
-    private fun subscribePinDetail(binding: FragmentPinDetailBinding) {
+    private fun bindView(binding: FragmentPinDetailBinding, pinDetail: PinDetail) {
+        val isMyPin = pinDetail.mine
+        val pinId = pinDetail.pin.id
+        if (isMyPin) {
+            binding.btnPinDetailFragHelped.setOnClickListener { deployDialog("자신의 글은 추천할 수 없습니다.") }
+            binding.btnPinDetailFragReport.setOnClickListener { deployDialog("자신의 글은 신고할 수 없습니다.") }
+            return
+        }
+        binding.btnPinDetailFragHelped.setOnClickListener { viewModel.recommendPin(pinId) }
+        binding.btnPinDetailFragReport.setOnClickListener { viewModel.reportPin(pinId) }
+    }
 
+    private fun subscribePinDetail(binding: FragmentPinDetailBinding) {
+        viewModel.pinDetail.observe(viewLifecycleOwner, Observer {
+            bindView(binding, it)
+
+            val isRecommended = it.recommended
+            binding.btnPinDetailFragHelped.isSelected = isRecommended
+            if (isRecommended) {
+                binding.btnPinDetailFragHelped.setOnClickListener(null)
+            }
+        })
+    }
+
+    private fun subscribeIsRecommended(binding: FragmentPinDetailBinding) {
+        viewModel.isRecommended.observe(viewLifecycleOwner, Observer { isRecommended ->
+            binding.btnPinDetailFragHelped.isSelected = isRecommended
+            if (isRecommended) {
+                binding.tvPinDetailFragLikeCount.let {
+                    it.text = (it.text.toString().toInt() + 1).toString()
+                }
+                binding.btnPinDetailFragHelped.setOnClickListener(null)
+                return@Observer
+            }
+            Toast.makeText(context!!, "서버통신에 실패하였습니다", Toast.LENGTH_SHORT).show()
+        })
+    }
+
+    private fun subscribeIsReported() {
+        viewModel.isReported.observe(viewLifecycleOwner, Observer { isReported ->
+            if (isReported) {
+                Toast.makeText(context!!, "신고가 완료되었습니다.", Toast.LENGTH_SHORT).show()
+                return@Observer
+            }
+            Toast.makeText(context!!, "이미 신고되었습니다.", Toast.LENGTH_SHORT).show()
+        })
+    }
+
+    private fun deployDialog(content: String) {
+        PlainDialog(context!!).apply {
+            this.content = content
+        }.show()
     }
 
 }

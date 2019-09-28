@@ -11,7 +11,9 @@ import androidx.databinding.BindingAdapter
 data class PinDetail(
     val detailContents: PinDetailExtra,
     val pin: CommonPinInfo,
-    val pinImages: List<PinDetailImage>
+    val pinImages: List<PinDetailImage>,
+    val mine: Boolean,
+    val recommended: Boolean
 )
 
 data class CommonPinInfo(
@@ -36,12 +38,34 @@ data class PinDetailImage(
 )
 
 data class PinDetailExtra(
-    val crtDate: String,
-    val updDate: String,
     val id: Int,
+    val comment: String,
     val useableTime: String,
-    val departmentNumber: String
+    val departmentNumber: String,
+
+    val number: String?,
+    val classification: Int,
+    val site: String
 )
+
+//                { // type 0,1,2,3
+//                 "id" : 1,
+//                 "comment" : "길이 불편해요"
+//                }
+//                 { // type 4
+//                  "id":1,
+//                  "useableTime":"정시(09:00 ~ 22:30)",
+//                  "departmentNumber":"02-399-1553"
+//                 }
+//                { // type 5
+//                 "id" : 1,
+//                 "number" : "010-1234-1234",
+//                 "classification" : 0,
+//                 "site" : "www.~~~.com",
+//                 "useableTime" : "24시",
+//                 "comment" : "여기 맛집이네요"
+//                }
+
 //{
 //    "pin":
 //    {
