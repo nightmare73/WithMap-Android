@@ -2,6 +2,7 @@ package com.ebookfrenzy.withmap.network
 
 import com.ebookfrenzy.withmap.network.request.SignInParams
 import com.ebookfrenzy.withmap.network.request.SignUpParams
+import com.ebookfrenzy.withmap.network.response.CheckDuplicatedResponse
 import com.ebookfrenzy.withmap.network.response.CommonPinInfo
 import com.ebookfrenzy.withmap.network.response.PinDetail
 import com.ebookfrenzy.withmap.network.response.SignInResponse
@@ -22,13 +23,20 @@ interface WithMapService {
     @POST("/withmap/signin")
     fun requestSignIn(
         @Body body: SignInParams
-    ): Call<SignInResponse>
+    ): Single<SignInResponse>
 
-    // 회원가입
+    // 회원 가입
     @POST("/withmap/users")
     fun requestSignUp(
         @Body body: SignUpParams
     ) // 반환 ???
+
+    // 중복 확인
+    @GET("/withmap/users/{content}/check")
+    fun checkDuplicated(
+        @Path("content") type: String,
+        @Query("query") query: String
+    ): Single<CheckDuplicatedResponse>
 
     // 나의 정보조회
     @GET("/withmap/users/myinfo")
@@ -50,14 +58,15 @@ interface WithMapService {
     fun getPinsAroundPosition(
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double
-    ):Single<List<CommonPinInfo>>
+    ): Single<List<CommonPinInfo>>
+
     // 주위 핀 조회
     @GET("/withmap/pins")
     fun getPinsAroundPosition2(
-        @Header("Content-Type") content_type : String,
+        @Header("Content-Type") content_type: String,
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double
-    ):Call<ArrayList<CommonPinInfo>>
+    ): Call<ArrayList<CommonPinInfo>>
 
     // 핀 자세히보기
     @GET("/withmap/pins/{id}")

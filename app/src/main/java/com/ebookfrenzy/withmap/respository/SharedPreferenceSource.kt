@@ -29,7 +29,7 @@ class SharedPreferenceSource(context: Context) {
     }
 
     private fun saveAuthToken(token: String) {
-        editor.putString("authToken", "")
+        editor.putString("authToken", token)
         editor.commit()
     }
 }

@@ -6,6 +6,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@android:color/white"
         tools:context=".view.login.SignUpFragment">
 
         <ImageView
@@ -60,6 +61,8 @@
                 android:layout_width="72dp"
                 android:layout_height="32dp"
                 android:layout_alignParentRight="true"
+                android:background="@drawable/selector_button_blue_gray"
+                android:enabled="false"
                 android:text="중복확인"
                 android:textColor="@color/white"
                 android:textSize="11sp" />
@@ -80,7 +83,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="72dp"
             android:backgroundTint="@color/et_underline_gray"
-            android:hint="알파벳, 숫자 포함"
+            android:hint="알파벳, 숫자 포함 8자리 이상"
             android:inputType="textPersonName"
             app:layout_constraintEnd_toEndOf="@+id/relativeLayout"
             app:layout_constraintStart_toStartOf="@+id/textView3"
@@ -129,6 +132,8 @@
                 android:layout_width="72dp"
                 android:layout_height="32dp"
                 android:layout_alignParentRight="true"
+                android:background="@drawable/selector_button_blue_gray"
+                android:enabled="false"
                 android:text="중복확인"
                 android:textColor="@color/white"
                 android:textSize="11sp" />
@@ -153,13 +158,13 @@
         <TextView
             android:id="@+id/tv_frag_sign_up_email_form"
             style="@style/nanum_medium_login_textview"
+            android:text="이메일 형식이 잘못되었습니다"
             android:textColor="@color/red"
             android:textSize="9sp"
-            android:text="이메일 형식이 잘못되었습니다"
             android:visibility="gone"
-            tools:visibility="visible"
             app:layout_constraintStart_toStartOf="@+id/relativeLayout"
-            app:layout_constraintTop_toBottomOf="@+id/relativeLayout" />
+            app:layout_constraintTop_toBottomOf="@+id/relativeLayout"
+            tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

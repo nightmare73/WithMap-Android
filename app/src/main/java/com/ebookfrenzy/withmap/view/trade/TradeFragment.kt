@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
 import com.ebookfrenzy.withmap.R
+import kotlinx.android.synthetic.main.fragment_trade.*
 
 /**
  * Created By Yun Hyeok
@@ -20,5 +22,13 @@ class TradeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         return LayoutInflater.from(context).inflate(R.layout.fragment_trade, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        btn_trade_frag_back.setOnClickListener {
+            Navigation.findNavController(it).popBackStack()
+        }
     }
 }

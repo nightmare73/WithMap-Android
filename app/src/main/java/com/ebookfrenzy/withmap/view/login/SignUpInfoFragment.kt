@@ -20,27 +20,29 @@ import kotlinx.android.synthetic.main.fragment_sign_up_info.*
 class SignUpInfoFragment : Fragment() {
     private val TAG = "SignUpInfoFragment"
 
-
     var man: Int = 0
     var handicap: Int = 0
-    private lateinit var binding: FragmentSignUpInfoBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_sign_up_info, container, false)
+
+        val binding = FragmentSignUpInfoBinding.inflate(inflater)
+        binding.lifecycleOwner = this
+        binding.fragment = this
+
+        initView(binding)
+
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding = FragmentSignUpInfoBinding.inflate(LayoutInflater.from(context))
-        binding.lifecycleOwner = this
-        binding.fragment = this
+
 
         np_sign_up_info_frag.run {
-            minValue = 1800
+            minValue = 1900
             maxValue = 2019
             displayedValues
             wrapSelectorWheel = false
@@ -52,10 +54,7 @@ class SignUpInfoFragment : Fragment() {
         imageView4.setOnClickListener { onClickInfo(3) }
 
 
-        // -혁- 회원가입 다 끝난후 로그인 프래그먼트로 돌아가는 코드
-//        view.findViewById<Button>(R.id.button).setOnClickListener {
-//            Navigation.findNavController(it).navigate(R.id.action_signUpInfoFragment_to_loginFragment)
-//        }
+
     }
 
     fun onClickInfo(i: Int) {
@@ -102,6 +101,12 @@ class SignUpInfoFragment : Fragment() {
         }
     }
 
+    private fun initView(binding: FragmentSignUpInfoBinding) {
+        // -혁- 회원가입 다 끝난후 로그인 프래그먼트로 돌아가는 코드
+        binding.button.setOnClickListener {
+            Navigation.findNavController(it).navigate(R.id.action_signUpInfoFragment_to_loginFragment)
+        }
+    }
 
 //    fun onClickInfo(i: Int) {
 //        var male: Boolean = false
