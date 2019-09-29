@@ -1,11 +1,10 @@
 package com.ebookfrenzy.withmap.network
 
+import com.ebookfrenzy.withmap.data.GetMyRegisterPinData
 import com.ebookfrenzy.withmap.network.request.SignInParams
 import com.ebookfrenzy.withmap.network.request.SignUpParams
-import com.ebookfrenzy.withmap.network.response.CheckDuplicatedResponse
-import com.ebookfrenzy.withmap.network.response.CommonPinInfo
-import com.ebookfrenzy.withmap.network.response.PinDetail
-import com.ebookfrenzy.withmap.network.response.SignInResponse
+import com.ebookfrenzy.withmap.network.response.*
+import com.ebookfrenzy.withmap.network.response.pinregister.PinRegisterData
 import io.reactivex.Completable
 import io.reactivex.Single
 import okhttp3.MultipartBody
@@ -48,10 +47,16 @@ interface WithMapService {
     @Multipart
     @POST("/withmap/pins")
     fun postPinRegister(
-        @Header("Content-Type") content_type:String,
         @Header("Authorization") token : String,
-        @Part pin : MultipartBody.Part?
-    )
+        @Part("pin") pin : PinRegisterData,
+        @Part files : ArrayList<MultipartBody.Part>?
+    ):Call<PostPinRegisterResponse>
+
+    //내가 등록한 핀
+    @GET("/withmap/users/mypins")
+    fun getMyRegisterPin(
+        @Header("Authorization") token : String
+    ):Call<List<GetMyRegisterPinData>>
 
     // 주위 핀 조회
     @GET("/withmap/pins")

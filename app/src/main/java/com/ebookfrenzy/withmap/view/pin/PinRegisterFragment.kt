@@ -29,10 +29,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.ebookfrenzy.withmap.BR
 import com.ebookfrenzy.withmap.R
+import com.ebookfrenzy.withmap.config.WithMapApplication
 import com.ebookfrenzy.withmap.data.MarkerItem
 import com.ebookfrenzy.withmap.databinding.FragmentPinRegisterBinding
 import com.ebookfrenzy.withmap.databinding.ItemPinRegisterPhotoBinding
+import com.ebookfrenzy.withmap.network.WithMapService
+import com.ebookfrenzy.withmap.network.response.PostPinRegisterResponse
 import com.ebookfrenzy.withmap.network.response.pinregister.PinRegisterData
+import com.ebookfrenzy.withmap.respository.SharedPreferenceSource
 import com.ebookfrenzy.withmap.viewmodel.PinRegisterViewModel
 import com.google.android.gms.maps.model.Marker
 import com.googry.googrybaserecyclerview.BaseRecyclerView
@@ -40,6 +44,9 @@ import kotlinx.android.synthetic.main.fragment_pin_register.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.InputStream
@@ -54,8 +61,12 @@ import java.util.*
 //f = 2 : 개선되었습니다 핀 등록
 class PinRegisterFragment : Fragment() {
 
+    private val networkService by lazy {
+        WithMapApplication.instance.networkService
+    }
+
     private var mImage: MultipartBody.Part? = null
-    private var mImageList = mutableListOf<MultipartBody.Part?>()
+    private var mImageList = ArrayList<MultipartBody.Part>()
 
     private var mNow: Long = 0
     private lateinit var mDate: Date
@@ -86,7 +97,7 @@ class PinRegisterFragment : Fragment() {
     private var type: Int = 0
 
     private var newMarkerItem: MarkerItem? = null
-    private var newPinItem : PinRegisterData? = null
+    private var newPinItem: PinRegisterData? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -143,7 +154,7 @@ class PinRegisterFragment : Fragment() {
 //            )
             newPinItem = PinRegisterData(
                 address.value!!,
-                null,
+                "",
                 latitude!!,
                 longitude!!,
                 false,
@@ -153,32 +164,55 @@ class PinRegisterFragment : Fragment() {
                 3,
                 binding.tvContent.text.toString()
             )
-            Log.d(TAG, "new markerItem ${newMarkerItem.toString()}")
         } else {
-            newMarkerItem = MarkerItem(
-                markerItem!!.latitude,
-                markerItem!!.longitude,
-                markerItem!!.type,
-                markerItem!!.name,
-                markerItem!!.crtDate,
-                markerItem!!.address,
-                true,
-                binding.etTitle.text.toString(),
-                getTime(),
-                markerItem!!.comment
-            )
-//            newPinItem = PinRegisterData(
-//                markerItem!!.address!!,
-//                binding.etTitle.toString(),
-//                markerItem!!.latitude!!,
-//                markerItem!!.longitude!!,
-//                true,
+//            newMarkerItem = MarkerItem(
+//                markerItem!!.latitude,
+//                markerItem!!.longitude,
 //                markerItem!!.type,
-//
-//
+//                markerItem!!.name,
+//                markerItem!!.crtDate,
+//                markerItem!!.address,
+//                true,
+//                binding.etTitle.text.toString(),
+//                getTime(),
+//                markerItem!!.comment
 //            )
-            Log.d(TAG, "newMarkeritem : ${newMarkerItem.toString()}")
+            newPinItem = PinRegisterData(
+                markerItem!!.address!!,
+                binding.etTitle.toString(),
+                markerItem!!.latitude!!,
+                markerItem!!.longitude!!,
+                true,
+                markerItem!!.type!!,
+                0,
+                markerItem!!.name!!,
+                SharedPreferenceSource(this.context!!).userId,
+                binding.tvContent.text.toString()
+            )
         }
+        getPinRegisterResponse(newPinItem!!)
+    }
+
+    private fun getPinRegisterResponse(pin: PinRegisterData) {
+        Log.d(TAG, "getPinRegisterResponse()")
+        val postPinRegisterResponse = networkService.postPinRegister(
+            "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtb2RlbG1ha2VyQG5hdmVyLmNvbSIsIm5pY2tuYW1lIjoic3RyaW5nIiwiaXNzIjoic3ByaW5nLmp3dC5pc3N1ZXIiLCJpYXQiOjE1Njk2NjE0OTcsImV4cCI6MTU3MDI2NjI5Nn0.5G0oqmlR-0aPzzb7rC9GQcTmc0wR4awQuj1d2bKcHmA",
+            pin,
+            mImageList
+        )
+        postPinRegisterResponse.enqueue(object : Callback<PostPinRegisterResponse> {
+            override fun onFailure(call: Call<PostPinRegisterResponse>, t: Throwable) {
+                Log.e(TAG, t.stackTrace.toString())
+            }
+
+            override fun onResponse(call: Call<PostPinRegisterResponse>, response: Response<PostPinRegisterResponse>) {
+                if (response.isSuccessful) {
+                    Log.d(TAG, "register success")
+                }else{
+                    Log.d(TAG, response.code().toString())
+                }
+            }
+        })
     }
 
 
@@ -374,29 +408,15 @@ class PinRegisterFragment : Fragment() {
                     viewModel.albumImageListLiveData.postValue(imageUris)
                     Log.d(TAG, "imageUri : ${viewModel.albumImageListLiveData.value}")
 
-                    data?.let {
-                        var selectedPictureUri = data.data
-                        val options = BitmapFactory.Options()
-                        val inputStream: InputStream =
-                            activity!!.contentResolver.openInputStream(selectedPictureUri)
-                        val bitmap = BitmapFactory.decodeStream(inputStream, null, options)
-                        val byteArrayOutputStream = ByteArrayOutputStream()
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 20, byteArrayOutputStream)
-                        val photoBody = RequestBody.create(
-                            MediaType.parse("image/jpg"),
-                            byteArrayOutputStream.toByteArray()
-                        )
-                        //첫번째 매개변수 Stringㅡㄹ 꼭 서버 api에 명시된 이름으로 넣어주세요
-                        mImage = MultipartBody.Part.createFormData(
-                            "file",
-                            File(selectedPictureUri.toString()).name,
-                            photoBody
-                        )
-                        mImageList.add(mImage)
-                    }
+                    val file : File = File(imageURI)
+                    val requestfile : RequestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file)
+                    val data : MultipartBody.Part = MultipartBody.Part.createFormData("file", file.name, requestfile)
+
+                    mImageList!!.add(data)
                 }
             }
         }
+
 
         if (requestCode == LOCATION_REGISTER_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
@@ -410,7 +430,7 @@ class PinRegisterFragment : Fragment() {
             }
         }
     }
-    //통신
+//통신
 //    private fun get
 
 

@@ -17,6 +17,7 @@ import com.ebookfrenzy.withmap.data.MyRegisterPinData
 import com.ebookfrenzy.withmap.databinding.FragmentMyRegisterPinBinding
 import com.ebookfrenzy.withmap.viewmodel.NotificationViewModel
 import com.googry.googrybaserecyclerview.BaseRecyclerView
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  * A simple [Fragment] subclass.
@@ -25,6 +26,7 @@ class MyRegisterPinFragment : Fragment() {
 
     private val TAG = "MyRegisterPinFragment"
     private lateinit var binding : FragmentMyRegisterPinBinding
+    private val vm : NotificationViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

@@ -8,10 +8,7 @@ import com.ebookfrenzy.withmap.network.response.DataModel
 import com.ebookfrenzy.withmap.network.response.DataModelImpl
 import com.ebookfrenzy.withmap.respository.LocalRepository
 import com.ebookfrenzy.withmap.respository.SharedPreferenceSource
-import com.ebookfrenzy.withmap.viewmodel.MainViewModel
-import com.ebookfrenzy.withmap.viewmodel.PinDetailViewModel
-import com.ebookfrenzy.withmap.viewmodel.SearchViewModel
-import com.ebookfrenzy.withmap.viewmodel.ViewModelFactory
+import com.ebookfrenzy.withmap.viewmodel.*
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
