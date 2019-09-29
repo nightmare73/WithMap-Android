@@ -28,7 +28,7 @@ class SharedPreferenceSource(context: Context) {
         set(flag) = saveFirstAccessFlag(flag)
 
     var authToken: String
-        get() = sharedPreference.getString("authToken", "")!!
+        get() = sharedPreference.getString("authToken", "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtb2RlbG1ha2VyQG5hdmVyLmNvbSIsIm5pY2tuYW1lIjoic3RyaW5nIiwiaXNzIjoic3ByaW5nLmp3dC5pc3N1ZXIiLCJpYXQiOjE1Njk2NjE0OTcsImV4cCI6MTU3MDI2NjI5Nn0.5G0oqmlR-0aPzzb7rC9GQcTmc0wR4awQuj1d2bKcHmA")!!
         set(token) = saveAuthToken(token)
 
 

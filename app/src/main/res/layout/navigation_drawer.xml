@@ -34,7 +34,7 @@
             app:layout_constraintTop_toBottomOf="@+id/tv_username" />
 
         <ImageView
-            android:id="@+id/imageView20"
+            android:id="@+id/iv_goto_user_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="144dp"

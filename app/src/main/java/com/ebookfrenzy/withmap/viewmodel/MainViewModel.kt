@@ -7,7 +7,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.ebookfrenzy.withmap.config.WithMapApplication
+import com.ebookfrenzy.withmap.data.GetMyRegisterPinData
 import com.ebookfrenzy.withmap.data.MarkerItem
+import com.ebookfrenzy.withmap.data.MyRegisterPinData
 import com.ebookfrenzy.withmap.data.getMarkerItems
 import com.ebookfrenzy.withmap.network.response.CommonPinInfo
 import com.ebookfrenzy.withmap.network.response.DataModel
@@ -66,15 +68,19 @@ class MainViewModel(val model: DataModel) : BaseViewModel() {
                                     it.comment
                                 )
 
+                            }
                         }
                     }
-                }
-    },
-    {
-        Log.d(TAG, "response error, message : ${TextUtils.join("\n", it.stackTrace)}")
-    })
-    )
-}
+                },
+                    {
+                        Log.d(
+                            TAG,
+                            "response error, message : ${TextUtils.join("\n", it.stackTrace)}"
+                        )
+                    })
+        )
+    }
+
 //
 //        Log.d(TAG, "getAroundPins()")
 //        val networkService = WithMapApplication.instance.networkService
@@ -124,52 +130,52 @@ class MainViewModel(val model: DataModel) : BaseViewModel() {
 //    }
 
 
-init {
+    init {
 //        getPinsAround(37.537523, 126.96558)
-    printSelectedMarkerLiveData()
+        printSelectedMarkerLiveData()
 
-    selectedMarkerLiveData.observeForever(Observer {
-        if (selectedMarkerLiveData.value != null) {
+        selectedMarkerLiveData.observeForever(Observer {
+            if (selectedMarkerLiveData.value != null) {
+                Log.d(
+                    TAG,
+                    "selectedMarkerLiveData : ${(it!!.tag as MarkerItem).toString()}"
+                )
+            }
             Log.d(
                 TAG,
-                "selectedMarkerLiveData : ${(it!!.tag as MarkerItem).toString()}"
+                "beforeSelectedwasImproved.value : ${beforeSelectedwasImproved.value}"
             )
-        }
-        Log.d(
-            TAG,
-            "beforeSelectedwasImproved.value : ${beforeSelectedwasImproved.value}"
-        )
-        if (selectedMarkerLiveData.value != null) {
-            if (selectedMarkerStatusToInt((it!!.tag as MarkerItem).improved) == beforeSelectedwasImproved.value) {
-                bottomSheetUpdate.postValue(false)
-                beforeSelectedwasImproved.value =
-                    selectedMarkerStatusToInt((it.tag as MarkerItem).improved)
-            } else {
-                bottomSheetUpdate.postValue(true)
-                beforeSelectedwasImproved.value =
-                    selectedMarkerStatusToInt((it.tag as MarkerItem).improved)
+            if (selectedMarkerLiveData.value != null) {
+                if (selectedMarkerStatusToInt((it!!.tag as MarkerItem).improved) == beforeSelectedwasImproved.value) {
+                    bottomSheetUpdate.postValue(false)
+                    beforeSelectedwasImproved.value =
+                        selectedMarkerStatusToInt((it.tag as MarkerItem).improved)
+                } else {
+                    bottomSheetUpdate.postValue(true)
+                    beforeSelectedwasImproved.value =
+                        selectedMarkerStatusToInt((it.tag as MarkerItem).improved)
+                }
             }
+
+            Log.d(TAG, "bottomSheetUpdate : ${bottomSheetUpdate.value}")
+        })
+
+        markerItemLiveData.observeForever(Observer {
+            Log.d(TAG, "markeritemLiveData : ${it}")
+        })
+    }
+
+    //새로 선택된 마커의 개선유무를 Int로 만들기 -> 전의 상태랑 비교
+    fun selectedMarkerStatusToInt(i: Boolean): Int {
+        when (i) {
+            true -> return 2 //개선 된 상태
+            false -> return 1 // 개선 안된 상태
         }
-
-        Log.d(TAG, "bottomSheetUpdate : ${bottomSheetUpdate.value}")
-    })
-
-    markerItemLiveData.observeForever(Observer {
-        Log.d(TAG, "markeritemLiveData : ${it}")
-    })
-}
-
-//새로 선택된 마커의 개선유무를 Int로 만들기 -> 전의 상태랑 비교
-fun selectedMarkerStatusToInt(i: Boolean): Int {
-    when (i) {
-        true -> return 2 //개선 된 상태
-        false -> return 1 // 개선 안된 상태
     }
-}
 
-fun printSelectedMarkerLiveData() {
-    if (selectedMarkerLiveData.value != null) {
-        Log.d(TAG, "selectedMarkerLiveData : ${selectedMarkerLiveData.value!!.tag}")
+    fun printSelectedMarkerLiveData() {
+        if (selectedMarkerLiveData.value != null) {
+            Log.d(TAG, "selectedMarkerLiveData : ${selectedMarkerLiveData.value!!.tag}")
+        }
     }
-}
 }

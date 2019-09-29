@@ -16,10 +16,7 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.RelativeLayout
-import android.widget.Toast
+import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
@@ -27,8 +24,12 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 
 import com.ebookfrenzy.withmap.R
+import com.ebookfrenzy.withmap.config.WithMapApplication
+import com.ebookfrenzy.withmap.data.GetMyRegisterPinData
 import com.ebookfrenzy.withmap.data.MarkerItem
+import com.ebookfrenzy.withmap.data.MyRegisterPinData
 import com.ebookfrenzy.withmap.databinding.FragmentMainMapBinding
+import com.ebookfrenzy.withmap.network.response.UserInfo
 import com.ebookfrenzy.withmap.respository.SharedPreferenceSource
 import com.ebookfrenzy.withmap.viewmodel.MainViewModel
 import com.ebookfrenzy.withmap.viewmodel.NotificationViewModel
@@ -47,6 +48,9 @@ import kotlinx.android.synthetic.main.bottom_sheet_before.*
 import kotlinx.android.synthetic.main.bottom_sheet_before.view.*
 import kotlinx.android.synthetic.main.fragment_main_map.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 /**
  * A simple [Fragment] subclass.
@@ -62,7 +66,10 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
     override fun onCameraMove() {
     }
 
-    private var beforeCameraPositon : LatLng? = null
+    private var headerName : String = "홍길동"
+    private var headerEmail : String = "iloveyou@naver.com"
+
+    private var beforeCameraPositon: LatLng? = null
 
     private lateinit var currentLocation: Location
     private val sampleLocation = LatLng(37.57261267, 126.9757016)
@@ -142,23 +149,52 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
             drawer_layout.openDrawer(nav_view)
         }
 
-        setHeader(nav_view)
+
 
         binding.run {
             lifecycleOwner = this@MainMapFragment
             vmNoti = ViewModelProviders.of(this@MainMapFragment)[NotificationViewModel::class.java]
             fragment = this@MainMapFragment
         }
+        getUserInfo2()
 
-        vm.getPinsAround(vm.centerLatLng.value!!.latitude, vm.centerLatLng.value!!.longitude)
+//        vm.getPinsAround(vm.centerLatLng.value!!.latitude, vm.centerLatLng.value!!.longitude)
 
     }
+
+    fun getUserInfo2() {
+        val networkService = WithMapApplication.instance.networkService
+        val getMyRegisterPin =
+            networkService.getUserInfo2(SharedPreferenceSource(this.context!!).authToken)
+        getMyRegisterPin.enqueue(object : Callback<UserInfo> {
+            override fun onFailure(call: Call<UserInfo>, t: Throwable) {
+                Log.e(TAG, t.stackTrace.toString())
+            }
+
+            override fun onResponse(
+                call: Call<UserInfo>,
+                response: Response<UserInfo>
+            ) {
+                if (response.isSuccessful) {
+                    Log.d(TAG, "getUserInfo success")
+                    if (response.body() != null) {
+                       val data = response.body()
+                        headerName = data!!.name
+                        headerEmail = data!!.email
+                    }
+                }
+                Log.d(TAG, response.message())
+            }
+        })
+        setHeader(nav_view)
+    }
+
 
     override fun onCameraIdle() {
         Log.d(TAG, "onCameraIdle()")
         mMap.clear()
 
-        if(vm.centerLatLng.value != mMap.cameraPosition.target) {
+        if (vm.centerLatLng.value != mMap.cameraPosition.target) {
             Log.d(
                 TAG,
                 "before LatLng : ${vm.centerLatLng.value!!.latitude}, ${vm.centerLatLng.value!!.longitude} \n " +
@@ -169,6 +205,7 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
         }
 
     }
+
     //샘플로 만든 마커들, +추가해놓기
     fun getSampleMarkerItems() {
 
@@ -232,11 +269,11 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
     }
 
     fun goToPinRegister() {
-        if(SharedPreferenceSource(this.context!!).authToken.isNotEmpty()) {
+        if (SharedPreferenceSource(this.context!!).authToken.isNotEmpty()) {
             Log.d(TAG, "go to Pin Register")
             binding.root.findNavController()
                 .navigate(R.id.action_mainMapFragment_to_pinRegisterFragment)
-        }else{
+        } else {
             Toast.makeText(this.context!!, "로그인이 필요합니다", Toast.LENGTH_SHORT).show()
         }
     }
@@ -290,33 +327,66 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
 
     fun setHeader(view_navi: NavigationView) {
         headerView = view_navi.getHeaderView(0)
-
         val headerAlarm: ImageView = headerView.findViewById(R.id.header_alarm)
         val headerAccount: ConstraintLayout = headerView.findViewById(R.id.rl_account)
         val headerExchange: Button = headerView.findViewById(R.id.bt_exchange)
+        val name : TextView = headerView.findViewById(R.id.tv_username)
+        val email : TextView = headerView.findViewById(R.id.tv_email)
 
-        headerExchange.setOnClickListener {
-            Log.d(TAG, "go to TradeFragment")
-            it.findNavController().navigate(R.id.action_mainMapFragment_to_tradeFragment)
-        }
-        headerAccount.setOnClickListener {
-            Log.d(TAG, "go to Account Manager")
-            it.findNavController().navigate(R.id.action_mainMapFragment_to_accountFragment)
-        }
-        headerAlarm.setOnClickListener {
-            Log.d(TAG, "go to Notification Fragment")
-            it.findNavController().navigate(R.id.action_mainMapFragment_to_notificationFragment)
-        }
+        if (SharedPreferenceSource(this.context!!).authToken.isNotEmpty()) {
 
-        val myPinRegister: RelativeLayout = headerView.findViewById(R.id.rl_my_pin)
-        myPinRegister.setOnClickListener {
-            Log.d(TAG, "layout clicked")
-            it.findNavController().navigate(R.id.action_mainMapFragment_to_myRegisterPinFragment)
-        }
 
-        vmNoti.notificationLiveData.observe(this, Observer {
-            hamSetImage(headerAlarm, it)
-        })
+            name.text = headerName
+            email.text = headerEmail
+
+            headerExchange.setOnClickListener {
+                Log.d(TAG, "go to TradeFragment")
+                it.findNavController().navigate(R.id.action_mainMapFragment_to_tradeFragment)
+            }
+            headerAccount.setOnClickListener {
+                Log.d(TAG, "go to Account Manager")
+                it.findNavController().navigate(R.id.action_mainMapFragment_to_accountFragment)
+            }
+            headerAlarm.setOnClickListener {
+                Log.d(TAG, "go to Notification Fragment")
+                it.findNavController().navigate(R.id.action_mainMapFragment_to_notificationFragment)
+            }
+
+            val myPinRegister: RelativeLayout = headerView.findViewById(R.id.rl_my_pin)
+            myPinRegister.setOnClickListener {
+                Log.d(TAG, "layout clicked")
+                it.findNavController()
+                    .navigate(R.id.action_mainMapFragment_to_myRegisterPinFragment)
+            }
+
+            vmNoti.notificationLiveData.observe(this, Observer {
+                hamSetImage(headerAlarm, it)
+            })
+        } else {
+            name.text = "로그인이 필요합니다"
+            email.text = ""
+
+            headerExchange.setOnClickListener {
+                Toast.makeText(this.context, "로그인이 필요합니다", Toast.LENGTH_SHORT)
+            }
+            headerAccount.setOnClickListener {
+                Log.d(TAG, "go to login")
+                it.findNavController().navigate(R.id.action_mainMapFragment_to_loginFragment2)
+            }
+            headerAlarm.setOnClickListener {
+                Log.d(TAG, "go to Notification Fragment")
+                it.findNavController().navigate(R.id.action_mainMapFragment_to_notificationFragment)
+            }
+
+            val myPinRegister: RelativeLayout = headerView.findViewById(R.id.rl_my_pin)
+            myPinRegister.setOnClickListener {
+                Toast.makeText(this.context, "로그인이 필요합니다", Toast.LENGTH_SHORT)
+            }
+
+            vmNoti.notificationLiveData.observe(this, Observer {
+                hamSetImage(headerAlarm, it)
+            })
+        }
 
 
     }
@@ -456,7 +526,7 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
 
             if (markerItem.type == 5 || markerItem.type == 6) {
                 Log.d(TAG, "marker type is 5 or 6")
-                when(markerItem.type) {
+                when (markerItem.type) {
                     5 -> bottomSheetLayout!!.iv_image.setImageResource(R.drawable.default_rest_o)
                     6 -> bottomSheetLayout!!.iv_image.setImageResource(R.drawable.default_food)
                 }
@@ -558,19 +628,19 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
                                     Log.d(TAG, "name : ${mMarkerItem.name}")
 
                                 }
-                                    BottomSheetBehavior.STATE_SETTLING -> {
+                                BottomSheetBehavior.STATE_SETTLING -> {
 
-                                        view.tv_title_sheet_before_blue.text = mMarkerItem.name
-                                        view.tv_date_sheet_before_blue.text =
-                                            mMarkerItem.crtDate
-                                        view.tv_info_location_blue.text = mMarkerItem.address
-                                        view.tv_usable_time_blue.text = "24시간"
-                                        view.tv_call_number_blue.text = "000-0000-0000"
+                                    view.tv_title_sheet_before_blue.text = mMarkerItem.name
+                                    view.tv_date_sheet_before_blue.text =
+                                        mMarkerItem.crtDate
+                                    view.tv_info_location_blue.text = mMarkerItem.address
+                                    view.tv_usable_time_blue.text = "24시간"
+                                    view.tv_call_number_blue.text = "000-0000-0000"
 
-                                        view.tv_title_sheet_before.text = mMarkerItem.name
-                                        view.tv_date_sheet_before.text = mMarkerItem.crtDate
-                                        view.tv_location_sheet_before.text = mMarkerItem.address
-                                    }
+                                    view.tv_title_sheet_before.text = mMarkerItem.name
+                                    view.tv_date_sheet_before.text = mMarkerItem.crtDate
+                                    view.tv_location_sheet_before.text = mMarkerItem.address
+                                }
                             }
                         }
                     })
@@ -632,12 +702,12 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
                                     view.tv_title_after.text = mMarkerItem.improvedTitle
                                     view.tv_date_after.text = mMarkerItem.improvedDate
                                 }
-                                    BottomSheetBehavior.STATE_SETTLING -> {
-                                        view.tv_title_before.text = mMarkerItem.name
-                                        view.tv_date_before.text = mMarkerItem.crtDate
-                                        view.tv_title_after.text = mMarkerItem.improvedTitle
-                                        view.tv_date_after.text = mMarkerItem.improvedDate
-                                    }
+                                BottomSheetBehavior.STATE_SETTLING -> {
+                                    view.tv_title_before.text = mMarkerItem.name
+                                    view.tv_date_before.text = mMarkerItem.crtDate
+                                    view.tv_title_after.text = mMarkerItem.improvedTitle
+                                    view.tv_date_after.text = mMarkerItem.improvedDate
+                                }
                             }
                         }
                     })

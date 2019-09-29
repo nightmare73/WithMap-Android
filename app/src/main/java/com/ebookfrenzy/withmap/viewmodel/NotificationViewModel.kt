@@ -96,6 +96,8 @@ class NotificationViewModel : BaseViewModel() {
                                 }
                             }
                         }
+                    }else {
+                        Log.d(TAG, "myRegisterPinData is null")
                     }
                 }else{
                     Log.d(TAG, response.message())

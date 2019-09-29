@@ -5,7 +5,6 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class NotificationData(
-
     val type: Int,
     val title: String,
     val date: String
