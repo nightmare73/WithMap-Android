@@ -3,7 +3,6 @@ package com.ebookfrenzy.withmap.network.response.pinregister
 import java.io.Serializable
 
 
-@kotlinx.serialization.Serializable
 data class PinRegisterData(
     val address : String,
     val improvedName :String,
