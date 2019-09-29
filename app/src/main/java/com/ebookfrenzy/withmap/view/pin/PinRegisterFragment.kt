@@ -193,6 +193,7 @@ class PinRegisterFragment : Fragment() {
         getPinRegisterResponse(newPinItem!!)
     }
 
+
     private fun getPinRegisterResponse(pin: PinRegisterData) {
         Log.d(TAG, "getPinRegisterResponse()")
         val postPinRegisterResponse = networkService.postPinRegister(

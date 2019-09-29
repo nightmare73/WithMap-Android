@@ -29,6 +29,7 @@ import androidx.navigation.findNavController
 import com.ebookfrenzy.withmap.R
 import com.ebookfrenzy.withmap.data.MarkerItem
 import com.ebookfrenzy.withmap.databinding.FragmentMainMapBinding
+import com.ebookfrenzy.withmap.respository.SharedPreferenceSource
 import com.ebookfrenzy.withmap.viewmodel.MainViewModel
 import com.ebookfrenzy.withmap.viewmodel.NotificationViewModel
 import com.ebookfrenzy.withmap.viewmodel.hamSetImage
@@ -231,9 +232,13 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
     }
 
     fun goToPinRegister() {
-        Log.d(TAG, "go to Pin Register")
-        binding.root.findNavController()
-            .navigate(R.id.action_mainMapFragment_to_pinRegisterFragment)
+        if(SharedPreferenceSource(this.context!!).authToken.isNotEmpty()) {
+            Log.d(TAG, "go to Pin Register")
+            binding.root.findNavController()
+                .navigate(R.id.action_mainMapFragment_to_pinRegisterFragment)
+        }else{
+            Toast.makeText(this.context!!, "로그인이 필요합니다", Toast.LENGTH_SHORT).show()
+        }
     }
 
     fun showCurrent() {
