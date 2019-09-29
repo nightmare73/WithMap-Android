@@ -25,7 +25,6 @@
             android:id="@+id/action_signUpFragment_to_signUpInfoFragment"
             app:destination="@id/signUpInfoFragment"
             app:launchSingleTop="true"
-            app:popUpTo="@+id/loginFragment"
             app:popUpToInclusive="true" />
     </fragment>
     <fragment

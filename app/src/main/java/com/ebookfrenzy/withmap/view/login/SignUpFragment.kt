@@ -4,47 +4,62 @@ package com.ebookfrenzy.withmap.view.login
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.util.Patterns
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import androidx.databinding.BindingAdapter
-import androidx.databinding.BindingMethod
-import androidx.lifecycle.MutableLiveData
+import android.widget.Toast
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
 import com.ebookfrenzy.withmap.R
 import com.ebookfrenzy.withmap.databinding.FragmentSignUpBinding
-import com.ebookfrenzy.withmap.viewmodel.LoginViewModel
+import com.ebookfrenzy.withmap.viewmodel.SignUpViewModel
 import kotlinx.android.synthetic.main.fragment_sign_up.*
+import org.koin.android.ext.android.inject
 
 /**
  * A simple [Fragment] subclass.
  */
 class SignUpFragment : Fragment() {
-//
-//    private lateinit var binding : FragmentSignUpBinding
 
-    private val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
+    private var isEmailUnique = false
+    private var isNicknameUnique = false
+
+    private val viewModelFactory: ViewModelProvider.Factory by inject()
+    private lateinit var viewModel: SignUpViewModel
 
     private val emailEditTextListener = object : TextWatcher {
-        override fun afterTextChanged(s: Editable?) {
-            if(s.isNullOrBlank()){
-
-            }
-        }
+        override fun afterTextChanged(s: Editable?) {}
 
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             val isEmail = Patterns.EMAIL_ADDRESS.matcher(s).matches()
-            if (isEmail) {
+            if (isEmail && s!!.isNotBlank()) {
                 tv_frag_sign_up_email_form.visibility = View.GONE
+                btn_email_repeat.isEnabled = true
                 return
             }
             tv_frag_sign_up_email_form.visibility = View.VISIBLE
+            btn_email_repeat.isEnabled = false
+        }
+    }
+
+    private val nicknameEditTextListener = object : TextWatcher {
+        override fun afterTextChanged(s: Editable?) {}
+
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            if (s!!.isNotBlank()) {
+                btn_nickname_repeat.isEnabled = true
+                return
+            }
+            btn_nickname_repeat.isEnabled = false
         }
     }
 
@@ -52,71 +67,72 @@ class SignUpFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-//
-//        binding = FragmentSignUpBinding.inflate(LayoutInflater.from(context))
-        return inflater.inflate(R.layout.fragment_sign_up, container, false)
+        viewModel = ViewModelProviders.of(this, viewModelFactory)[SignUpViewModel::class.java]
+
+        val binding = FragmentSignUpBinding.inflate(inflater)
+        binding.lifecycleOwner = this
+
+        initView(binding)
+        subscribeIsEmailUnique()
+        subscribeIsNicknameUnique()
+
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         repeatButtonListener()
-
-        // -혁- 다음화면으로 가는코드
-//        view.findViewById<Button>(R.id.btn_sign_up).setOnClickListener {
-//            Navigation.findNavController(it).navigate(R.id.action_signUpFragment_to_signUpInfoFragment)
-//        }
-
     }
 
-    fun repeatButtonListener() {
+    private fun repeatButtonListener() {
         et_email.addTextChangedListener(emailEditTextListener)
+        et_nickname.addTextChangedListener(nicknameEditTextListener)
+    }
 
-        et_nickname.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-            }
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+    private fun initView(binding: FragmentSignUpBinding) {
+        binding.btnSignUp.setOnClickListener {
+            if (isEmailUnique && isNicknameUnique) {
+                Navigation.findNavController(it)
+                    .navigate(R.id.action_signUpFragment_to_signUpInfoFragment)//아규먼트추가할것
+                return@setOnClickListener
             }
+            Toast.makeText(context, "중복확인을 하지 않은 항목이 있습니다.", Toast.LENGTH_SHORT).show()
+        }
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (s!!.isNotEmpty()) {
-                    btn_nickname_repeat.setBackgroundResource(R.drawable.bg_button_repeat_focus)
-                } else {
-                    btn_nickname_repeat.setBackgroundResource(R.drawable.bg_button_repeat_not_focus)
-                }
+        binding.btnEmailRepeat.setOnClickListener {
+
+            val email = binding.etEmail.text.toString()
+            viewModel.checkEmailIsUnique(email)
+            Log.d("Malibin Debug", "email : $email")
+        }
+
+        binding.btnNicknameRepeat.setOnClickListener {
+            val nickname = binding.etNickname.text.toString()
+            viewModel.checkNicknameIsUnique(nickname)
+        }
+    }
+
+    private fun subscribeIsEmailUnique() {
+        viewModel.isEmailUnique.observe(viewLifecycleOwner, Observer { isUnique ->
+            isEmailUnique = isUnique
+            if (isUnique) {
+                Toast.makeText(context, "중복되지 않는 이메일입니다.", Toast.LENGTH_SHORT).show()
+                return@Observer
             }
+            Toast.makeText(context, "중복된 이메일입니다.", Toast.LENGTH_SHORT).show()
         })
     }
 
-    fun isValidEmail(target: CharSequence?): Boolean {
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches()
-
+    private fun subscribeIsNicknameUnique() {
+        viewModel.isNicknameUnique.observe(viewLifecycleOwner, Observer { isUnique ->
+            isNicknameUnique = isUnique
+            if (isUnique) {
+                Toast.makeText(context, "중복되지 않는 닉네임입니다.", Toast.LENGTH_SHORT).show()
+                return@Observer
+            }
+            Toast.makeText(context, "중복된 닉네임입니다.", Toast.LENGTH_SHORT).show()
+        })
     }
-
-//    fun repeatButtonListener(i : Int) {
-//        when(i) {
-//            1 -> if(binding.etEmail.text.isNotEmpty()) {
-//                binding.btnEmailRepeat.setBackgroundResource(R.drawable.bg_button_repeat_focus)
-//            }else {
-//                binding.btnEmailRepeat.setBackgroundResource(R.drawable.bg_button_repeat_not_focus)
-//            }
-//
-//            2 -> if(binding.etNickname.text.isNotEmpty()) {
-//                binding.btnNicknameRepeat.setBackgroundResource(R.drawable.bg_button_repeat_focus)
-//            }else {
-//                binding.btnNicknameRepeat.setBackgroundResource(R.drawable.bg_button_repeat_not_focus)
-//            }
-//        }
-//    }
-//
-//    @BindingAdapter("is_repeat")
-//    fun Button.setButton(isText : Boolean) {
-//        if(isText) {
-//            setBackgroundResource(R.drawable.bg_button_repeat_focus)
-//        } else{
-//            setBackgroundResource(R.drawable.bg_button_repeat_not_focus)
-//        }
-//    }
 }

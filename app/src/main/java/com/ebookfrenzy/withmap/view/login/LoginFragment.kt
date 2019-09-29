@@ -39,6 +39,7 @@ class LoginFragment : Fragment() {
 
         val binding = FragmentLoginBinding.inflate(inflater)
         binding.vm = viewModel
+        binding.lifecycleOwner = this
 
         subscribeIsLoginSuccess()
 
