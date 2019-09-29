@@ -122,7 +122,12 @@ class MainViewModel(val model: DataModel ) : BaseViewModel() {
                 printSelectedMarkerLiveData()
 
                 selectedMarkerLiveData.observeForever(Observer {
-
+                    if(selectedMarkerLiveData.value != null) {
+                        Log.d(
+                            TAG,
+                            "selectedMarkerLiveData : ${(it!!.tag as MarkerItem).toString()}"
+                        )
+                    }
                     Log.d(
                         TAG,
                         "beforeSelectedwasImproved.value : ${beforeSelectedwasImproved.value}"

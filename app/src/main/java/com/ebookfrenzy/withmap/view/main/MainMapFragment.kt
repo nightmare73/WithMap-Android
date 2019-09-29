@@ -121,13 +121,12 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
 
         binding = FragmentMainMapBinding.inflate(LayoutInflater.from(this.context))
 
-        vm.bottomSheetUpdate.observeForever(Observer {
-            Log.d(TAG, "bottomSheetUpdate in MainMapFragment : ${vm.bottomSheetUpdate.value}")
+        vm.selectedMarkerLiveData.observe(this, Observer {
             initPersistentBottonSheetBehavior(
-                vm.selectedMarkerLiveData.value!!.tag as MarkerItem,
-                vm.bottomSheetUpdate.value!!
+                it!!.tag as MarkerItem
             )
         })
+
         // 뷰모델 공유 안하고 navigation 으로만 데이터 주고받는거 성공 !
 //        val temp = MainMapFragmentArgs.fromBundle(arguments!!).location
 //
@@ -165,7 +164,6 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
 
         requestPermission()
 
-        Log.d(TAG, vm.selectedMarkerLiveData.value.toString())
     }
 
     override fun onCameraIdle() {
@@ -174,9 +172,9 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
         vm.centerLatLng.value = mMap.cameraPosition.target
         Log.d(
             TAG,
-            "changed LatLng : ${mMap.cameraPosition.target.latitude}, ${mMap.cameraPosition.target.longitude}"
+            "changed LatLng : ${vm.centerLatLng.value!!.latitude}, ${vm.centerLatLng.value!!.longitude}"
         )
-        updatePinsAround()
+        vm.getPinsAround(vm.centerLatLng.value!!.latitude,vm.centerLatLng.value!!.longitude)
         getUpdatedMarkerItems()
 
     }
@@ -214,10 +212,11 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
 
     //카메라를 움직였다가 멈췄을때 주변핀 업데이트
     private fun updatePinsAround() {
+//
+//        vm.centerLatLng.observe(this, Observer {
+//            vm.getPinsAround(it.latitude, it.longitude)
+//        })
 
-        vm.centerLatLng.observe(this, Observer {
-            vm.getPinsAround(it.latitude, it.longitude)
-        })
     }
 
     private fun requestPermission() {
@@ -388,16 +387,16 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
         if (!markerItem.improved) {
             //개선되기전
 
-                when (markerItem.type) {
-                    1 -> ivMarker.setImageResource(R.drawable.pin_hurdle_on)
-                    2 -> ivMarker.setImageResource(R.drawable.pin_dump_on)
-                    3 -> ivMarker.setImageResource(R.drawable.group_9)
-                    4 -> ivMarker.setImageResource(R.drawable.group_10)
-                    5 -> ivMarker.setImageResource(R.drawable.pin_toilet_on)
-                    6 -> ivMarker.setImageResource(R.drawable.pin_restaurant_on)
-                }
+            when (markerItem.type) {
+                1 -> ivMarker.setImageResource(R.drawable.pin_hurdle_on)
+                2 -> ivMarker.setImageResource(R.drawable.pin_dump_on)
+                3 -> ivMarker.setImageResource(R.drawable.group_9)
+                4 -> ivMarker.setImageResource(R.drawable.group_10)
+                5 -> ivMarker.setImageResource(R.drawable.pin_toilet_on)
+                6 -> ivMarker.setImageResource(R.drawable.pin_restaurant_on)
+            }
 //            }
-            } else {
+        } else {
             //개선된 후
             when (markerItem.type) {
 
@@ -409,8 +408,8 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
                 6 -> ivMarker.setImageResource(R.drawable.pin_restaurant_on)
             }
         }
-        if(vm.selectedMarkerLiveData.value != null) {
-            if (position ==(vm.selectedMarkerLiveData.value as Marker).position) {
+        if (vm.selectedMarkerLiveData.value != null) {
+            if (position == (vm.selectedMarkerLiveData.value as Marker).position) {
                 when (markerItem.type) {
                     1 -> ivMarker.setImageResource(R.drawable.pin_hurdle_touch)
                     2 -> ivMarker.setImageResource(R.drawable.pin_dump_touch)
@@ -434,7 +433,6 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
         )
         val marker = mMap.addMarker(markerOptions)
         marker.tag = markerItem
-        Log.d(TAG, "marker improved : ${markerItem.improved}")
 
         return marker
     }
@@ -453,37 +451,37 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
 
     private fun changeSelectedMarker(marker: Marker?) {
         Log.d(TAG, "new selected : ${marker!!.tag}")
-
-        val selectedMarkerRootView =
-            LayoutInflater.from(this.context).inflate(R.layout.marker_layout, null)
-        val selectedIvMarker: ImageView = selectedMarkerRootView.findViewById(R.id.iv_marker)
-
-        if ((marker.tag as MarkerItem).type == 5 || (marker.tag as MarkerItem).type == 6) {
-
-            when ((marker.tag as MarkerItem).type) {
-                5 -> selectedIvMarker.setImageResource(R.drawable.pin_toilet_touch)
-                6 -> selectedIvMarker.setImageResource(R.drawable.pin_restaurant_touch)
-            }
-        }
-        //개선되지 않은 핀: 선택된 마커 이미지 변경
-        if (!(marker.tag as MarkerItem).improved) {
-            when ((marker.tag as MarkerItem).type) {
-                1 -> selectedIvMarker.setImageResource(R.drawable.pin_hurdle_touch)
-                2 -> selectedIvMarker.setImageResource(R.drawable.pin_dump_touch)
-                3 -> selectedIvMarker.setImageResource(R.drawable.pin_unpaved_touch)
-                4 -> selectedIvMarker.setImageResource(R.drawable.pin_narrow_touch)
-                5 -> selectedIvMarker.setImageResource(R.drawable.pin_toilet_touch)
-                6 -> selectedIvMarker.setImageResource(R.drawable.pin_restaurant_touch)
-            }
-        }
-        marker.setIcon(
-            BitmapDescriptorFactory.fromBitmap(
-                createDrawableFromView(
-                    this.context!!,
-                    selectedMarkerRootView
-                )
-            )
-        )
+//
+//        val selectedMarkerRootView =
+//            LayoutInflater.from(this.context).inflate(R.layout.marker_layout, null)
+//        val selectedIvMarker: ImageView = selectedMarkerRootView.findViewById(R.id.iv_marker)
+//
+//        if ((marker.tag as MarkerItem).type == 5 || (marker.tag as MarkerItem).type == 6) {
+//
+//            when ((marker.tag as MarkerItem).type) {
+//                5 -> selectedIvMarker.setImageResource(R.drawable.pin_toilet_touch)
+//                6 -> selectedIvMarker.setImageResource(R.drawable.pin_restaurant_touch)
+//            }
+//        }
+//        //개선되지 않은 핀: 선택된 마커 이미지 변경
+//        if (!(marker.tag as MarkerItem).improved) {
+//            when ((marker.tag as MarkerItem).type) {
+//                1 -> selectedIvMarker.setImageResource(R.drawable.pin_hurdle_touch)
+//                2 -> selectedIvMarker.setImageResource(R.drawable.pin_dump_touch)
+//                3 -> selectedIvMarker.setImageResource(R.drawable.pin_unpaved_touch)
+//                4 -> selectedIvMarker.setImageResource(R.drawable.pin_narrow_touch)
+//                5 -> selectedIvMarker.setImageResource(R.drawable.pin_toilet_touch)
+//                6 -> selectedIvMarker.setImageResource(R.drawable.pin_restaurant_touch)
+//            }
+//        }
+//        marker.setIcon(
+//            BitmapDescriptorFactory.fromBitmap(
+//                createDrawableFromView(
+//                    this.context!!,
+//                    selectedMarkerRootView
+//                )
+//            )
+//        )
 
         if (vm.selectedMarkerLiveData.value != null) {
             if (vm.selectedMarkerLiveData.value!!.tag != null) {
@@ -493,10 +491,11 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
         }
         //선택된 마커를 selectedMarker로 '새로'지정해서 지도에 추가
         vm.selectedMarkerLiveData.value = marker
+
     }
 
     //BottomSheet발생시키는 함수
-    private fun initPersistentBottonSheetBehavior(markerItem: MarkerItem, needUpdate: Boolean) {
+    private fun initPersistentBottonSheetBehavior(markerItem: MarkerItem) {
 
         beingClicked = true
         val mMarkerItem = markerItem
@@ -507,360 +506,199 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
             TAG,
             "-----initPersistentBottomSheetBehavior()-----selectedMarkerItem : $markerItem  $mMarkerItem"
         )
-        if (needUpdate) {
-            if (persistentBottomSheetBehavior != null) {
-                persistentBottomSheetBehavior!!.state = BottomSheetBehavior.STATE_COLLAPSED
-            }
-            if (!markerItem.improved) {
-                Log.d(TAG, "!markerItem.improved")
-                bottomSheetLayout = bottom_sheet_before
-
-                if (markerItem.type == 5 || markerItem.type == 6) {
-                    Log.d(TAG, "marker type is 5 or 6")
-
-                    bottomSheetLayout!!.ll_info_orange.visibility = View.GONE
-                    bottomSheetLayout!!.ll_info_blue.visibility = View.VISIBLE
-
-                    bottomSheetLayout!!.bt_was_improved.visibility = View.GONE
-                    bottomSheetLayout!!.bt_show_detail.visibility = View.GONE
-                    bottomSheetLayout!!.bt_show_detail_blue.visibility = View.VISIBLE
-
-                    bottomSheetLayout!!.bt_show_detail_blue.setOnClickListener {
-                        it.findNavController()
-                            .navigate(R.id.action_mainMapFragment_to_pinDetailFragment)
-                        Log.d(TAG, "bt_show_detail_blue clicked")
-                    }
-                } else {
-                    Log.d(TAG, "marker type is 1~4")
-                    bottomSheetLayout!!.bt_was_improved.visibility = View.VISIBLE
-                    bottomSheetLayout!!.bt_show_detail.visibility = View.VISIBLE
-                    bottomSheetLayout!!.bt_show_detail_blue.visibility = View.GONE
-
-                    bottomSheetLayout!!.ll_info_orange.visibility = View.VISIBLE
-                    bottomSheetLayout!!.ll_info_blue.visibility = View.GONE
-                    bottomSheetLayout!!.bt_was_improved.setOnClickListener {
-                        val bundle = Bundle()
-                        bundle.putParcelable("item", markerItem as Parcelable)
-                        it.findNavController()
-                            .navigate(
-                                R.id.action_mainMapFragment_to_pinRegisterFragment,
-                                bundle
-                            )
-                        Log.d(TAG, "bt_was_improved clicked")
-                    }
-                    bottomSheetLayout!!.bt_show_detail.setOnClickListener {
-                        it.findNavController()
-                            .navigate(R.id.action_mainMapFragment_to_pinDetailFragment)
-                        Log.d(TAG, "bt_show_detail clicked")
-                    }
-                }
-
-                persistentBottomSheetBehavior =
-                    BottomSheetBehavior.from(bottomSheetLayout).apply {
-                        Log.d(TAG, "persistentBottomSheetBehaivior : $this")
-                        setBottomSheetCallback(object :
-                            BottomSheetBehavior.BottomSheetCallback() {
-                            override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                                Log.d(TAG, "bottomsheet onSlide")
-                                h = bottomSheet.height
-                                off = h * slideOffset
-                                when (persistentBottomSheetBehavior!!.state) {
-                                    BottomSheetBehavior.STATE_DRAGGING -> {
-                                        Log.d(TAG, "onSlide bottomSheet Dragging")
-                                        setMapPaddingBottom(off)
-                                        //reposition marker at the center
-                                        mMap.moveCamera(CameraUpdateFactory.newLatLng(mLoc))
-                                    }
-
-                                    BottomSheetBehavior.STATE_SETTLING -> {
-                                        Log.d(TAG, "onSlide bottomSheet settling")
-                                        setMapPaddingBottom(off)
-                                        //reposition marker at the center
-                                        mMap.moveCamera(CameraUpdateFactory.newLatLng(mLoc))
-                                    }
-                                }
-                            }
-
-                            override fun onStateChanged(view: View, newState: Int) {
-                                when (newState) {
-                                    BottomSheetBehavior.STATE_HIDDEN -> {
-                                        beingClicked = false
-                                        Log.d(TAG, "bottomSheet hidden")
-                                        if (vm.selectedMarkerLiveData.value != null) {
-                                            addMarker(vm.selectedMarkerLiveData.value!!.tag as MarkerItem)
-                                            vm.selectedMarkerLiveData.value!!.remove()
-                                        }
-
-                                        if (persistentBottomSheetBehavior != null) {
-                                            vm.beforeSelectedwasImproved.value = 0
-                                        }
-                                    }
-                                    BottomSheetBehavior.STATE_EXPANDED -> {
-                                        Log.d(TAG, "bottomSheet expanded")
-
-                                        view.tv_title_sheet_before_blue.text = mMarkerItem.name
-                                        view.tv_date_sheet_before_blue.text =
-                                            mMarkerItem.crtDate
-                                        view.tv_info_location_blue.text = mMarkerItem.address
-                                        view.tv_usable_time_blue.text = mMarkerItem.useable_time
-                                        view.tv_call_number_blue.text = mMarkerItem.call_number
-
-                                        view.tv_title_sheet_before.text = mMarkerItem.name
-                                        view.tv_date_sheet_before.text = mMarkerItem.crtDate
-                                        view.tv_location_sheet_before.text = mMarkerItem.address
-                                        Log.d(TAG, "name : ${mMarkerItem.name}")
-
-                                    }
-                                    BottomSheetBehavior.STATE_SETTLING -> {
-
-                                        view.tv_title_sheet_before_blue.text = mMarkerItem.name
-                                        view.tv_date_sheet_before_blue.text =
-                                            mMarkerItem.crtDate
-                                        view.tv_info_location_blue.text = mMarkerItem.address
-                                        view.tv_usable_time_blue.text = mMarkerItem.useable_time
-                                        view.tv_call_number_blue.text = mMarkerItem.call_number
-
-                                        view.tv_title_sheet_before.text = mMarkerItem.name
-                                        view.tv_date_sheet_before.text = mMarkerItem.crtDate
-                                        view.tv_location_sheet_before.text = mMarkerItem.address
-                                    }
-                                }
-                            }
-                        })
-                        state = BottomSheetBehavior.STATE_EXPANDED
-                        Log.d(TAG, "unImproved markerItem BottomSheet expanded")
-                    }
-
-            } else {
-                bottomSheetLayoutImproved = bottom_sheet_after
-                persistentBottomSheetBehavior =
-                    BottomSheetBehavior.from(bottomSheetLayoutImproved).apply {
-                        Log.d(
-                            TAG,
-                            "persistentBottomSheetBehaivior : $persistentBottomSheetBehavior"
-                        )
-
-                        setBottomSheetCallback(object :
-                            BottomSheetBehavior.BottomSheetCallback() {
-                            override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                                h = bottomSheet.height
-                                off = h * slideOffset
-                                when (persistentBottomSheetBehavior!!.state) {
-                                    BottomSheetBehavior.STATE_DRAGGING -> {
-                                        setMapPaddingBottom(off)
-                                        //reposition marker at the center
-                                        mMap.moveCamera(CameraUpdateFactory.newLatLng(mLoc))
-                                    }
-
-                                    BottomSheetBehavior.STATE_SETTLING -> {
-                                        setMapPaddingBottom(off)
-                                        //reposition marker at the center
-                                        mMap.moveCamera(CameraUpdateFactory.newLatLng(mLoc))
-                                    }
-                                }
-                            }
-
-                            override fun onStateChanged(view: View, newState: Int) {
-                                when (newState) {
-                                    BottomSheetBehavior.STATE_HIDDEN -> {
-                                        beingClicked = false
-                                        Log.d(TAG, "bottomSheet hiddden")
-                                        if (vm.selectedMarkerLiveData.value != null) {
-                                            addMarker(vm.selectedMarkerLiveData.value!!.tag as MarkerItem)
-                                            vm.selectedMarkerLiveData.value!!.remove()
-                                        }
-
-                                        if (persistentBottomSheetBehavior != null) {
-                                            vm.beforeSelectedwasImproved.value = 0
-                                        }
-                                    }
-                                    BottomSheetBehavior.STATE_EXPANDED -> {
-                                        view.tv_title_before.text = mMarkerItem.name
-                                        view.tv_date_before.text = mMarkerItem.crtDate
-                                        view.tv_title_after.text = mMarkerItem.improvedTitle
-                                        view.tv_date_after.text = mMarkerItem.improvedDate
-                                    }
-                                    BottomSheetBehavior.STATE_SETTLING -> {
-                                        view.tv_title_before.text = mMarkerItem.name
-                                        view.tv_date_before.text = mMarkerItem.crtDate
-                                        view.tv_title_after.text = mMarkerItem.improvedTitle
-                                        view.tv_date_after.text = mMarkerItem.improvedDate
-                                    }
-                                }
-                            }
-                        })
-                        state = BottomSheetBehavior.STATE_EXPANDED
-                        Log.d(TAG, "improved markerItem BottomSheet expanded")
-                    }
-            }
-        } else {
-
+        if (persistentBottomSheetBehavior != null) {
             persistentBottomSheetBehavior!!.state = BottomSheetBehavior.STATE_COLLAPSED
-            Log.d(TAG, "needUpdate : $needUpdate")//false여야함
-            Log.d(TAG, "persistentBottomSheetBehaivior : $persistentBottomSheetBehavior")
+        }
+        if (!markerItem.improved) {
+            Log.d(TAG, "!markerItem.improved")
+            bottomSheetLayout = bottom_sheet_before
 
-            if (!mMarkerItem.improved) {
-                if (markerItem.type == 5 || markerItem.type == 6) {
-                    Log.d(TAG, "marker type is 5 or 6")
+            if (markerItem.type == 5 || markerItem.type == 6) {
+                Log.d(TAG, "marker type is 5 or 6")
 
-                    bottomSheetLayout!!.ll_info_orange.visibility = View.GONE
-                    bottomSheetLayout!!.ll_info_blue.visibility = View.VISIBLE
+                bottomSheetLayout!!.ll_info_orange.visibility = View.GONE
+                bottomSheetLayout!!.ll_info_blue.visibility = View.VISIBLE
 
-                    bottomSheetLayout!!.bt_was_improved.visibility = View.GONE
-                    bottomSheetLayout!!.bt_show_detail.visibility = View.GONE
-                    bottomSheetLayout!!.bt_show_detail_blue.visibility = View.VISIBLE
+                bottomSheetLayout!!.bt_was_improved.visibility = View.GONE
+                bottomSheetLayout!!.bt_show_detail.visibility = View.GONE
+                bottomSheetLayout!!.bt_show_detail_blue.visibility = View.VISIBLE
 
-                    bottomSheetLayout!!.bt_show_detail_blue.setOnClickListener {
-                        it.findNavController()
-                            .navigate(R.id.action_mainMapFragment_to_pinDetailFragment)
-                        Log.d(TAG, "bt_show_detail_blue clicked")
-                    }
-                } else {
-                    bottomSheetLayout!!.bt_was_improved.visibility = View.VISIBLE
-                    bottomSheetLayout!!.bt_show_detail.visibility = View.VISIBLE
-                    bottomSheetLayout!!.bt_show_detail_blue.visibility = View.GONE
-
-                    bottomSheetLayout!!.ll_info_orange.visibility = View.VISIBLE
-                    bottomSheetLayout!!.ll_info_blue.visibility = View.GONE
-
-                    bottomSheetLayout!!.bt_was_improved.setOnClickListener {
-                        val bundle = Bundle()
-                        bundle.putParcelable("item", markerItem as Parcelable)
-                        it.findNavController()
-                            .navigate(
-                                R.id.action_mainMapFragment_to_pinRegisterFragment,
-                                bundle
-                            )
-                        Log.d(TAG, "bt_was_improved clicked")
-                    }
-                    bottomSheetLayout!!.bt_show_detail.setOnClickListener {
-                        it.findNavController()
-                            .navigate(R.id.action_mainMapFragment_to_pinDetailFragment)
-                        Log.d(TAG, "bt_show_detail clicked")
-                    }
+                bottomSheetLayout!!.bt_show_detail_blue.setOnClickListener {
+                    it.findNavController()
+                        .navigate(R.id.action_mainMapFragment_to_pinDetailFragment)
+                    Log.d(TAG, "bt_show_detail_blue clicked")
                 }
-                persistentBottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout)
-                persistentBottomSheetBehavior!!.setBottomSheetCallback(object :
-                    BottomSheetBehavior.BottomSheetCallback() {
-                    override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                        Log.d(TAG, "bottomsheet onSlide")
-                        h = bottomSheet.height
-                        off = h * slideOffset
-                        when (persistentBottomSheetBehavior!!.state) {
-                            BottomSheetBehavior.STATE_DRAGGING -> {
-                                Log.d(TAG, "onSlide bottomSheet Dragging")
-                                setMapPaddingBottom(off)
-                                //reposition marker at the center
-                                mMap.moveCamera(CameraUpdateFactory.newLatLng(mLoc))
-                            }
-
-                            BottomSheetBehavior.STATE_SETTLING -> {
-                                Log.d(TAG, "onSlide bottomSheet settling")
-                                setMapPaddingBottom(off)
-                                //reposition marker at the center
-                                mMap.moveCamera(CameraUpdateFactory.newLatLng(mLoc))
-                            }
-                        }
-                    }
-
-                    override fun onStateChanged(view: View, newState: Int) {
-                        when (newState) {
-                            BottomSheetBehavior.STATE_HIDDEN -> {
-                                beingClicked = false
-                                Log.d(TAG, "bottomSheet hidden")
-                                if (vm.selectedMarkerLiveData.value != null) {
-                                    addMarker(vm.selectedMarkerLiveData.value!!.tag as MarkerItem)
-                                    vm.selectedMarkerLiveData.value!!.remove()
-                                }
-
-                                if (persistentBottomSheetBehavior != null) {
-                                    vm.beforeSelectedwasImproved.value = 0
-                                }
-                            }
-                            BottomSheetBehavior.STATE_EXPANDED -> {
-                                Log.d(TAG, "bottomSheet expanded")
-
-                                view.tv_title_sheet_before_blue.text = mMarkerItem.name
-                                view.tv_date_sheet_before_blue.text = mMarkerItem.crtDate
-                                view.tv_info_location_blue.text = mMarkerItem.address
-                                view.tv_usable_time_blue.text = mMarkerItem.useable_time
-                                view.tv_call_number_blue.text = mMarkerItem.call_number
-
-                                view.tv_title_sheet_before.text = mMarkerItem.name
-                                view.tv_date_sheet_before.text = mMarkerItem.crtDate
-                                view.tv_location_sheet_before.text = mMarkerItem.address
-                                Log.d(TAG, "name : ${mMarkerItem.name}")
-                            }
-                            BottomSheetBehavior.STATE_SETTLING -> {
-
-                                view.tv_title_sheet_before_blue.text = mMarkerItem.name
-                                view.tv_date_sheet_before_blue.text = mMarkerItem.crtDate
-                                view.tv_info_location_blue.text = mMarkerItem.address
-                                view.tv_usable_time_blue.text = mMarkerItem.useable_time
-                                view.tv_call_number_blue.text = mMarkerItem.call_number
-
-                                view.tv_title_sheet_before.text = mMarkerItem.name
-                                view.tv_date_sheet_before.text = mMarkerItem.crtDate
-                                view.tv_location_sheet_before.text = mMarkerItem.address
-                            }
-                        }
-                    }
-                })
             } else {
-                persistentBottomSheetBehavior!!.setBottomSheetCallback(object :
-                    BottomSheetBehavior.BottomSheetCallback() {
-                    override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                        h = bottomSheet.height
-                        off = h * slideOffset
-                        when (persistentBottomSheetBehavior!!.state) {
-                            BottomSheetBehavior.STATE_DRAGGING -> {
-                                setMapPaddingBottom(off)
-                                //reposition marker at the center
-                                mMap.moveCamera(CameraUpdateFactory.newLatLng(mLoc))
-                            }
+                Log.d(TAG, "marker type is 1~4")
+                bottomSheetLayout!!.bt_was_improved.visibility = View.VISIBLE
+                bottomSheetLayout!!.bt_show_detail.visibility = View.VISIBLE
+                bottomSheetLayout!!.bt_show_detail_blue.visibility = View.GONE
 
-                            BottomSheetBehavior.STATE_SETTLING -> {
-                                setMapPaddingBottom(off)
-                                //reposition marker at the center
-                                mMap.moveCamera(CameraUpdateFactory.newLatLng(mLoc))
-                            }
-                        }
-                    }
-
-                    override fun onStateChanged(view: View, newState: Int) {
-                        when (newState) {
-                            BottomSheetBehavior.STATE_HIDDEN -> {
-                                beingClicked = false
-                                Log.d(TAG, "bottomSheet hiddden")
-                                if (vm.selectedMarkerLiveData.value != null) {
-                                    addMarker(vm.selectedMarkerLiveData.value!!.tag as MarkerItem)
-                                    vm.selectedMarkerLiveData.value!!.remove()
-                                }
-
-                                if (persistentBottomSheetBehavior != null) {
-                                    vm.beforeSelectedwasImproved.value = 0
-                                }
-                            }
-                            BottomSheetBehavior.STATE_EXPANDED -> {
-                                view.tv_title_before.text = mMarkerItem.name
-                                view.tv_date_before.text = mMarkerItem.crtDate
-                                view.tv_title_after.text = mMarkerItem.improvedTitle
-                                view.tv_date_after.text = mMarkerItem.improvedDate
-                            }
-                            BottomSheetBehavior.STATE_SETTLING -> {
-                                view.tv_title_before.text = mMarkerItem.name
-                                view.tv_date_before.text = mMarkerItem.crtDate
-                                view.tv_title_after.text = mMarkerItem.improvedTitle
-                                view.tv_date_after.text = mMarkerItem.improvedDate
-                            }
-                        }
-                    }
-                })
+                bottomSheetLayout!!.ll_info_orange.visibility = View.VISIBLE
+                bottomSheetLayout!!.ll_info_blue.visibility = View.GONE
+                bottomSheetLayout!!.bt_was_improved.setOnClickListener {
+                    val bundle = Bundle()
+                    bundle.putParcelable("item", markerItem as Parcelable)
+                    it.findNavController()
+                        .navigate(
+                            R.id.action_mainMapFragment_to_pinRegisterFragment,
+                            bundle
+                        )
+                    Log.d(TAG, "bt_was_improved clicked")
+                }
+                bottomSheetLayout!!.bt_show_detail.setOnClickListener {
+                    it.findNavController()
+                        .navigate(R.id.action_mainMapFragment_to_pinDetailFragment)
+                    Log.d(TAG, "bt_show_detail clicked")
+                }
             }
 
-            persistentBottomSheetBehavior!!.state = BottomSheetBehavior.STATE_EXPANDED
+            persistentBottomSheetBehavior =
+                BottomSheetBehavior.from(bottomSheetLayout).apply {
+                    Log.d(TAG, "persistentBottomSheetBehaivior : $this")
+                    setBottomSheetCallback(object :
+                        BottomSheetBehavior.BottomSheetCallback() {
+                        override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                            Log.d(TAG, "bottomsheet onSlide")
+                            h = bottomSheet.height
+                            off = h * slideOffset
+                            when (persistentBottomSheetBehavior!!.state) {
+                                BottomSheetBehavior.STATE_DRAGGING -> {
+                                    Log.d(TAG, "onSlide bottomSheet Dragging")
+                                    setMapPaddingBottom(off)
+                                    //reposition marker at the center
+                                    mMap.moveCamera(CameraUpdateFactory.newLatLng(mLoc))
+                                }
+
+                                BottomSheetBehavior.STATE_SETTLING -> {
+                                    Log.d(TAG, "onSlide bottomSheet settling")
+                                    setMapPaddingBottom(off)
+                                    //reposition marker at the center
+                                    mMap.moveCamera(CameraUpdateFactory.newLatLng(mLoc))
+                                }
+                            }
+                        }
+
+                        override fun onStateChanged(view: View, newState: Int) {
+                            when (newState) {
+//                                    BottomSheetBehavior.STATE_HIDDEN -> {
+//                                        beingClicked = false
+//                                        Log.d(TAG, "bottomSheet hidden")
+//                                        if (vm.selectedMarkerLiveData.value != null) {
+//                                            if (vm.selectedMarkerLiveData.value!!.tag != null) {
+//                                                addMarker(vm.selectedMarkerLiveData.value!!.tag as MarkerItem)
+//                                                vm.selectedMarkerLiveData.value!!.remove()
+//                                            }
+//                                        }
+//
+//                                        if (persistentBottomSheetBehavior != null) {
+//                                            vm.beforeSelectedwasImproved.value = 0
+//                                        }
+//                                    }
+                                BottomSheetBehavior.STATE_EXPANDED -> {
+                                    Log.d(TAG, "bottomSheet expanded")
+
+                                    view.tv_title_sheet_before_blue.text = mMarkerItem.name
+                                    view.tv_date_sheet_before_blue.text =
+                                        mMarkerItem.crtDate
+                                    view.tv_info_location_blue.text = mMarkerItem.address
+                                    view.tv_usable_time_blue.text = mMarkerItem.useable_time
+                                    view.tv_call_number_blue.text = mMarkerItem.call_number
+
+                                    view.tv_title_sheet_before.text = mMarkerItem.name
+                                    view.tv_date_sheet_before.text = mMarkerItem.crtDate
+                                    view.tv_location_sheet_before.text = mMarkerItem.address
+                                    Log.d(TAG, "name : ${mMarkerItem.name}")
+
+                                }
+//                                    BottomSheetBehavior.STATE_SETTLING -> {
+//
+//                                        view.tv_title_sheet_before_blue.text = mMarkerItem.name
+//                                        view.tv_date_sheet_before_blue.text =
+//                                            mMarkerItem.crtDate
+//                                        view.tv_info_location_blue.text = mMarkerItem.address
+//                                        view.tv_usable_time_blue.text = mMarkerItem.useable_time
+//                                        view.tv_call_number_blue.text = mMarkerItem.call_number
+//
+//                                        view.tv_title_sheet_before.text = mMarkerItem.name
+//                                        view.tv_date_sheet_before.text = mMarkerItem.crtDate
+//                                        view.tv_location_sheet_before.text = mMarkerItem.address
+//                                    }
+                            }
+                        }
+                    })
+                    state = BottomSheetBehavior.STATE_EXPANDED
+                    Log.d(TAG, "unImproved markerItem BottomSheet expanded")
+                }
+
+        } else {
+            bottomSheetLayoutImproved = bottom_sheet_after
+            persistentBottomSheetBehavior =
+                BottomSheetBehavior.from(bottomSheetLayoutImproved).apply {
+                    Log.d(
+                        TAG,
+                        "persistentBottomSheetBehaivior : $persistentBottomSheetBehavior"
+                    )
+
+                    setBottomSheetCallback(object :
+                        BottomSheetBehavior.BottomSheetCallback() {
+                        override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                            h = bottomSheet.height
+                            off = h * slideOffset
+                            when (persistentBottomSheetBehavior!!.state) {
+                                BottomSheetBehavior.STATE_DRAGGING -> {
+                                    setMapPaddingBottom(off)
+                                    //reposition marker at the center
+                                    mMap.moveCamera(CameraUpdateFactory.newLatLng(mLoc))
+                                }
+
+                                BottomSheetBehavior.STATE_SETTLING -> {
+                                    setMapPaddingBottom(off)
+                                    //reposition marker at the center
+                                    mMap.moveCamera(CameraUpdateFactory.newLatLng(mLoc))
+                                }
+                            }
+                        }
+
+                        override fun onStateChanged(view: View, newState: Int) {
+                            when (newState) {
+//                                    BottomSheetBehavior.STATE_HIDDEN -> {
+//                                        beingClicked = false
+//                                        Log.d(TAG, "bottomSheet hiddden")
+//                                        if (vm.selectedMarkerLiveData.value != null) {
+//                                            if (vm.selectedMarkerLiveData.value!!.tag != null) {
+//                                                addMarker(vm.selectedMarkerLiveData.value!!.tag as MarkerItem)
+//                                                vm.selectedMarkerLiveData.value!!.remove()
+//                                            }
+//                                        }
+//
+//                                        if (persistentBottomSheetBehavior != null) {
+//                                            vm.beforeSelectedwasImproved.value = 0
+//                                        }
+//                                    }
+                                BottomSheetBehavior.STATE_EXPANDED -> {
+                                    view.tv_title_before.text = mMarkerItem.name
+                                    view.tv_date_before.text = mMarkerItem.crtDate
+                                    view.tv_title_after.text = mMarkerItem.improvedTitle
+                                    view.tv_date_after.text = mMarkerItem.improvedDate
+                                }
+//                                    BottomSheetBehavior.STATE_SETTLING -> {
+//                                        view.tv_title_before.text = mMarkerItem.name
+//                                        view.tv_date_before.text = mMarkerItem.crtDate
+//                                        view.tv_title_after.text = mMarkerItem.improvedTitle
+//                                        view.tv_date_after.text = mMarkerItem.improvedDate
+//                                    }
+                            }
+                        }
+                    })
+                    state = BottomSheetBehavior.STATE_EXPANDED
+                    Log.d(TAG, "improved markerItem BottomSheet expanded")
+
+                }
+
         }
     }
+
 
     private fun setMapPaddingBottom(offset: Float) {
         //From 0.0(min) - 1.0(max) //BottomShetExpanded - BottomSheepCollapsed
@@ -873,8 +711,10 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
         beingClicked = false
         Log.d(TAG, "Map clicked")
         if (vm.selectedMarkerLiveData.value != null) {
-            addMarker(vm.selectedMarkerLiveData.value!!.tag as MarkerItem)
-            vm.selectedMarkerLiveData.value!!.remove()
+            if (vm.selectedMarkerLiveData.value!!.tag != null) {
+                addMarker(vm.selectedMarkerLiveData.value!!.tag as MarkerItem)
+                vm.selectedMarkerLiveData.value!!.remove()
+            }
         }
 
         if (persistentBottomSheetBehavior != null) {
