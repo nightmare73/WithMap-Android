@@ -22,11 +22,14 @@ class ViewModelFactory(
             SearchViewModel::class.java -> {
                 SearchViewModel(kakaoService) as T
             }
-            PinDetailViewModel::class.java -> {
-                PinDetailViewModel(withMapService, localRepository) as T
+            PinDetailViewModel::class.java,
+            LoginViewModel::class.java
+            -> {
+                modelClass.getConstructor(WithMapService::class.java, LocalRepository::class.java)
+                    .newInstance(withMapService, localRepository) as T
             }
             else -> modelClass.getConstructor(WithMapService::class.java)
-                .newInstance(withMapService)
+                .newInstance(withMapService) as T
         }
     }
 }

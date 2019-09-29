@@ -32,7 +32,6 @@
         <activity
             android:name=".view.intro.TutorialActivity"
             android:theme="@style/Theme.AppCompat.Transparent.NoActionBar" />
-        <activity android:name=".view.login.LoginActivity" />
         <activity android:name=".view.main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

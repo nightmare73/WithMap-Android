@@ -21,7 +21,7 @@ interface WithMapService {
     @POST("/withmap/signin")
     fun requestSignIn(
         @Body body: SignInParams
-    ): Call<SignInResponse>
+    ): Single<SignInResponse>
 
     // 회원가입
     @POST("/withmap/users")
@@ -42,14 +42,15 @@ interface WithMapService {
     fun getPinsAroundPosition(
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double
-    ):Single<List<CommonPinInfo>>
+    ): Single<List<CommonPinInfo>>
+
     // 주위 핀 조회
     @GET("/withmap/pins")
     fun getPinsAroundPosition2(
-        @Header("Content-Type") content_type : String,
+        @Header("Content-Type") content_type: String,
         @Query("latitude") latitude: Double,
         @Query("longitude") longitude: Double
-    ):Call<ArrayList<CommonPinInfo>>
+    ): Call<ArrayList<CommonPinInfo>>
 
     // 핀 자세히보기
     @GET("/withmap/pins/{id}")

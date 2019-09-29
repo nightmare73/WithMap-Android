@@ -3,6 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+
+        <variable
+            name="vm"
+            type="com.ebookfrenzy.withmap.viewmodel.LoginViewModel" />
+    </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -10,7 +16,6 @@
         tools:context=".view.login.LoginFragment">
 
         <ImageView
-
             android:id="@+id/imageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -18,7 +23,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/group" />
+            app:srcCompat="@drawable/login_logo" />
 
         <TextView
             android:id="@+id/tv_name"
@@ -32,13 +37,14 @@
         <EditText
             android:id="@+id/et_email"
             style="@style/nanum_medium_login_edittext"
-            android:backgroundTint="@color/et_underline_gray"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="40dp"
+            android:backgroundTint="@color/et_underline_gray"
             android:ems="10"
             android:inputType="textPersonName"
+            android:text="@={vm.inputEmail}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/tv_name"
             app:layout_constraintTop_toBottomOf="@+id/tv_name" />
@@ -54,13 +60,14 @@
         <EditText
             android:id="@+id/et_password"
             style="@style/nanum_medium_login_edittext"
-            android:backgroundTint="@color/et_underline_gray"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:backgroundTint="@color/et_underline_gray"
             android:ems="10"
             android:inputType="textPassword"
             android:paddingBottom="8dp"
+            android:text="@={vm.inputPassword}"
             app:layout_constraintEnd_toEndOf="@+id/et_email"
             app:layout_constraintStart_toStartOf="@+id/tv_password"
             app:layout_constraintTop_toBottomOf="@+id/tv_password" />
