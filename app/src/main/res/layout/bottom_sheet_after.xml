@@ -34,7 +34,7 @@
             android:layout_marginTop="8dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView17"
-            app:srcCompat="@drawable/bg_improved_frag_type" />
+            app:srcCompat="@drawable/default_road_x" />
 
         <TextView
             android:id="@+id/tv_title_before"
@@ -67,7 +67,7 @@
             app:layout_constraintEnd_toEndOf="@+id/iv_before_photo"
             app:layout_constraintStart_toStartOf="@+id/iv_before_photo"
             app:layout_constraintTop_toBottomOf="@+id/iv_before_photo"
-            app:srcCompat="@drawable/bg_improved_frag_type" />
+            app:srcCompat="@drawable/default_road_o" />
 
         <ImageView
             android:id="@+id/imageView22"
