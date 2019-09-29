@@ -55,9 +55,6 @@ class LoginFragment : Fragment() {
         binding.btnLogin.setOnClickListener {
             val email = viewModel.inputEmail.get()
             val password = viewModel.inputPassword.get()
-
-            Log.d("Malibin Debug", "email : $email pass : $password")
-
             if (email.isNullOrBlank() || password.isNullOrBlank()) {
                 Toast.makeText(context, "아이디 비밀번호를 모두 입력해주세요", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -71,13 +68,6 @@ class LoginFragment : Fragment() {
         viewModel.isLoginSuccess.observe(viewLifecycleOwner, Observer { isSuccess ->
             if (isSuccess) {
                 Navigation.findNavController(view!!).popBackStack()
-
-                val localtemp: LocalRepository by inject()
-
-                Toast.makeText(context, "로그인에 성공쓰. ${localtemp.getAuthToken()}", Toast.LENGTH_SHORT)
-                    .show()
-
-
                 return@Observer
             }
             Toast.makeText(context, "로그인에 실패하였습니다.", Toast.LENGTH_SHORT).show()

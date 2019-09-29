@@ -46,7 +46,6 @@ class LoginViewModel(
                 .subscribeOn(Schedulers.io())
                 .subscribe({
                     _isLoginSuccess.value = true
-                    Log.d("Malibin Debug", "request login response token : ${it.token}")
                     saveToken(it.token)
                 }, {
                     _isLoginSuccess.value = false
@@ -70,7 +69,6 @@ class LoginViewModel(
 
     private fun saveToken(token: String) {
         localRepository.saveAuthToken(token)
-        Log.d("Malibin Debug", "save 직후 token : ${localRepository.getAuthToken()}")
     }
 
 }
