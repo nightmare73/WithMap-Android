@@ -32,6 +32,7 @@ import com.ebookfrenzy.withmap.R
 import com.ebookfrenzy.withmap.data.MarkerItem
 import com.ebookfrenzy.withmap.databinding.FragmentPinRegisterBinding
 import com.ebookfrenzy.withmap.databinding.ItemPinRegisterPhotoBinding
+import com.ebookfrenzy.withmap.network.response.pinregister.PinRegisterData
 import com.ebookfrenzy.withmap.viewmodel.PinRegisterViewModel
 import com.google.android.gms.maps.model.Marker
 import com.googry.googrybaserecyclerview.BaseRecyclerView
@@ -85,6 +86,7 @@ class PinRegisterFragment : Fragment() {
     private var type: Int = 0
 
     private var newMarkerItem: MarkerItem? = null
+    private var newPinItem : PinRegisterData? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -130,13 +132,25 @@ class PinRegisterFragment : Fragment() {
     fun registerComplete() {
 
         if (isNew.value as Boolean) {
-            newMarkerItem = MarkerItem(
-                latitude!!, longitude!!, type, binding.etTitle.text.toString(),
-                getTime(),
+//            newMarkerItem = MarkerItem(
+//                latitude!!, longitude!!, type, binding.etTitle.text.toString(),
+//                getTime(),
+//                address.value!!,
+//                false,
+//                null,
+//                null,
+//                binding.tvContent.text.toString()
+//            )
+            newPinItem = PinRegisterData(
                 address.value!!,
+                null,
+                latitude!!,
+                longitude!!,
                 false,
-                null,
-                null,
+                type,
+                0,
+                binding.etTitle.text.toString(),
+                3,
                 binding.tvContent.text.toString()
             )
             Log.d(TAG, "new markerItem ${newMarkerItem.toString()}")
@@ -153,6 +167,16 @@ class PinRegisterFragment : Fragment() {
                 getTime(),
                 markerItem!!.comment
             )
+//            newPinItem = PinRegisterData(
+//                markerItem!!.address!!,
+//                binding.etTitle.toString(),
+//                markerItem!!.latitude!!,
+//                markerItem!!.longitude!!,
+//                true,
+//                markerItem!!.type,
+//
+//
+//            )
             Log.d(TAG, "newMarkeritem : ${newMarkerItem.toString()}")
         }
     }

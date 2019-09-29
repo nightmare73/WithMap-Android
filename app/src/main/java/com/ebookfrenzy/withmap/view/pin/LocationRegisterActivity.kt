@@ -77,7 +77,7 @@ class LocationRegisterActivity : AppCompatActivity(), OnMapReadyCallback,
     }
 
     override fun onCameraIdle() {
-        Log.d(TAG, "onCameraIdle()")
+            Log.d(TAG, "onCameraIdle()")
         getCenterPositionName()
     }
 

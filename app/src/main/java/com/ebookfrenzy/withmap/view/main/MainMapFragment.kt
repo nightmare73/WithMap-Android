@@ -34,6 +34,7 @@ import androidx.navigation.findNavController
 import com.ebookfrenzy.withmap.R
 import com.ebookfrenzy.withmap.config.WithMapApplication
 import com.ebookfrenzy.withmap.data.MarkerItem
+import com.ebookfrenzy.withmap.data.getMarkerItems
 import com.ebookfrenzy.withmap.databinding.FragmentMainMapBinding
 import com.ebookfrenzy.withmap.network.response.CommonPinInfo
 import com.ebookfrenzy.withmap.viewmodel.MainViewModel
@@ -66,9 +67,21 @@ import retrofit2.Response
  * A simple [Fragment] subclass.
  */
 class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
-    GoogleMap.OnMapClickListener, NavigationView.OnNavigationItemSelectedListener {
+    GoogleMap.OnMapClickListener, NavigationView.OnNavigationItemSelectedListener,
+    GoogleMap.OnCameraIdleListener, GoogleMap.OnCameraMoveStartedListener,
+    GoogleMap.OnCameraMoveListener {
+
+    override fun onCameraMoveStarted(p0: Int) {
+    }
+
+    override fun onCameraMove() {
+    }
+
 
     private lateinit var currentLocation: Location
+    private val sampleLocation = LatLng(37.57261267, 126.9757016)
+    private val dbLocation = LatLng(37.537523, 126.96558)
+
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private val LOCATION_REQUEST_CODE = 101
 
@@ -108,7 +121,13 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
 
         binding = FragmentMainMapBinding.inflate(LayoutInflater.from(this.context))
 
-
+        vm.bottomSheetUpdate.observeForever(Observer {
+            Log.d(TAG, "bottomSheetUpdate in MainMapFragment : ${vm.bottomSheetUpdate.value}")
+            initPersistentBottonSheetBehavior(
+                vm.selectedMarkerLiveData.value!!.tag as MarkerItem,
+                vm.bottomSheetUpdate.value!!
+            )
+        })
         // 뷰모델 공유 안하고 navigation 으로만 데이터 주고받는거 성공 !
 //        val temp = MainMapFragmentArgs.fromBundle(arguments!!).location
 //
@@ -137,13 +156,7 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
             fragment = this@MainMapFragment
         }
 
-        vm.bottomSheetUpdate.observe(this, Observer {
-            Log.d(TAG, "bottomSheetUpdate in MainMapFragment : ${vm.bottomSheetUpdate.value}")
-            initPersistentBottonSheetBehavior(
-                vm.selectedMarkerLiveData.value!!.tag as MarkerItem,
-                vm.bottomSheetUpdate.value!!
-            )
-        })
+
 
         mapFragment = SupportMapFragment.newInstance()
 //        mapFragment.getMapAsync(this)
@@ -154,40 +167,58 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
 
         Log.d(TAG, vm.selectedMarkerLiveData.value.toString())
     }
-//
-//    fun getAroundPins() {
-//        Log.d(TAG, "getAroundPins()")
-//        val networkService = WithMapApplication.instance.networkService
-//        val getPinsAroundPosition2 = networkService.getPinsAroundPosition2(
-//            "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJob21lc2tpbkBuYXZlci5jb20iLCJuaWNrbmFtZSI6Iuy1nOyEoOyerCIsImlzcyI6IldJVEhNQVAiLCJpYXQiOjE1NjkzMjI0NjEsImV4cCI6MTU2OTkyNzI2MX0.c7mUFv1BhyQLwiemXbYYfF_y8tEb45AoOVQ9-btpC_w"
-//        ,currentLocation.latitude
-//        ,currentLocation.longitude
-//        )
-//        getPinsAroundPosition2.enqueue(object : Callback<ArrayList<CommonPinInfo>>{
-//            override fun onFailure(call: Call<ArrayList<CommonPinInfo>>, t: Throwable) {
-//                Log.e(TAG, "error : ${TextUtils.join("\n",t.stackTrace)}")
-//            }
-//
-//            override fun onResponse(
-//                call: Call<ArrayList<CommonPinInfo>>,
-//                response: Response<ArrayList<CommonPinInfo>>
-//            ) {
-//                if(response.isSuccessful) {
-//                    Log.d(TAG, "getPindAroundPositioon2 success")
-//                    if (response.body() != null) {
-//                        val list = response.body() as List<CommonPinInfo>
-//                        if (list.size > 0)
-//                            Log.d(TAG, list.size.toString())
-//                    }
-//                }
-//            }
-//        })
-//    }
-//
-//    private requestAroundPIn() {
-//
-//    }
 
+    override fun onCameraIdle() {
+        Log.d(TAG, "onCameraIdle()")
+        mMap.clear()
+        vm.centerLatLng.value = mMap.cameraPosition.target
+        Log.d(
+            TAG,
+            "changed LatLng : ${mMap.cameraPosition.target.latitude}, ${mMap.cameraPosition.target.longitude}"
+        )
+        updatePinsAround()
+        getUpdatedMarkerItems()
+
+    }
+
+    fun getUpdatedMarkerItems() {
+        if (vm.markerItemLiveData.value != null) {
+            val updateList = vm.markerItemLiveData.value
+            Log.d(TAG, "update : ${updateList.toString()}")
+
+            mMap.clear()
+            for (markerItem in updateList!!.iterator()) {
+                addMarker(markerItem)
+            }
+        }
+    }
+
+    //샘플로 만든 마커들, +추가해놓기
+    fun getSampleMarkerItems() {
+
+//        vm.getPinsAround(currentLocation.latitude, currentLocation.longitude)
+
+        vm.markerItemLiveData.observe(this, Observer {
+            if (it != null) {
+                val sampleList = it
+                Log.d(TAG, "sampleList : ${sampleList.toString()}")
+
+                mMap.clear()
+                for (markerItem in sampleList!!.iterator()) {
+                    addMarker(markerItem)
+                }
+            }
+        })
+
+    }
+
+    //카메라를 움직였다가 멈췄을때 주변핀 업데이트
+    private fun updatePinsAround() {
+
+        vm.centerLatLng.observe(this, Observer {
+            vm.getPinsAround(it.latitude, it.longitude)
+        })
+    }
 
     private fun requestPermission() {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(activity!!);
@@ -247,16 +278,23 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
         mMap = googleMap!!
 
 //        mLoc = LatLng(currentLocation.latitude, currentLocation.longitude)
+        mLoc = LatLng(sampleLocation.latitude, sampleLocation.longitude)
+//        mLoc = LatLng(dbLocation.latitude, dbLocation.longitude)
 
-        mLoc = LatLng(37.537523, 126.96558)
+
+//        mLoc = LatLng(37.537523, 126.96558)
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mLoc, 14f))
         mMap.setOnMarkerClickListener(this)
         mMap.setOnMapClickListener(this)
+        mMap.setOnCameraMoveStartedListener(this)
+        mMap.setOnCameraIdleListener(this)
+        mMap.setOnCameraMoveListener(this)
 
-        vm.getPinsAround(37.57261267, 126.9757016)
-        vm.getPinsAround(37.57261267, 126.9757016)
+
+//        vm.markerItemLiveData.value = getMarkerItems()
+//        vm.getPinsAround(dbLocation.latitude, dbLocation.longitude)
+        vm.getPinsAround(sampleLocation.latitude, sampleLocation.longitude)
 //        vm.getPinsAround(currentLocation.latitude, currentLocation.longitude)
-//        getAroundPins()
 
         getSampleMarkerItems()
     }
@@ -338,59 +376,49 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
         return bitmap
     }
 
-    //샘플로 만든 마커들, +추가해놓기
-    fun getSampleMarkerItems() {
-
-//        vm.getPinsAround(currentLocation.latitude, currentLocation.longitude)
-        vm.markerItemLiveData.observe(this, Observer{
-            if(it != null) {
-                val sampleList = it
-                Log.d(TAG, "sampleList : ${sampleList}")
-
-                for (markerItem in sampleList.iterator()) {
-                    addMarker(markerItem)
-                }
-            }
-        })
-
-    }
-
 
     //마커를 추가해놓는 함수
     private fun addMarker(markerItem: MarkerItem): Marker {
         val position = LatLng(markerItem.latitude!!, markerItem.longitude!!)
+        Log.d(TAG, "addMarker()")
 
+        if (markerItem.type == 5 || markerItem.type == 6) {
+            markerItem.improved = false
+        }
         if (!markerItem.improved) {
             //개선되기전
-//            if (isSelectedMarker) {
-//                when (markerItem.type) {
-//                    1 -> ivMarker.setBackgroundResource(R.drawable.pin_hurdle_touch)
-//                    2 -> ivMarker.setBackgroundResource(R.drawable.pin_dump_touch)
-//                    3 -> ivMarker.setBackgroundResource(R.drawable.pin_unpaved_touch)
-//                    4 -> ivMarker.setBackgroundResource(R.drawable.pin_narrow_touch)
-//                    5 -> ivMarker.setBackgroundResource(R.drawable.pin_toilet_touch)
-//                    6 -> ivMarker.setBackgroundResource(R.drawable.pin_restaurant_touch)
-//                }
-//            } else {
-            when (markerItem.type) {
-                1 -> ivMarker.setBackgroundResource(R.drawable.pin_hurdle_on)
-                2 -> ivMarker.setBackgroundResource(R.drawable.pin_dump_on)
-                3 -> ivMarker.setBackgroundResource(R.drawable.group_9)
-                4 -> ivMarker.setBackgroundResource(R.drawable.group_10)
-                5 -> ivMarker.setBackgroundResource(R.drawable.pin_toilet_on)
-                6 -> ivMarker.setBackgroundResource(R.drawable.pin_restaurant_on)
-            }
+
+                when (markerItem.type) {
+                    1 -> ivMarker.setImageResource(R.drawable.pin_hurdle_on)
+                    2 -> ivMarker.setImageResource(R.drawable.pin_dump_on)
+                    3 -> ivMarker.setImageResource(R.drawable.group_9)
+                    4 -> ivMarker.setImageResource(R.drawable.group_10)
+                    5 -> ivMarker.setImageResource(R.drawable.pin_toilet_on)
+                    6 -> ivMarker.setImageResource(R.drawable.pin_restaurant_on)
+                }
 //            }
-        } else {
+            } else {
             //개선된 후
             when (markerItem.type) {
 
-                1 -> ivMarker.setBackgroundResource(R.drawable.pin_hurdle_off)
-                2 -> ivMarker.setBackgroundResource(R.drawable.pin_dump_off)
-                3 -> ivMarker.setBackgroundResource(R.drawable.pin_unpaved_off)
-                4 -> ivMarker.setBackgroundResource(R.drawable.pin_narrow_off)
-                5 -> ivMarker.setBackgroundResource(R.drawable.pin_toilet_off)
-                6 -> ivMarker.setBackgroundResource(R.drawable.pin_restaurant_off)
+                1 -> ivMarker.setImageResource(R.drawable.pin_hurdle_off)
+                2 -> ivMarker.setImageResource(R.drawable.pin_dump_off)
+                3 -> ivMarker.setImageResource(R.drawable.pin_unpaved_off)
+                4 -> ivMarker.setImageResource(R.drawable.pin_narrow_off)
+                5 -> ivMarker.setImageResource(R.drawable.pin_toilet_on)
+                6 -> ivMarker.setImageResource(R.drawable.pin_restaurant_on)
+            }
+        }
+        if(vm.selectedMarkerLiveData.value != null) {
+            if (position ==(vm.selectedMarkerLiveData.value as Marker).position) {
+                when (markerItem.type) {
+                    1 -> ivMarker.setImageResource(R.drawable.pin_hurdle_touch)
+                    2 -> ivMarker.setImageResource(R.drawable.pin_dump_touch)
+                    3 -> ivMarker.setImageResource(R.drawable.pin_unpaved_touch)
+                    4 -> ivMarker.setImageResource(R.drawable.pin_narrow_touch)
+                    5 -> ivMarker.setImageResource(R.drawable.pin_toilet_touch)
+                    6 -> ivMarker.setImageResource(R.drawable.pin_restaurant_touch)
+                }
             }
         }
 
@@ -406,6 +434,7 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
         )
         val marker = mMap.addMarker(markerOptions)
         marker.tag = markerItem
+        Log.d(TAG, "marker improved : ${markerItem.improved}")
 
         return marker
     }
@@ -425,28 +454,36 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
     private fun changeSelectedMarker(marker: Marker?) {
         Log.d(TAG, "new selected : ${marker!!.tag}")
 
+        val selectedMarkerRootView =
+            LayoutInflater.from(this.context).inflate(R.layout.marker_layout, null)
+        val selectedIvMarker: ImageView = selectedMarkerRootView.findViewById(R.id.iv_marker)
+
+        if ((marker.tag as MarkerItem).type == 5 || (marker.tag as MarkerItem).type == 6) {
+
+            when ((marker.tag as MarkerItem).type) {
+                5 -> selectedIvMarker.setImageResource(R.drawable.pin_toilet_touch)
+                6 -> selectedIvMarker.setImageResource(R.drawable.pin_restaurant_touch)
+            }
+        }
         //개선되지 않은 핀: 선택된 마커 이미지 변경
         if (!(marker.tag as MarkerItem).improved) {
-            val selectedMarkerRootView =
-                LayoutInflater.from(this.context).inflate(R.layout.marker_layout, null)
-            val selectedIvMarker: ImageView = selectedMarkerRootView.findViewById(R.id.iv_marker)
             when ((marker.tag as MarkerItem).type) {
-                1 -> selectedIvMarker.setBackgroundResource(R.drawable.pin_hurdle_touch)
-                2 -> selectedIvMarker.setBackgroundResource(R.drawable.pin_dump_touch)
-                3 -> selectedIvMarker.setBackgroundResource(R.drawable.pin_unpaved_touch)
-                4 -> selectedIvMarker.setBackgroundResource(R.drawable.pin_narrow_touch)
-                5 -> selectedIvMarker.setBackgroundResource(R.drawable.pin_toilet_touch)
-                6 -> selectedIvMarker.setBackgroundResource(R.drawable.pin_restaurant_touch)
+                1 -> selectedIvMarker.setImageResource(R.drawable.pin_hurdle_touch)
+                2 -> selectedIvMarker.setImageResource(R.drawable.pin_dump_touch)
+                3 -> selectedIvMarker.setImageResource(R.drawable.pin_unpaved_touch)
+                4 -> selectedIvMarker.setImageResource(R.drawable.pin_narrow_touch)
+                5 -> selectedIvMarker.setImageResource(R.drawable.pin_toilet_touch)
+                6 -> selectedIvMarker.setImageResource(R.drawable.pin_restaurant_touch)
             }
-            marker.setIcon(
-                BitmapDescriptorFactory.fromBitmap(
-                    createDrawableFromView(
-                        this.context!!,
-                        selectedMarkerRootView
-                    )
+        }
+        marker.setIcon(
+            BitmapDescriptorFactory.fromBitmap(
+                createDrawableFromView(
+                    this.context!!,
+                    selectedMarkerRootView
                 )
             )
-        }
+        )
 
         if (vm.selectedMarkerLiveData.value != null) {
             if (vm.selectedMarkerLiveData.value!!.tag != null) {
@@ -457,7 +494,6 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
         //선택된 마커를 selectedMarker로 '새로'지정해서 지도에 추가
         vm.selectedMarkerLiveData.value = marker
     }
-
 
     //BottomSheet발생시키는 함수
     private fun initPersistentBottonSheetBehavior(markerItem: MarkerItem, needUpdate: Boolean) {
@@ -475,7 +511,6 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
             if (persistentBottomSheetBehavior != null) {
                 persistentBottomSheetBehavior!!.state = BottomSheetBehavior.STATE_COLLAPSED
             }
-
             if (!markerItem.improved) {
                 Log.d(TAG, "!markerItem.improved")
                 bottomSheetLayout = bottom_sheet_before
@@ -507,7 +542,10 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
                         val bundle = Bundle()
                         bundle.putParcelable("item", markerItem as Parcelable)
                         it.findNavController()
-                            .navigate(R.id.action_mainMapFragment_to_pinRegisterFragment, bundle)
+                            .navigate(
+                                R.id.action_mainMapFragment_to_pinRegisterFragment,
+                                bundle
+                            )
                         Log.d(TAG, "bt_was_improved clicked")
                     }
                     bottomSheetLayout!!.bt_show_detail.setOnClickListener {
@@ -517,78 +555,81 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
                     }
                 }
 
-                persistentBottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout).apply {
-                    Log.d(TAG, "persistentBottomSheetBehaivior : $this")
-                    setBottomSheetCallback(object :
-                        BottomSheetBehavior.BottomSheetCallback() {
-                        override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                            Log.d(TAG, "bottomsheet onSlide")
-                            h = bottomSheet.height
-                            off = h * slideOffset
-                            when (persistentBottomSheetBehavior!!.state) {
-                                BottomSheetBehavior.STATE_DRAGGING -> {
-                                    Log.d(TAG, "onSlide bottomSheet Dragging")
-                                    setMapPaddingBottom(off)
-                                    //reposition marker at the center
-                                    mMap.moveCamera(CameraUpdateFactory.newLatLng(mLoc))
-                                }
-
-                                BottomSheetBehavior.STATE_SETTLING -> {
-                                    Log.d(TAG, "onSlide bottomSheet settling")
-                                    setMapPaddingBottom(off)
-                                    //reposition marker at the center
-                                    mMap.moveCamera(CameraUpdateFactory.newLatLng(mLoc))
-                                }
-                            }
-                        }
-
-                        override fun onStateChanged(view: View, newState: Int) {
-                            when (newState) {
-                                BottomSheetBehavior.STATE_HIDDEN -> {
-                                    beingClicked = false
-                                    Log.d(TAG, "bottomSheet hidden")
-                                    if (vm.selectedMarkerLiveData.value != null) {
-                                        addMarker(vm.selectedMarkerLiveData.value!!.tag as MarkerItem)
-                                        vm.selectedMarkerLiveData.value!!.remove()
+                persistentBottomSheetBehavior =
+                    BottomSheetBehavior.from(bottomSheetLayout).apply {
+                        Log.d(TAG, "persistentBottomSheetBehaivior : $this")
+                        setBottomSheetCallback(object :
+                            BottomSheetBehavior.BottomSheetCallback() {
+                            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                                Log.d(TAG, "bottomsheet onSlide")
+                                h = bottomSheet.height
+                                off = h * slideOffset
+                                when (persistentBottomSheetBehavior!!.state) {
+                                    BottomSheetBehavior.STATE_DRAGGING -> {
+                                        Log.d(TAG, "onSlide bottomSheet Dragging")
+                                        setMapPaddingBottom(off)
+                                        //reposition marker at the center
+                                        mMap.moveCamera(CameraUpdateFactory.newLatLng(mLoc))
                                     }
 
-                                    if (persistentBottomSheetBehavior != null) {
-                                        vm.beforeSelectedwasImproved.value = 0
+                                    BottomSheetBehavior.STATE_SETTLING -> {
+                                        Log.d(TAG, "onSlide bottomSheet settling")
+                                        setMapPaddingBottom(off)
+                                        //reposition marker at the center
+                                        mMap.moveCamera(CameraUpdateFactory.newLatLng(mLoc))
                                     }
                                 }
-                                BottomSheetBehavior.STATE_EXPANDED -> {
-                                    Log.d(TAG, "bottomSheet expanded")
+                            }
 
-                                    view.tv_title_sheet_before_blue.text = mMarkerItem.name
-                                    view.tv_date_sheet_before_blue.text = mMarkerItem.crtDate
-                                    view.tv_info_location_blue.text = mMarkerItem.address
-                                    view.tv_usable_time_blue.text = mMarkerItem.useable_time
-                                    view.tv_call_number_blue.text = mMarkerItem.call_number
+                            override fun onStateChanged(view: View, newState: Int) {
+                                when (newState) {
+                                    BottomSheetBehavior.STATE_HIDDEN -> {
+                                        beingClicked = false
+                                        Log.d(TAG, "bottomSheet hidden")
+                                        if (vm.selectedMarkerLiveData.value != null) {
+                                            addMarker(vm.selectedMarkerLiveData.value!!.tag as MarkerItem)
+                                            vm.selectedMarkerLiveData.value!!.remove()
+                                        }
 
-                                    view.tv_title_sheet_before.text = mMarkerItem.name
-                                    view.tv_date_sheet_before.text = mMarkerItem.crtDate
-                                    view.tv_location_sheet_before.text = mMarkerItem.address
-                                    Log.d(TAG, "name : ${mMarkerItem.name}")
+                                        if (persistentBottomSheetBehavior != null) {
+                                            vm.beforeSelectedwasImproved.value = 0
+                                        }
+                                    }
+                                    BottomSheetBehavior.STATE_EXPANDED -> {
+                                        Log.d(TAG, "bottomSheet expanded")
 
-                                }
-                                BottomSheetBehavior.STATE_SETTLING -> {
+                                        view.tv_title_sheet_before_blue.text = mMarkerItem.name
+                                        view.tv_date_sheet_before_blue.text =
+                                            mMarkerItem.crtDate
+                                        view.tv_info_location_blue.text = mMarkerItem.address
+                                        view.tv_usable_time_blue.text = mMarkerItem.useable_time
+                                        view.tv_call_number_blue.text = mMarkerItem.call_number
 
-                                    view.tv_title_sheet_before_blue.text = mMarkerItem.name
-                                    view.tv_date_sheet_before_blue.text = mMarkerItem.crtDate
-                                    view.tv_info_location_blue.text = mMarkerItem.address
-                                    view.tv_usable_time_blue.text = mMarkerItem.useable_time
-                                    view.tv_call_number_blue.text = mMarkerItem.call_number
+                                        view.tv_title_sheet_before.text = mMarkerItem.name
+                                        view.tv_date_sheet_before.text = mMarkerItem.crtDate
+                                        view.tv_location_sheet_before.text = mMarkerItem.address
+                                        Log.d(TAG, "name : ${mMarkerItem.name}")
 
-                                    view.tv_title_sheet_before.text = mMarkerItem.name
-                                    view.tv_date_sheet_before.text = mMarkerItem.crtDate
-                                    view.tv_location_sheet_before.text = mMarkerItem.address
+                                    }
+                                    BottomSheetBehavior.STATE_SETTLING -> {
+
+                                        view.tv_title_sheet_before_blue.text = mMarkerItem.name
+                                        view.tv_date_sheet_before_blue.text =
+                                            mMarkerItem.crtDate
+                                        view.tv_info_location_blue.text = mMarkerItem.address
+                                        view.tv_usable_time_blue.text = mMarkerItem.useable_time
+                                        view.tv_call_number_blue.text = mMarkerItem.call_number
+
+                                        view.tv_title_sheet_before.text = mMarkerItem.name
+                                        view.tv_date_sheet_before.text = mMarkerItem.crtDate
+                                        view.tv_location_sheet_before.text = mMarkerItem.address
+                                    }
                                 }
                             }
-                        }
-                    })
-                    state = BottomSheetBehavior.STATE_EXPANDED
-                    Log.d(TAG, "unImproved markerItem BottomSheet expanded")
-                }
+                        })
+                        state = BottomSheetBehavior.STATE_EXPANDED
+                        Log.d(TAG, "unImproved markerItem BottomSheet expanded")
+                    }
 
             } else {
                 bottomSheetLayoutImproved = bottom_sheet_after
@@ -686,7 +727,10 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
                         val bundle = Bundle()
                         bundle.putParcelable("item", markerItem as Parcelable)
                         it.findNavController()
-                            .navigate(R.id.action_mainMapFragment_to_pinRegisterFragment, bundle)
+                            .navigate(
+                                R.id.action_mainMapFragment_to_pinRegisterFragment,
+                                bundle
+                            )
                         Log.d(TAG, "bt_was_improved clicked")
                     }
                     bottomSheetLayout!!.bt_show_detail.setOnClickListener {

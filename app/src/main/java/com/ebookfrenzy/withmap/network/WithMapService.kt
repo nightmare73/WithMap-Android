@@ -7,6 +7,7 @@ import com.ebookfrenzy.withmap.network.response.PinDetail
 import com.ebookfrenzy.withmap.network.response.SignInResponse
 import io.reactivex.Completable
 import io.reactivex.Single
+import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -35,7 +36,14 @@ interface WithMapService {
         @Header("Authorization") token: String
     ) //UserInfo class 만들어놓음
 
-    @POST
+    // 핀 작성
+    @Multipart
+    @POST("/withmap/pins")
+    fun postPinRegister(
+        @Header("Content-Type") content_type:String,
+        @Header("Authorization") token : String,
+        @Part pin : MultipartBody.Part?
+    )
 
     // 주위 핀 조회
     @GET("/withmap/pins")

@@ -11,6 +11,7 @@ import com.ebookfrenzy.withmap.data.MarkerItem
 import com.ebookfrenzy.withmap.data.getMarkerItems
 import com.ebookfrenzy.withmap.network.response.CommonPinInfo
 import com.ebookfrenzy.withmap.network.response.DataModel
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -23,11 +24,11 @@ class MainViewModel(val model: DataModel ) : BaseViewModel() {
 
     private val TAG = "MainViewModel"
 
+    val centerLatLng : MutableLiveData<LatLng> = MutableLiveData<LatLng>()
+
     private val _aroundPinResponseLiveData = MutableLiveData<List<CommonPinInfo>>()
     val aroundPinResponseLiveData: LiveData<List<CommonPinInfo>>
         get() = _aroundPinResponseLiveData
-
-
     val markerItemLiveData = MutableLiveData<List<MarkerItem>>()
     val selectedMarkerLiveData = MutableLiveData<Marker?>()
     // 0: bottomsheet 내려져있는 상태, 1: 전에꺼 unImproved , 2: 전에꺼 improved
@@ -36,6 +37,7 @@ class MainViewModel(val model: DataModel ) : BaseViewModel() {
     }
     val bottomSheetUpdate = MutableLiveData<Boolean>()
 
+//주변핀 조회
     fun getPinsAround(latitude: Double, longitude: Double) {
 //        Log.d(TAG, "getPinsAround()")
 //        addDisposable(
@@ -83,10 +85,11 @@ class MainViewModel(val model: DataModel ) : BaseViewModel() {
             ) {
                 if (response.isSuccessful) {
                     Log.d(TAG, "getPindAroundPositioon2 success")
+                    markerItemLiveData.value = null
                     if (response.body() != null) {
                         val it = response.body() as List<CommonPinInfo>
+                        Log.d(TAG, "run")
                         it.run {
-                            Log.d(TAG, "run")
                             if (this.size > 0) {
                                 Log.d(TAG, "List<CommonPinInfo> : $this")
                                 markerItemLiveData.value = this.map {
@@ -94,7 +97,7 @@ class MainViewModel(val model: DataModel ) : BaseViewModel() {
                                         it.latitude,
                                         it.longitude,
                                         it.type,
-                                        it.unimprovedName,
+                                        it.improvedName,
                                         it.crtDate,
                                         it.address,
                                         it.state,
@@ -104,6 +107,9 @@ class MainViewModel(val model: DataModel ) : BaseViewModel() {
                                 }
                             }
                         }
+                    }else {
+                        markerItemLiveData.value = null
+                        Log.d(TAG, "pinsAround is null")
                     }
                 }
             }
