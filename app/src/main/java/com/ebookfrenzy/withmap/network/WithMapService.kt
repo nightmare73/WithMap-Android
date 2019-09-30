@@ -30,7 +30,7 @@ interface WithMapService {
     @POST("/withmap/users")
     fun requestSignUp(
         @Body body: SignUpParams
-    ) // 반환 ???
+    ): Completable
 
     // 중복 확인
     @GET("/withmap/users/{content}/check")
