@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.ebookfrenzy.withmap.network.WithMapService
+import com.ebookfrenzy.withmap.network.request.SignUpParams
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -28,6 +29,10 @@ class SignUpViewModel(private val withMapService: WithMapService) : ViewModel() 
     private val _isNicknameUnique = MutableLiveData<Boolean>()
     val isNicknameUnique: LiveData<Boolean>
         get() = _isNicknameUnique
+
+    private val _isSignUpSuccess = MutableLiveData<Boolean>()
+    val isSignUpSuccess: LiveData<Boolean>
+        get() = _isSignUpSuccess
 
     override fun onCleared() {
         compositeDisposable.clear()
@@ -55,6 +60,20 @@ class SignUpViewModel(private val withMapService: WithMapService) : ViewModel() 
                 .subscribe({
                     _isNicknameUnique.value = !it.overlapped
                 }, {
+                    showError(it)
+                })
+        )
+    }
+
+    fun requestSignUp(params: SignUpParams) {
+        addDisposable(
+            withMapService.requestSignUp(params)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({
+                    _isSignUpSuccess.value = true
+                }, {
+                    _isSignUpSuccess.value = false
                     showError(it)
                 })
         )

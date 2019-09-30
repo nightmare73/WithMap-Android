@@ -9,12 +9,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.NumberPicker
+import android.widget.Toast
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
 
 import com.ebookfrenzy.withmap.R
 import com.ebookfrenzy.withmap.databinding.FragmentSignUpInfoBinding
 import com.ebookfrenzy.withmap.network.request.SignUpParams
+import com.ebookfrenzy.withmap.viewmodel.SignUpViewModel
 import kotlinx.android.synthetic.main.fragment_sign_up_info.*
+import org.koin.android.ext.android.inject
 
 /**
  * A simple [Fragment] subclass.
@@ -22,10 +29,14 @@ import kotlinx.android.synthetic.main.fragment_sign_up_info.*
 class SignUpInfoFragment : Fragment() {
     private val TAG = "SignUpInfoFragment"
 
-    var man: Int = 0
-    var handicap: Int = 0
+    private var man: String = ""
+    private var handicap: String = ""
+    private var pickedYear: Int = 0
 
     private lateinit var signUpParams: SignUpParams
+
+    private val viewModelFactory: ViewModelProvider.Factory by inject()
+    private lateinit var viewModel: SignUpViewModel
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -33,20 +44,18 @@ class SignUpInfoFragment : Fragment() {
         SignUpInfoFragmentArgs.fromBundle(arguments!!).params?.let {
             signUpParams = it
         }
-
-        Log.d("Malibin Debug", "arg : $signUpParams")
-
-
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        viewModel = ViewModelProviders.of(this, viewModelFactory)[SignUpViewModel::class.java]
 
         val binding = FragmentSignUpInfoBinding.inflate(inflater)
         binding.lifecycleOwner = this
-        binding.fragment = this
+
+        subscribeIsSignUpSuccess(binding)
 
         initView(binding)
 
@@ -55,7 +64,6 @@ class SignUpInfoFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
 
         np_sign_up_info_frag.run {
             minValue = 1900
@@ -66,82 +74,90 @@ class SignUpInfoFragment : Fragment() {
 
         imageView1.setOnClickListener { onClickInfo(1) }
         imageView2.setOnClickListener { onClickInfo(2) }
-        imageView3.setOnClickListener { onClickInfo(4) }
-        imageView4.setOnClickListener { onClickInfo(3) }
-
-
+        imageView3.setOnClickListener { onClickInfo(3) }
+        imageView4.setOnClickListener { onClickInfo(4) }
     }
 
-    fun onClickInfo(i: Int) {
+    private fun onClickInfo(i: Int) {
 
         when (i) {
-            1 -> if (man == 0 || man == 2) {
+            1 -> if (man == "" || man == "f") {
                 imageView1.setImageResource(R.drawable.join_male_touch)
                 imageView2.setImageResource(R.drawable.join_female)
-                man = 1
+                man = "m"
                 Log.d(TAG, "onClickInfo(1)")
             } else {
                 imageView1.setImageResource(R.drawable.join_male)
-                man = 0
+                man = ""
             }
 
-            2 -> if (man == 1 || man == 0) {
+            2 -> if (man == "m" || man == "") {
                 imageView2.setImageResource(R.drawable.join_female_touch)
                 imageView1.setImageResource(R.drawable.join_male)
-                man = 2
+                man = "f"
             } else {
                 imageView2.setImageResource(R.drawable.join_female)
-                man = 0
+                man = ""
             }
 
-            3 -> if (handicap == 0 || handicap == 1) {
+            3 -> if (handicap == "" || handicap == "y") {
                 imageView3.setImageResource(R.drawable.join_walk_touch)
                 imageView4.setImageResource(R.drawable.join_wheelchair)
-                handicap = 2
+                handicap = "n"
                 Log.d(TAG, "onClickInfo(3)")
             } else {
                 imageView3.setImageResource(R.drawable.join_walk)
-                handicap = 0
+                handicap = ""
             }
-            4 -> if (handicap == 0 || handicap == 2) {
+            4 -> if (handicap == "" || handicap == "n") {
                 imageView4.setImageResource(R.drawable.join_wheelchair_touch)
                 imageView3.setImageResource(R.drawable.join_walk)
-                handicap = 1
+                handicap = "y"
                 Log.d(TAG, "onClickInfo(4)")
             } else {
                 imageView4.setImageResource(R.drawable.join_wheelchair)
-                handicap = 0
+                handicap = ""
             }
-
         }
+        Log.d("Malibin Debug", "man : $man, handicap : $handicap")
     }
 
     private fun initView(binding: FragmentSignUpInfoBinding) {
-        // -혁- 회원가입 다 끝난후 로그인 프래그먼트로 돌아가는 코드
         binding.button.setOnClickListener {
-            Navigation.findNavController(it)
-                .navigate(R.id.action_signUpInfoFragment_to_loginFragment)
+            val params = getSignUpParams()
+            viewModel.requestSignUp(params)
+            it.isEnabled = false
+        }
+
+        binding.npSignUpInfoFrag.setOnValueChangedListener { _, _, newVal ->
+            pickedYear = newVal
         }
     }
 
-//    fun onClickInfo(i: Int) {
-//        var male: Boolean = false
-//        var female: Boolean = false
-//        var handicap: Boolean = false
-//        var nonHandicap: Boolean = false
-//
-//        try {
-//            when (i) {
-//                1 -> {
-//                    binding.imageView1.setImageResource(R.drawable.join_male_touch)
-//                    Log.d(TAG, "onClickInfo(1)")
-//                }
-//            }
-//        }catch (e : NoSuchElementException) {
-//            Log.e("ERROR",e.message)
-//        }
-//
-//    }
+    private fun subscribeIsSignUpSuccess(binding: FragmentSignUpInfoBinding) {
+        binding.button.isEnabled = true
+        viewModel.isSignUpSuccess.observe(viewLifecycleOwner, Observer { isSuccess ->
+            if (isSuccess) {
+                Toast.makeText(context, "회원가입이 완료되었습니다", Toast.LENGTH_SHORT).show()
+                backToLogin(binding.root)
+                return@Observer
+            }
+            Toast.makeText(context, "회원가입에 실패하였습니다.", Toast.LENGTH_SHORT).show()
+        })
+    }
 
+    private fun getSignUpParams(): SignUpParams {
+        signUpParams.apply {
+            disable = handicap
+            gender = man
+            year = pickedYear
+        }
+        return signUpParams
+    }
+
+    private fun backToLogin(view: View) {
+        Navigation.findNavController(view)
+            .navigate(R.id.action_signUpInfoFragment_to_loginFragment)
+    }
 
 }

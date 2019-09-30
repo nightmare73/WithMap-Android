@@ -94,6 +94,10 @@ class SignUpFragment : Fragment() {
 
     private fun initView(binding: FragmentSignUpBinding) {
         binding.btnSignUp.setOnClickListener {
+            if (binding.etPassword.text.length < 8) {
+                Toast.makeText(context, "비밀번호는 8자리 이상이여야합니다..", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             if (isEmailUnique && isNicknameUnique) {
                 val params = getSignUpParams(binding)
                 val dest = SignUpFragmentDirections.actionSignUpFragmentToSignUpInfoFragment(params)
