@@ -10,11 +10,10 @@
         android:name="com.ebookfrenzy.withmap.view.pin.detail.PinDetailFragment"
         android:label="PinDetailFragment"
         tools:layout="@layout/fragment_pin_detail">
-
         <argument
-            android:name="message"
-            android:defaultValue="실패"
-            app:argType="string" />
+            android:name="pinId"
+            app:argType="integer"
+            android:defaultValue="-1" />
     </fragment>
 
     <fragment

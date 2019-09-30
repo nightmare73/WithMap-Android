@@ -53,7 +53,10 @@ class PinDetailFragment : Fragment() {
         subscribeIsRecommended(binding)
         subscribeIsReported()
 
-        viewModel.getPinDetail(4)
+        val pinId = PinDetailFragmentArgs.fromBundle(arguments!!).pinId
+        if (pinId != -1) {
+            viewModel.getPinDetail(pinId)
+        }
 
         return binding.root
     }

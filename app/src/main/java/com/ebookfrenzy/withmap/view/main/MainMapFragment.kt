@@ -556,8 +556,11 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
                 bottomSheetLayout!!.bt_show_detail_blue.visibility = View.VISIBLE
 
                 bottomSheetLayout!!.bt_show_detail_blue.setOnClickListener {
-                    it.findNavController()
-                        .navigate(R.id.action_mainMapFragment_to_pinDetailFragment)
+                    val direction =
+                        MainMapFragmentDirections.actionMainMapFragmentToPinDetailFragment(
+                            markerItem.id
+                        )
+                    it.findNavController().navigate(direction)
                     Log.d(TAG, "bt_show_detail_blue clicked")
                 }
             } else {
@@ -581,8 +584,11 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
                     Log.d(TAG, "bt_was_improved clicked")
                 }
                 bottomSheetLayout!!.bt_show_detail.setOnClickListener {
-                    it.findNavController()
-                        .navigate(R.id.action_mainMapFragment_to_pinDetailFragment)
+                    val direction =
+                        MainMapFragmentDirections.actionMainMapFragmentToPinDetailFragment(
+                            markerItem.id
+                        )
+                    it.findNavController().navigate(direction)
                     Log.d(TAG, "bt_show_detail clicked")
                 }
             }

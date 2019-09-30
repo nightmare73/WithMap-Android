@@ -10,7 +10,6 @@ import com.ebookfrenzy.withmap.config.WithMapApplication
 import com.ebookfrenzy.withmap.data.GetMyRegisterPinData
 import com.ebookfrenzy.withmap.data.MarkerItem
 import com.ebookfrenzy.withmap.data.MyRegisterPinData
-import com.ebookfrenzy.withmap.data.getMarkerItems
 import com.ebookfrenzy.withmap.network.response.CommonPinInfo
 import com.ebookfrenzy.withmap.network.response.DataModel
 import com.ebookfrenzy.withmap.respository.LocalRepository
@@ -57,6 +56,7 @@ class MainViewModel(val model: DataModel, localRepository: LocalRepository) :
                             Log.d(TAG, "List<CommonPinInfo> : $this")
                             markerItemLiveData.value = this.map {
                                 MarkerItem(
+                                    it.id,
                                     it.latitude,
                                     it.longitude,
                                     it.type,
