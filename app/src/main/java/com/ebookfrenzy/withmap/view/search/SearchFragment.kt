@@ -1,8 +1,6 @@
 package com.ebookfrenzy.withmap.view.search
 
 import android.os.Bundle
-import android.text.TextUtils
-import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -15,15 +13,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
 import com.ebookfrenzy.withmap.databinding.FragmentSearchBinding
-import com.ebookfrenzy.withmap.network.WithMapService
-import com.ebookfrenzy.withmap.network.request.SignInParams
-import com.ebookfrenzy.withmap.network.response.SignInResponse
 import com.ebookfrenzy.withmap.viewmodel.SearchViewModel
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 /**
  * Created By Yun Hyeok
@@ -31,8 +22,6 @@ import retrofit2.Response
  */
 
 class SearchFragment : Fragment(), TextView.OnEditorActionListener {
-
-    //private val viewModel: SearchViewModel by sharedViewModel()
 
     private val viewModelFactory: ViewModelProvider.Factory by inject()
     private lateinit var viewModel: SearchViewModel
@@ -56,7 +45,6 @@ class SearchFragment : Fragment(), TextView.OnEditorActionListener {
 
         val rvAdapter = SearchAdapter()
         binding.rvSearchFragResult.adapter = rvAdapter.apply { setViewModel(viewModel) }
-
         binding.etSearchFragQuery.setOnEditorActionListener(this)
 
         searchResultSubscribe(rvAdapter)

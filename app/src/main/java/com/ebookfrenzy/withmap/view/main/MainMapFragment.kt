@@ -29,6 +29,7 @@ import com.ebookfrenzy.withmap.config.WithMapApplication
 import com.ebookfrenzy.withmap.data.GetMyRegisterPinData
 import com.ebookfrenzy.withmap.data.MarkerItem
 import com.ebookfrenzy.withmap.data.MyRegisterPinData
+import com.ebookfrenzy.withmap.data.SearchLocationResult
 import com.ebookfrenzy.withmap.databinding.FragmentMainMapBinding
 import com.ebookfrenzy.withmap.network.response.UserInfo
 import com.ebookfrenzy.withmap.respository.SharedPreferenceSource
@@ -95,6 +96,8 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
     private val vm: MainViewModel by viewModel()
     private lateinit var vmNoti: NotificationViewModel
 
+    private var searchArg: SearchLocationResult? = null
+
 
     var bottomSheetLayout: View? = null
 
@@ -130,10 +133,8 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
 
         binding = FragmentMainMapBinding.inflate(LayoutInflater.from(this.context))
 
-//        // 뷰모델 공유 안하고 navigation 으로만 데이터 주고받는거 성공 !
-        val temp = MainMapFragmentArgs.fromBundle(arguments!!).location
-
-        Log.d("Malibin Debug", "arg : $temp")
+        // 장소 검색시 실행
+        searchArg = MainMapFragmentArgs.fromBundle(arguments!!).location
 
 
         return binding.root
@@ -291,6 +292,12 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
         mMap.animateCamera(CameraUpdateFactory.newLatLng(mLoc))
     }
 
+    private fun goSearchedLocation() {
+        searchArg?.let {
+            val location = LatLng(it.latitude, it.longitude)
+            mMap.animateCamera(CameraUpdateFactory.newLatLng(location))
+        }
+    }
 
     override fun onMapReady(googleMap: GoogleMap?) {
         mMap = googleMap!!
@@ -312,6 +319,8 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
         vm.getPinsAround(sampleLocation.latitude, sampleLocation.longitude)
 
         getSampleMarkerItems()
+
+        goSearchedLocation()
     }
 
     override fun onRequestPermissionsResult(

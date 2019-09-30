@@ -45,8 +45,8 @@ data class KeywordAddressDocument(
             place_name,
             address_name,
             road_address_name,
-            x.toDouble(),
-            y.toDouble()
+            y.toDouble(),
+            x.toDouble()
         )
 }
 
