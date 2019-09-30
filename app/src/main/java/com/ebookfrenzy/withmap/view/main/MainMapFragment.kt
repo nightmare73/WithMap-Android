@@ -67,8 +67,8 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
     override fun onCameraMove() {
     }
 
-    private var headerName : String = "홍길동"
-    private var headerEmail : String = "iloveyou@naver.com"
+    private var headerName: String = "홍길동"
+    private var headerEmail: String = "iloveyou@naver.com"
 
     private var beforeCameraPositon: LatLng? = null
 
@@ -130,14 +130,11 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
 
         binding = FragmentMainMapBinding.inflate(LayoutInflater.from(this.context))
 
-        // 뷰모델 공유 안하고 navigation 으로만 데이터 주고받는거 성공 !
-//        val temp = MainMapFragmentArgs.fromBundle(arguments!!).location
-//
-//        Log.d("Malibin Debug", "arg : $temp")
-//
-//        binding.llTab.setOnClickListener {
-//            Navigation.findNavController(it).navigate(R.id.action_mainMapFragment_to_searchFragment)
-//        }
+//        // 뷰모델 공유 안하고 navigation 으로만 데이터 주고받는거 성공 !
+        val temp = MainMapFragmentArgs.fromBundle(arguments!!).location
+
+        Log.d("Malibin Debug", "arg : $temp")
+
 
         return binding.root
     }
@@ -146,15 +143,21 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if(vm.isFirst){
-            Navigation.findNavController(view).navigate(R.id.action_mainMapFragment_to_tutorialActivity)
+
+        Log.d("Malibin Debug", "onViewCreated")
+        if (vm.isFirst) {
+            Navigation.findNavController(view)
+                .navigate(R.id.action_mainMapFragment_to_tutorialActivity)
         }
 
         bt_hamburger.setOnClickListener {
             drawer_layout.openDrawer(nav_view)
         }
 
-
+        binding.etSearch.setOnClickListener {
+            Navigation.findNavController(it)
+                .navigate(R.id.action_mainMapFragment_to_searchFragment)
+        }
 
         binding.run {
             lifecycleOwner = this@MainMapFragment
@@ -183,7 +186,7 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
                 if (response.isSuccessful) {
                     Log.d(TAG, "getUserInfo success")
                     if (response.body() != null) {
-                       val data = response.body()
+                        val data = response.body()
                         headerName = data!!.name
                         headerEmail = data!!.email
                     }
@@ -335,8 +338,8 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
         val headerAlarm: ImageView = headerView.findViewById(R.id.header_alarm)
         val headerAccount: ConstraintLayout = headerView.findViewById(R.id.rl_account)
         val headerExchange: Button = headerView.findViewById(R.id.bt_exchange)
-        val name : TextView = headerView.findViewById(R.id.tv_username)
-        val email : TextView = headerView.findViewById(R.id.tv_email)
+        val name: TextView = headerView.findViewById(R.id.tv_username)
+        val email: TextView = headerView.findViewById(R.id.tv_email)
 
         if (SharedPreferenceSource(this.context!!).authToken.isNotEmpty()) {
 
