@@ -109,12 +109,12 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
             )
         })
 
+        requestPermission()
         mapFragment = SupportMapFragment.newInstance()
 //        mapFragment.getMapAsync(this)
 
         childFragmentManager.beginTransaction().replace(R.id.fl_main_map_frag, mapFragment).commit()
 
-        requestPermission()
     }
 
     override fun onCreateView(
@@ -144,6 +144,7 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.d(TAG, "token ${SharedPreferenceSource(this.context!!).authToken}")
 
         bt_hamburger.setOnClickListener {
             drawer_layout.openDrawer(nav_view)
