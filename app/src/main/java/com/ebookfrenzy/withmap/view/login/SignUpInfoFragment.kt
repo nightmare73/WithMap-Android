@@ -1,6 +1,7 @@
 package com.ebookfrenzy.withmap.view.login
 
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -12,6 +13,7 @@ import androidx.navigation.Navigation
 
 import com.ebookfrenzy.withmap.R
 import com.ebookfrenzy.withmap.databinding.FragmentSignUpInfoBinding
+import com.ebookfrenzy.withmap.network.request.SignUpParams
 import kotlinx.android.synthetic.main.fragment_sign_up_info.*
 
 /**
@@ -22,6 +24,20 @@ class SignUpInfoFragment : Fragment() {
 
     var man: Int = 0
     var handicap: Int = 0
+
+    private lateinit var signUpParams: SignUpParams
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        SignUpInfoFragmentArgs.fromBundle(arguments!!).params?.let {
+            signUpParams = it
+        }
+
+        Log.d("Malibin Debug", "arg : $signUpParams")
+
+
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,7 +68,6 @@ class SignUpInfoFragment : Fragment() {
         imageView2.setOnClickListener { onClickInfo(2) }
         imageView3.setOnClickListener { onClickInfo(4) }
         imageView4.setOnClickListener { onClickInfo(3) }
-
 
 
     }
@@ -104,7 +119,8 @@ class SignUpInfoFragment : Fragment() {
     private fun initView(binding: FragmentSignUpInfoBinding) {
         // -혁- 회원가입 다 끝난후 로그인 프래그먼트로 돌아가는 코드
         binding.button.setOnClickListener {
-            Navigation.findNavController(it).navigate(R.id.action_signUpInfoFragment_to_loginFragment)
+            Navigation.findNavController(it)
+                .navigate(R.id.action_signUpInfoFragment_to_loginFragment)
         }
     }
 

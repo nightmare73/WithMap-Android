@@ -38,5 +38,10 @@
             app:launchSingleTop="true"
             app:popUpTo="@+id/signUpInfoFragment"
             app:popUpToInclusive="true" />
+        <argument
+            android:name="params"
+            app:argType="com.ebookfrenzy.withmap.network.request.SignUpParams"
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
 </navigation>

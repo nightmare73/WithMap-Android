@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.Navigation
 import com.ebookfrenzy.withmap.R
 import com.ebookfrenzy.withmap.databinding.FragmentSignUpBinding
+import com.ebookfrenzy.withmap.network.request.SignUpParams
 import com.ebookfrenzy.withmap.viewmodel.SignUpViewModel
 import kotlinx.android.synthetic.main.fragment_sign_up.*
 import org.koin.android.ext.android.inject
@@ -94,8 +95,9 @@ class SignUpFragment : Fragment() {
     private fun initView(binding: FragmentSignUpBinding) {
         binding.btnSignUp.setOnClickListener {
             if (isEmailUnique && isNicknameUnique) {
-                Navigation.findNavController(it)
-                    .navigate(R.id.action_signUpFragment_to_signUpInfoFragment)//아규먼트추가할것
+                val params = getSignUpParams(binding)
+                val dest = SignUpFragmentDirections.actionSignUpFragmentToSignUpInfoFragment(params)
+                Navigation.findNavController(it).navigate(dest)
                 return@setOnClickListener
             }
             Toast.makeText(context, "중복확인을 하지 않은 항목이 있습니다.", Toast.LENGTH_SHORT).show()
@@ -135,4 +137,12 @@ class SignUpFragment : Fragment() {
             Toast.makeText(context, "중복된 닉네임입니다.", Toast.LENGTH_SHORT).show()
         })
     }
+
+    private fun getSignUpParams(binding: FragmentSignUpBinding): SignUpParams {
+        val email = binding.etEmail.text.toString()
+        val password = binding.etPassword.text.toString()
+        val nickname = binding.etNickname.text.toString()
+        return SignUpParams(email, nickname, password)
+    }
+
 }
