@@ -37,12 +37,13 @@
 
             <ImageView
                 android:id="@+id/iv_pin_detail_frag_main"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="204dp"
                 android:scaleType="centerCrop"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/default_rest_o" />
 
             <View
                 android:id="@+id/black_filter"
