@@ -8,6 +8,7 @@ import com.ebookfrenzy.withmap.network.response.pinregister.PinRegisterData
 import io.reactivex.Completable
 import io.reactivex.Single
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -15,6 +16,7 @@ import retrofit2.http.*
  * Created By Yun Hyeok
  * on 9월 25, 2019
  */
+
 
 interface WithMapService {
 
@@ -48,7 +50,7 @@ interface WithMapService {
     @POST("/withmap/pins")
     fun postPinRegister(
         @Header("Authorization") token : String,
-        @Part("pin") pin : PinRegisterData,
+        @PartMap() pin : Map<String, @JvmSuppressWildcards RequestBody>,
         @Part files : ArrayList<MultipartBody.Part>?
     ):Call<PostPinRegisterResponse>
 

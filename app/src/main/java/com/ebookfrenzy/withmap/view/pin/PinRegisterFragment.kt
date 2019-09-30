@@ -190,27 +190,57 @@ class PinRegisterFragment : Fragment() {
                 binding.tvContent.text.toString()
             )
         }
+        Log.d(TAG, "auth : ${SharedPreferenceSource(this.context!!).authToken}")
+        Log.d(TAG, newPinItem.toString())
         getPinRegisterResponse(newPinItem!!)
     }
 
+    private fun createPartFromString(descriptionString : String) : RequestBody{
+        return RequestBody.create(
+            MediaType.parse("text/plain"), descriptionString)
+    }
 
     private fun getPinRegisterResponse(pin: PinRegisterData) {
         Log.d(TAG, "getPinRegisterResponse()")
+
+        val address : RequestBody = createPartFromString(pin.address)
+        val improvedName : RequestBody = createPartFromString(pin.improvedName)
+        val latitude : RequestBody = createPartFromString(pin.latitude.toString())
+        val longitude : RequestBody = createPartFromString(pin.longitude.toString())
+        val state : RequestBody = createPartFromString(pin.state.toString())
+        val type : RequestBody = createPartFromString(pin.type.toString())
+        val likeCount : RequestBody = createPartFromString(pin.likeCount.toString())
+        val unimprovedName : RequestBody = createPartFromString(pin.userId.toString())
+        val comment : RequestBody = createPartFromString(pin.comment)
+
+        val map : HashMap<String, RequestBody> = HashMap<String, RequestBody>()
+        map.put("address", address)
+        map.put("improvedName", improvedName)
+        map.put("latitude", latitude)
+        map.put("longitude", longitude)
+        map.put("state", state)
+        map.put("type", type)
+        map.put("likeCount", likeCount)
+        map.put("unimprovedName", unimprovedName)
+        map.put("comment", comment)
+
         val postPinRegisterResponse = networkService.postPinRegister(
-            "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtb2RlbG1ha2VyQG5hdmVyLmNvbSIsIm5pY2tuYW1lIjoic3RyaW5nIiwiaXNzIjoic3ByaW5nLmp3dC5pc3N1ZXIiLCJpYXQiOjE1Njk2NjE0OTcsImV4cCI6MTU3MDI2NjI5Nn0.5G0oqmlR-0aPzzb7rC9GQcTmc0wR4awQuj1d2bKcHmA",
-            pin,
+            SharedPreferenceSource(this.context!!).authToken,
+            map,
             mImageList
         )
         postPinRegisterResponse.enqueue(object : Callback<PostPinRegisterResponse> {
             override fun onFailure(call: Call<PostPinRegisterResponse>, t: Throwable) {
-                Log.e(TAG, t.stackTrace.toString())
+                Log.e(TAG, "post fail : ${t.stackTrace.toString()}")
             }
 
             override fun onResponse(call: Call<PostPinRegisterResponse>, response: Response<PostPinRegisterResponse>) {
                 if (response.isSuccessful) {
                     Log.d(TAG, "register success")
                 }else{
-                    Log.d(TAG, response.code().toString())
+                    Log.d(TAG, "code ${response.code().toString()}")
+                    Log.d(TAG, response.message())
+                    Log.d(TAG, response.body().toString())
                 }
             }
         })
