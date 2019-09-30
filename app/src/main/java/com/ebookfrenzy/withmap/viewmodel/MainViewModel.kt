@@ -13,6 +13,7 @@ import com.ebookfrenzy.withmap.data.MyRegisterPinData
 import com.ebookfrenzy.withmap.data.getMarkerItems
 import com.ebookfrenzy.withmap.network.response.CommonPinInfo
 import com.ebookfrenzy.withmap.network.response.DataModel
+import com.ebookfrenzy.withmap.respository.LocalRepository
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import io.reactivex.Scheduler
@@ -22,7 +23,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MainViewModel(val model: DataModel) : BaseViewModel() {
+class MainViewModel(val model: DataModel, localRepository: LocalRepository) :
+    BaseViewModel() {
 
     private val TAG = "MainViewModel"
 
@@ -38,6 +40,8 @@ class MainViewModel(val model: DataModel) : BaseViewModel() {
         value = 0
     }
     val bottomSheetUpdate = MutableLiveData<Boolean>()
+
+    val isFirst = localRepository.getFirstFlag()
 
     //주변핀 조회
     fun getPinsAround(latitude: Double, longitude: Double) {
@@ -178,4 +182,6 @@ class MainViewModel(val model: DataModel) : BaseViewModel() {
             Log.d(TAG, "selectedMarkerLiveData : ${selectedMarkerLiveData.value!!.tag}")
         }
     }
+
+
 }

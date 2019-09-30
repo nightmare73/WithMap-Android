@@ -21,6 +21,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 
 import com.ebookfrenzy.withmap.R
@@ -99,8 +100,8 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
 
     var beingClicked: Boolean = false
 
-
     private val TAG = "MainMapFragment"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         vm.selectedMarkerLiveData.observe(this, Observer {
@@ -144,6 +145,10 @@ class MainMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickL
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        if(vm.isFirst){
+            Navigation.findNavController(view).navigate(R.id.action_mainMapFragment_to_tutorialActivity)
+        }
 
         bt_hamburger.setOnClickListener {
             drawer_layout.openDrawer(nav_view)

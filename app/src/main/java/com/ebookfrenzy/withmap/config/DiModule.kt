@@ -90,7 +90,7 @@ val localRepositoryModule = module {
 val viewModelModule = module {
     viewModel { SearchViewModel(get()) }
     viewModel { PinDetailViewModel(get(), get()) }
-    viewModel { MainViewModel(get()) }
+    viewModel { MainViewModel(get(), get()) }
 }
 
 val viewModelFactoryModule = module {
